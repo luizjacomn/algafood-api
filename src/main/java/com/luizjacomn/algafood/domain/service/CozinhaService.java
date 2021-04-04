@@ -1,9 +1,8 @@
 package com.luizjacomn.algafood.domain.service;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.luizjacomn.algafood.domain.exception.EntidadeEmUsoException;
@@ -22,14 +21,10 @@ public class CozinhaService {
 	}
 
 	public void excluir(Long id) {
-		Optional<Cozinha> optional = cozinhaRepository.findById(id);
-
 		try {
-			if (optional.isPresent()) {
-				cozinhaRepository.deleteById(id);
-			} else {
-				throw new EntidadeNaoEncontradaException("Cozinha informada não encontrada.");
-			}
+			cozinhaRepository.deleteById(id);
+		} catch (EmptyResultDataAccessException e) {
+			throw new EntidadeNaoEncontradaException("Cozinha informada não encontrada.");
 		} catch (DataIntegrityViolationException e) {
 			throw new EntidadeEmUsoException("Cozinha está sendo utilizada e não pode ser excluída.");
 		}
