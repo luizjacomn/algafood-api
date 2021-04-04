@@ -79,7 +79,7 @@ public class RestauranteController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> salvar(@PathVariable Long id, @RequestBody Restaurante restaurante) {
+    public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody Restaurante restaurante) {
         try {
             restaurante = restauranteService.salvar(restaurante, id);
             return ResponseEntity.ok(restaurante);
@@ -105,7 +105,7 @@ public class RestauranteController {
                 ReflectionUtils.setField(field, optional.get(), valorAlterado);
             });
 
-            return salvar(id, optional.get());
+            return atualizar(id, optional.get());
         }
 
         return ResponseEntity.notFound().build();

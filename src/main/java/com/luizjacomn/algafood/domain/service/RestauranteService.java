@@ -1,5 +1,7 @@
 package com.luizjacomn.algafood.domain.service;
 
+import com.luizjacomn.algafood.domain.model.Cidade;
+import com.luizjacomn.algafood.domain.repository.CidadeRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -22,15 +24,27 @@ public class RestauranteService {
 	@Autowired
 	private CozinhaRepository cozinhaRepository;
 
+	@Autowired
+	private CidadeRepository cidadeRepository;
+
 	public Restaurante salvar(Restaurante restaurante, Long id) {
-		Cozinha cozinha = cozinhaRepository.findById(restaurante.getCozinha().getId()).orElseThrow(() -> new EntidadeNaoEncontradaException("Cozinha informada não foi encontrada."));
+		Cozinha cozinha = cozinhaRepository.findById(restaurante.getCozinha().getId())
+											.orElseThrow(() -> new EntidadeNaoEncontradaException("Cozinha informada não foi encontrada."));
 
 		restaurante.setCozinha(cozinha);
 
-		if (id != null) {
-			Restaurante restauranteAtual = restauranteRepository.findById(id).orElseThrow(() -> new EntidadeNaoEncontradaException("Restaurante informado não foi encontrado."));
+		if (restaurante.getEndereco() != null && restaurante.getEndereco().getCidade().getId() != null) {
+			Cidade cidade = cidadeRepository.findById(restaurante.getEndereco().getCidade().getId())
+					.orElseThrow(() -> new EntidadeNaoEncontradaException("Cidade informada não foi encontrada."));
 
-			BeanUtils.copyProperties(restaurante, restauranteAtual, "id");
+			restaurante.getEndereco().setCidade(cidade);
+		}
+
+		if (id != null) {
+			Restaurante restauranteAtual = restauranteRepository.findById(id)
+																.orElseThrow(() -> new EntidadeNaoEncontradaException("Restaurante informado não foi encontrado."));
+
+			BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "endereco", "formasPagamento", "dataCadastro");
 			return restauranteRepository.save(restauranteAtual);
 		}
 
