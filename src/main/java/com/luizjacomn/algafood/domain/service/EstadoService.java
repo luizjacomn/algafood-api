@@ -1,7 +1,5 @@
 package com.luizjacomn.algafood.domain.service;
 
-import java.util.Optional;
-
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -21,14 +19,11 @@ public class EstadoService {
 
 	public Estado salvar(Estado estado, Long id) {
 		if (id != null) {
-			Optional<Estado> optional = estadoRepository.findById(id);
+			Estado estadoAtual = estadoRepository.findById(id)
+												.orElseThrow(() -> new EntidadeNaoEncontradaException("Estado informado não encontrado."));
 
-			if (!optional.isPresent()) {
-				throw new EntidadeNaoEncontradaException("Estado informado não encontrado.");
-			}
-
-			BeanUtils.copyProperties(estado, optional.get(), "id");
-			return estadoRepository.save(optional.get());
+			BeanUtils.copyProperties(estado, estadoAtual, "id");
+			return estadoRepository.save(estadoAtual);
 		}
 
 		return estadoRepository.save(estado);

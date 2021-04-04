@@ -1,7 +1,5 @@
 package com.luizjacomn.algafood.domain.service;
 
-import java.util.Optional;
-
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -25,23 +23,17 @@ public class CidadeService {
 	private EstadoRepository estadoRepository;
 
 	public Cidade salvar(Cidade cidade, Long id) {
-		Optional<Estado> estado = estadoRepository.findById(cidade.getEstado().getId());
+		Estado estado = estadoRepository.findById(cidade.getEstado().getId())
+										.orElseThrow(() -> new EntidadeNaoEncontradaException("Estado informado não foi encontrado."));
 
-		if (!estado.isPresent()) {
-			throw new EntidadeNaoEncontradaException("Estado informado não foi encontrado.");
-		}
-
-		cidade.setEstado(estado.get());
+		cidade.setEstado(estado);
 
 		if (id != null) {
-			Optional<Cidade> cidadeAtual = cidadeRepository.findById(id);
+			Cidade cidadeAtual = cidadeRepository.findById(id)
+												.orElseThrow(() -> new EntidadeNaoEncontradaException("Cidade informada não foi encontrada."));
 
-			if (!cidadeAtual.isPresent()) {
-				throw new EntidadeNaoEncontradaException("Cidade informada não foi encontrada.");
-			}
-
-			BeanUtils.copyProperties(cidade, cidadeAtual.get(), "id");
-			return cidadeRepository.save(cidadeAtual.get());
+			BeanUtils.copyProperties(cidade, cidadeAtual, "id");
+			return cidadeRepository.save(cidadeAtual);
 		}
 
 		return cidadeRepository.save(cidade);

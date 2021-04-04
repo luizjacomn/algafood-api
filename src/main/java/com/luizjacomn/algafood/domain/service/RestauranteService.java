@@ -1,7 +1,5 @@
 package com.luizjacomn.algafood.domain.service;
 
-import java.util.Optional;
-
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -25,23 +23,15 @@ public class RestauranteService {
 	private CozinhaRepository cozinhaRepository;
 
 	public Restaurante salvar(Restaurante restaurante, Long id) {
-		Optional<Cozinha> cozinha = cozinhaRepository.findById(restaurante.getCozinha().getId());
+		Cozinha cozinha = cozinhaRepository.findById(restaurante.getCozinha().getId()).orElseThrow(() -> new EntidadeNaoEncontradaException("Cozinha informada não foi encontrada."));
 
-		if (!cozinha.isPresent()) {
-			throw new EntidadeNaoEncontradaException("Cozinha informada não foi encontrada.");
-		}
-
-		restaurante.setCozinha(cozinha.get());
+		restaurante.setCozinha(cozinha);
 
 		if (id != null) {
-			Optional<Restaurante> restauranteAtual = restauranteRepository.findById(id);
+			Restaurante restauranteAtual = restauranteRepository.findById(id).orElseThrow(() -> new EntidadeNaoEncontradaException("Restaurante informado não foi encontrado."));
 
-			if (!restauranteAtual.isPresent()) {
-				throw new EntidadeNaoEncontradaException("Restaurante informado não foi encontrado.");
-			}
-
-			BeanUtils.copyProperties(restaurante, restauranteAtual.get(), "id");
-			return restauranteRepository.save(restauranteAtual.get());
+			BeanUtils.copyProperties(restaurante, restauranteAtual, "id");
+			return restauranteRepository.save(restauranteAtual);
 		}
 
 		return restauranteRepository.save(restaurante);
