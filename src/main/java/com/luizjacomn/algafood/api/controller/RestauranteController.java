@@ -1,6 +1,5 @@
 package com.luizjacomn.algafood.api.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.luizjacomn.algafood.domain.exception.EntidadeEmUsoException;
 import com.luizjacomn.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.luizjacomn.algafood.domain.model.Restaurante;
@@ -9,17 +8,11 @@ import com.luizjacomn.algafood.domain.service.RestauranteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-
-import static com.luizjacomn.algafood.infra.repository.spec.RestauranteSpecs.comFreteGratis;
-import static com.luizjacomn.algafood.infra.repository.spec.RestauranteSpecs.comNomeSemelhante;
 
 @RestController
 @RequestMapping("/restaurantes")
@@ -86,29 +79,6 @@ public class RestauranteController {
         } catch (EntidadeNaoEncontradaException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-    }
-
-    @PatchMapping("/{id}")
-    public ResponseEntity<?> mesclar(@PathVariable Long id, @RequestBody Map<String, Object> dados) {
-        Optional<Restaurante> optional = restauranteRepository.findById(id);
-
-        if (optional.isPresent()) {
-            ObjectMapper mapper = new ObjectMapper();
-            Restaurante convertedValue = mapper.convertValue(dados, Restaurante.class);
-
-            dados.keySet().forEach(chave -> {
-                Field field = ReflectionUtils.findField(Restaurante.class, chave);
-                field.setAccessible(true);
-
-                Object valorAlterado = ReflectionUtils.getField(field, convertedValue);
-
-                ReflectionUtils.setField(field, optional.get(), valorAlterado);
-            });
-
-            return atualizar(id, optional.get());
-        }
-
-        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")

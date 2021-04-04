@@ -1,20 +1,18 @@
 package com.luizjacomn.algafood.api.controller;
 
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.luizjacomn.algafood.domain.model.Restaurante;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.ReflectionUtils;
+import org.springframework.web.bind.annotation.*;
 
 import com.luizjacomn.algafood.domain.exception.EntidadeEmUsoException;
 import com.luizjacomn.algafood.domain.exception.EntidadeNaoEncontradaException;
@@ -52,6 +50,29 @@ public class CozinhaController {
 			return ResponseEntity.ok(cozinhaService.salvar(optional.get()));
 		}
 		
+		return ResponseEntity.notFound().build();
+	}
+
+	@PatchMapping("/{id}")
+	public ResponseEntity<?> mesclar(@PathVariable Long id, @RequestBody Map<String, Object> dados) {
+		Optional<Cozinha> optional = cozinhaRepository.findById(id);
+
+		if (optional.isPresent()) {
+			ObjectMapper mapper = new ObjectMapper();
+			Cozinha convertedValue = mapper.convertValue(dados, Cozinha.class);
+
+			dados.keySet().forEach(chave -> {
+				Field field = ReflectionUtils.findField(Cozinha.class, chave);
+				field.setAccessible(true);
+
+				Object valorAlterado = ReflectionUtils.getField(field, convertedValue);
+
+				ReflectionUtils.setField(field, optional.get(), valorAlterado);
+			});
+
+			return atualizar(id, optional.get());
+		}
+
 		return ResponseEntity.notFound().build();
 	}
 	
