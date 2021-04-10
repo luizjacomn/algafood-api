@@ -1,14 +1,13 @@
 package com.luizjacomn.algafood.domain.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.stereotype.Service;
-
 import com.luizjacomn.algafood.domain.exception.EntidadeEmUsoException;
 import com.luizjacomn.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.luizjacomn.algafood.domain.model.Cozinha;
 import com.luizjacomn.algafood.domain.repository.CozinhaRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.stereotype.Service;
 
 @Service
 public class CozinhaService {
