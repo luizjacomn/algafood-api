@@ -13,6 +13,9 @@ import com.luizjacomn.algafood.domain.repository.CozinhaRepository;
 @Service
 public class CozinhaService {
 
+	private static final String MSG_COZINHA_NAO_ENCONTRADA = "Cozinha informada não encontrada.";
+	private static final String MSG_COZINHA_EM_USO = "Cozinha está sendo utilizada e não pode ser excluída.";
+
 	@Autowired
 	private CozinhaRepository cozinhaRepository;
 
@@ -24,9 +27,14 @@ public class CozinhaService {
 		try {
 			cozinhaRepository.deleteById(id);
 		} catch (EmptyResultDataAccessException e) {
-			throw new EntidadeNaoEncontradaException("Cozinha informada não encontrada.");
+			throw new EntidadeNaoEncontradaException(MSG_COZINHA_NAO_ENCONTRADA);
 		} catch (DataIntegrityViolationException e) {
-			throw new EntidadeEmUsoException("Cozinha está sendo utilizada e não pode ser excluída.");
+			throw new EntidadeEmUsoException(MSG_COZINHA_EM_USO);
 		}
+	}
+
+	public Cozinha buscar(Long cozinhaId) {
+		return cozinhaRepository.findById(cozinhaId)
+				.orElseThrow(() -> new EntidadeNaoEncontradaException(MSG_COZINHA_NAO_ENCONTRADA));
 	}
 }
