@@ -1,5 +1,7 @@
 package com.luizjacomn.algafood.api.controller;
 
+import com.luizjacomn.algafood.domain.exception.EntidadeNaoEncontradaException;
+import com.luizjacomn.algafood.domain.exception.NegocioException;
 import com.luizjacomn.algafood.domain.model.Restaurante;
 import com.luizjacomn.algafood.domain.repository.RestauranteRepository;
 import com.luizjacomn.algafood.domain.service.RestauranteService;
@@ -58,12 +60,20 @@ public class RestauranteController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Restaurante salvar(@RequestBody Restaurante restaurante) {
-        return restauranteService.salvar(restaurante, null);
+        try {
+            return restauranteService.salvar(restaurante, null);
+        } catch (EntidadeNaoEncontradaException e) {
+            throw new NegocioException(e.getMessage());
+        }
     }
 
     @PutMapping("/{id}")
     public Restaurante atualizar(@PathVariable Long id, @RequestBody Restaurante restaurante) {
-        return restaurante = restauranteService.salvar(restaurante, id);
+        try {
+            return restauranteService.salvar(restaurante, id);
+        } catch (EntidadeNaoEncontradaException e) {
+            throw new NegocioException(e.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")
