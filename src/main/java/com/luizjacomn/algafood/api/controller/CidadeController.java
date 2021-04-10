@@ -1,6 +1,6 @@
 package com.luizjacomn.algafood.api.controller;
 
-import com.luizjacomn.algafood.domain.exception.EntidadeNaoEncontradaException;
+import com.luizjacomn.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.luizjacomn.algafood.domain.exception.NegocioException;
 import com.luizjacomn.algafood.domain.model.Cidade;
 import com.luizjacomn.algafood.domain.repository.CidadeRepository;
@@ -36,8 +36,8 @@ public class CidadeController {
     public Cidade salvar(@RequestBody Cidade cidade) {
         try {
             return cidadeService.salvar(cidade, null);
-        } catch (EntidadeNaoEncontradaException e) {
-            throw new NegocioException(e.getMessage(), e);
+        } catch (EstadoNaoEncontradoException e) {
+            throw new NegocioException(e.getMessage());
         }
     }
 
@@ -45,8 +45,8 @@ public class CidadeController {
     public Cidade salvar(@PathVariable Long id, @RequestBody Cidade cidade) {
         try {
             return cidadeService.salvar(cidade, id);
-        } catch (EntidadeNaoEncontradaException e) {
-            throw new NegocioException(e.getMessage(), e);
+        } catch (EstadoNaoEncontradoException e) {
+            throw new NegocioException(e.getMessage());
         }
     }
 

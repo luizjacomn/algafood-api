@@ -1,5 +1,7 @@
 package com.luizjacomn.algafood.api.controller;
 
+import com.luizjacomn.algafood.domain.exception.CidadeNaoEncontradaException;
+import com.luizjacomn.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.luizjacomn.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.luizjacomn.algafood.domain.exception.NegocioException;
 import com.luizjacomn.algafood.domain.model.Restaurante;
@@ -63,7 +65,7 @@ public class RestauranteController {
         try {
             return restauranteService.salvar(restaurante, null);
         } catch (EntidadeNaoEncontradaException e) {
-            throw new NegocioException(e.getMessage(), e);
+            throw new NegocioException(e.getMessage());
         }
     }
 
@@ -71,8 +73,8 @@ public class RestauranteController {
     public Restaurante atualizar(@PathVariable Long id, @RequestBody Restaurante restaurante) {
         try {
             return restauranteService.salvar(restaurante, id);
-        } catch (EntidadeNaoEncontradaException e) {
-            throw new NegocioException(e.getMessage(), e);
+        } catch (CidadeNaoEncontradaException | CozinhaNaoEncontradaException e) {
+            throw new NegocioException(e.getMessage());
         }
     }
 
