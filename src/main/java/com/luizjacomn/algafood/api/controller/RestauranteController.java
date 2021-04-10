@@ -63,7 +63,7 @@ public class RestauranteController {
         try {
             return restauranteService.salvar(restaurante, null);
         } catch (EntidadeNaoEncontradaException e) {
-            throw new NegocioException(e.getMessage());
+            throw new NegocioException(e.getMessage(), e);
         }
     }
 
@@ -72,7 +72,7 @@ public class RestauranteController {
         try {
             return restauranteService.salvar(restaurante, id);
         } catch (EntidadeNaoEncontradaException e) {
-            throw new NegocioException(e.getMessage());
+            throw new NegocioException(e.getMessage(), e);
         }
     }
 

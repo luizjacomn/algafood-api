@@ -1,7 +1,7 @@
 package com.luizjacomn.algafood.domain.service;
 
 import com.luizjacomn.algafood.domain.exception.EntidadeEmUsoException;
-import com.luizjacomn.algafood.domain.exception.EntidadeNaoEncontradaException;
+import com.luizjacomn.algafood.domain.exception.RestauranteNaoEncontradoException;
 import com.luizjacomn.algafood.domain.model.Cidade;
 import com.luizjacomn.algafood.domain.model.Cozinha;
 import com.luizjacomn.algafood.domain.model.Restaurante;
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class RestauranteService {
 
-	private static final String MSG_RESTAURANTE_NAO_ENCONTRADO = "Restaurante informado não foi encontrado.";
 	private static final String MSG_RESTAURANTE_EM_USO = "Restaurante está sendo utilizado e não pode ser excluído.";
 
 	@Autowired
@@ -53,7 +52,7 @@ public class RestauranteService {
 		try {
 			restauranteRepository.deleteById(id);
 		} catch (EmptyResultDataAccessException e) {
-			throw new EntidadeNaoEncontradaException(MSG_RESTAURANTE_NAO_ENCONTRADO);
+			throw new RestauranteNaoEncontradoException(id);
 		} catch (DataIntegrityViolationException e) {
 			throw new EntidadeEmUsoException(MSG_RESTAURANTE_EM_USO);
 		}
@@ -61,6 +60,6 @@ public class RestauranteService {
 
 	public Restaurante buscar(Long restauranteId) {
 		return restauranteRepository.findById(restauranteId)
-				.orElseThrow(() -> new EntidadeNaoEncontradaException(MSG_RESTAURANTE_NAO_ENCONTRADO));
+				.orElseThrow(() -> new RestauranteNaoEncontradoException(restauranteId));
 	}
 }

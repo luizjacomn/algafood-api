@@ -1,7 +1,7 @@
 package com.luizjacomn.algafood.domain.service;
 
+import com.luizjacomn.algafood.domain.exception.CidadeNaoEncontradaException;
 import com.luizjacomn.algafood.domain.exception.EntidadeEmUsoException;
-import com.luizjacomn.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.luizjacomn.algafood.domain.model.Cidade;
 import com.luizjacomn.algafood.domain.model.Estado;
 import com.luizjacomn.algafood.domain.repository.CidadeRepository;
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class CidadeService {
 
-	private static final String MSG_CIDADE_NAO_ENCONTRADA = "Cidade informada não foi encontrada.";
 	private static final String MSG_CIDADE_EM_USO = "Cidade está sendo utilizada e não pode ser excluída.";
 
 	@Autowired
@@ -43,7 +42,7 @@ public class CidadeService {
 		try {
 			cidadeRepository.deleteById(id);
 		} catch (EmptyResultDataAccessException e) {
-			throw new EntidadeNaoEncontradaException(MSG_CIDADE_NAO_ENCONTRADA);
+			throw new CidadeNaoEncontradaException(id);
 		} catch (DataIntegrityViolationException e) {
 			throw new EntidadeEmUsoException(MSG_CIDADE_EM_USO);
 		}
@@ -51,6 +50,6 @@ public class CidadeService {
 
 	public Cidade buscar(Long cidadeId) {
 		return cidadeRepository.findById(cidadeId)
-				.orElseThrow(() -> new EntidadeNaoEncontradaException(MSG_CIDADE_NAO_ENCONTRADA));
+				.orElseThrow(() -> new CidadeNaoEncontradaException(cidadeId));
 	}
 }
