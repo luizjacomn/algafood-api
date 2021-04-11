@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import static java.util.stream.Collectors.joining;
@@ -70,9 +71,15 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return super.handleTypeMismatch(ex, headers, status, request);
     }
 
+    @Override
+    protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        String detail = String.format("O recurso %s, que você tentou acessar, não existe.", ex.getRequestURL());
+        return handle(ProblemType.RECURSO_NAO_ENCONTRADO, ex, detail, request);
+    }
+
     @ExceptionHandler(EntidadeNaoEncontradaException.class)
     public ResponseEntity<?> handleEntidadeNaoEncontradaException(EntidadeNaoEncontradaException ex, WebRequest request) {
-        return handle(ProblemType.ENTIDADE_NAO_ENCONTRADA, ex, request);
+        return handle(ProblemType.RECURSO_NAO_ENCONTRADO, ex, request);
     }
 
     @ExceptionHandler(EntidadeEmUsoException.class)
