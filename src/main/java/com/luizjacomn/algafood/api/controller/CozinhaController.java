@@ -1,16 +1,18 @@
 package com.luizjacomn.algafood.api.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.luizjacomn.algafood.domain.model.Cozinha;
 import com.luizjacomn.algafood.domain.repository.CozinhaRepository;
 import com.luizjacomn.algafood.domain.service.CozinhaService;
+import com.luizjacomn.algafood.util.MergeUtil;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.util.ReflectionUtils;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.Field;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -18,55 +20,49 @@ import java.util.Map;
 @RequestMapping("/cozinhas")
 public class CozinhaController {
 
-	@Autowired
-	private CozinhaRepository cozinhaRepository;
-	
-	@Autowired
-	private CozinhaService cozinhaService;
-	
-	@GetMapping
-	public List<Cozinha> listar() {
-		return cozinhaRepository.findAll();
-	}
-	
-	@PostMapping
-	@ResponseStatus(HttpStatus.CREATED)
-	public Cozinha salvar(@RequestBody Cozinha cozinha) {
-		return cozinhaService.salvar(cozinha);
-	}
-	
-	@PutMapping("/{id}")
-	public Cozinha atualizar(@PathVariable Long id, @RequestBody Cozinha cozinha) {
-		Cozinha cozinhaAtual = cozinhaService.buscar(id);
-		
-		BeanUtils.copyProperties(cozinha, cozinhaAtual, "id");
+    @Autowired
+    private CozinhaRepository cozinhaRepository;
 
-		return cozinhaService.salvar(cozinhaAtual);
-	}
+    @Autowired
+    private CozinhaService cozinhaService;
 
-	@PatchMapping("/{id}")
-	public Cozinha mesclar(@PathVariable Long id, @RequestBody Map<String, Object> dados) {
-		Cozinha cozinha = cozinhaService.buscar(id);
+    @GetMapping
+    public List<Cozinha> listar() {
+        return cozinhaRepository.findAll();
+    }
 
-		ObjectMapper mapper = new ObjectMapper();
-		Cozinha convertedValue = mapper.convertValue(dados, Cozinha.class);
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Cozinha salvar(@RequestBody Cozinha cozinha) {
+        return cozinhaService.salvar(cozinha);
+    }
 
-		dados.keySet().forEach(chave -> {
-			Field field = ReflectionUtils.findField(Cozinha.class, chave);
-			field.setAccessible(true);
+    @PutMapping("/{id}")
+    public Cozinha atualizar(@PathVariable Long id, @RequestBody Cozinha cozinha) {
+        Cozinha cozinhaAtual = cozinhaService.buscar(id);
 
-			Object valorAlterado = ReflectionUtils.getField(field, convertedValue);
+        BeanUtils.copyProperties(cozinha, cozinhaAtual, "id");
 
-			ReflectionUtils.setField(field, cozinha, valorAlterado);
-		});
+        return cozinhaService.salvar(cozinhaAtual);
+    }
 
-		return atualizar(id, cozinha);
+    @PatchMapping("/{id}")
+    public Cozinha mesclar(@PathVariable Long id, @RequestBody Map<String, Object> dados, HttpServletRequest request) {
+        try {
+            Cozinha cozinha = cozinhaService.buscar(id);
 
-	}
-	
-	@DeleteMapping("/{id}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void excluir(@PathVariable Long id) {
-		cozinhaService.excluir(id);
-	}
+            MergeUtil.mergeMapIntoObject(dados, cozinha);
+
+            return atualizar(id, cozinha);
+        } catch (IllegalArgumentException e) {
+            Throwable rootCause = ExceptionUtils.getRootCause(e);
+            throw new HttpMessageNotReadableException(e.getMessage(), rootCause, new ServletServerHttpRequest(request));
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void excluir(@PathVariable Long id) {
+        cozinhaService.excluir(id);
+    }
 }

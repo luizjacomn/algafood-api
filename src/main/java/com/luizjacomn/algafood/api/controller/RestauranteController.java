@@ -7,12 +7,18 @@ import com.luizjacomn.algafood.domain.exception.NegocioException;
 import com.luizjacomn.algafood.domain.model.Restaurante;
 import com.luizjacomn.algafood.domain.repository.RestauranteRepository;
 import com.luizjacomn.algafood.domain.service.RestauranteService;
+import com.luizjacomn.algafood.util.MergeUtil;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/restaurantes")
@@ -75,6 +81,20 @@ public class RestauranteController {
             return restauranteService.salvar(restaurante, id);
         } catch (CidadeNaoEncontradaException | CozinhaNaoEncontradaException e) {
             throw new NegocioException(e.getMessage());
+        }
+    }
+
+    @PatchMapping("/{id}")
+    public Restaurante mesclar(@PathVariable Long id, @RequestBody Map<String, Object> dados, HttpServletRequest request) {
+        try {
+            Restaurante restaurante = restauranteService.buscar(id);
+
+            MergeUtil.mergeMapIntoObject(dados, restaurante);
+
+            return atualizar(id, restaurante);
+        } catch (IllegalArgumentException e) {
+            Throwable rootCause = ExceptionUtils.getRootCause(e);
+            throw new HttpMessageNotReadableException(e.getMessage(), rootCause, new ServletServerHttpRequest(request));
         }
     }
 
