@@ -1,7 +1,9 @@
 package com.luizjacomn.algafood.api.exceptionhandler;
 
 import com.fasterxml.jackson.databind.JsonMappingException.Reference;
+import com.fasterxml.jackson.databind.exc.IgnoredPropertyException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.luizjacomn.algafood.domain.exception.EntidadeEmUsoException;
 import com.luizjacomn.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.luizjacomn.algafood.domain.exception.NegocioException;
@@ -27,9 +29,27 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         if (rootCause instanceof InvalidFormatException) {
             InvalidFormatException root = (InvalidFormatException) rootCause;
             String path = root.getPath().stream().map(Reference::getFieldName)
-                                                    .collect(joining("."));
+                    .collect(joining("."));
             String detail = String.format("A propriedade '%s' recebeu o valor '%s', que é de um tipo inválido. " +
                     "Corrija e informe um valor compatível com o tipo correto: %s.", path, root.getValue(), root.getTargetType().getSimpleName());
+            return handle(ProblemType.MENSAGEM_INCOMPREENSIVEL, ex, detail, request);
+        }
+
+        if (rootCause instanceof UnrecognizedPropertyException) {
+            UnrecognizedPropertyException root = (UnrecognizedPropertyException) rootCause;
+            String path = root.getPath().stream().map(Reference::getFieldName)
+                    .collect(joining("."));
+            String detail = String.format("A propriedade '%s' não existe. " +
+                    "Corrija ou remova essa propriedade e tente novamente.", path);
+            return handle(ProblemType.MENSAGEM_INCOMPREENSIVEL, ex, detail, request);
+        }
+
+        if (rootCause instanceof IgnoredPropertyException) {
+            IgnoredPropertyException root = (IgnoredPropertyException) rootCause;
+            String path = root.getPath().stream().map(Reference::getFieldName)
+                    .collect(joining("."));
+            String detail = String.format("A propriedade '%s' foi marcada como ignorada. " +
+                    "Corrija ou remova essa propriedade e tente novamente.", path);
             return handle(ProblemType.MENSAGEM_INCOMPREENSIVEL, ex, detail, request);
         }
 
