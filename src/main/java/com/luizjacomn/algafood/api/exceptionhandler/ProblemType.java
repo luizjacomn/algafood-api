@@ -8,7 +8,8 @@ public enum ProblemType {
     ENTIDADE_EM_USO("/entidade-em-uso", "Entidade em uso", 409),
     ERRO_NEGOCIO("/erro-negocio", "Violação de regra de negócio", 400),
     MENSAGEM_INCOMPREENSIVEL("/mensagem-incompreensivel", "Mensagem incompreensível", 400),
-    PARAMETRO_INVALIDO("/parametro-invalido", "Parâmetro inválido", 400);
+    PARAMETRO_INVALIDO("/parametro-invalido", "Parâmetro inválido", 400),
+    PROBLEMA_NO_SISTEMA("/problema-no-sistema", "Problema no sistema", 500);
 
     private String uri;
 

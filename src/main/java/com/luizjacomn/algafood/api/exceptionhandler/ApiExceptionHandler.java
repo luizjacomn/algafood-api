@@ -82,6 +82,13 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return handle(ProblemType.RECURSO_NAO_ENCONTRADO, ex, request);
     }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleDemaisExceptions(Exception ex, WebRequest request) {
+        ex.printStackTrace();// TODO substituir por log
+        return handle(ProblemType.PROBLEMA_NO_SISTEMA, ex, "Ocorreu um erro interno inesperado no sistema. Tente novamente e se o problema " +
+                "persistir, entre em contato com o administardor do sistema.", request);
+    }
+
     @ExceptionHandler(EntidadeEmUsoException.class)
     public ResponseEntity<?> handleEntidadeEmUsoException(EntidadeEmUsoException ex, WebRequest request) {
         return handle(ProblemType.ENTIDADE_EM_USO, ex, request);
