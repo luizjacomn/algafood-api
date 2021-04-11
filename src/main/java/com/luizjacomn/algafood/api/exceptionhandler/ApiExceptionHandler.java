@@ -6,6 +6,7 @@ import com.luizjacomn.algafood.domain.exception.NegocioException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -13,6 +14,11 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
+
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        return handle(ProblemType.MENSAGEM_INCOMPREENSIVEL, ex, "O corpo da requisição está inválido. Verifique erro de sintaxe.", request);
+    }
 
     @ExceptionHandler(EntidadeNaoEncontradaException.class)
     public ResponseEntity<?> handleEntidadeNaoEncontradaException(EntidadeNaoEncontradaException ex, WebRequest request) {
@@ -42,9 +48,13 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private ResponseEntity<Object> handle(ProblemType problemType, Exception ex, WebRequest request) {
+        return handle(problemType, ex, ex.getMessage(), request);
+    }
+
+    private ResponseEntity<Object> handle(ProblemType problemType, Exception ex, String message, WebRequest request) {
         Problem problem = new Problem.Builder()
                 .withProblemType(problemType)
-                .withDetail(ex.getMessage())
+                .withDetail(message)
                 .build();
 
         return handleExceptionInternal(ex, problem, new HttpHeaders(), HttpStatus.resolve(problem.getStatus()), request);
