@@ -3,10 +3,13 @@ package com.luizjacomn.algafood.api.exceptionhandler;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 public class Problem {
 
+    /* Campos da especificação RFC 7807 */
     private Integer status;
 
     private String type;
@@ -15,11 +18,15 @@ public class Problem {
 
     private String detail;
 
+    /* Campos extras */
+    private LocalDateTime timestamp;
+
     public static class Builder {
         private Problem problem;
 
         public Builder() {
             problem = new Problem();
+            problem.timestamp = LocalDateTime.now();
         }
 
         /**
