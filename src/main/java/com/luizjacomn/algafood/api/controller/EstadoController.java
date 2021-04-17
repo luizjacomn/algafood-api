@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -31,12 +32,12 @@ public class EstadoController {
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Estado salvar(@RequestBody Estado estado) {
+	public Estado salvar(@RequestBody @Valid Estado estado) {
 		return estadoService.salvar(estado, null);
 	}
 	
 	@PutMapping("{id}")
-	public Estado atualizar(@RequestBody Estado estado, @PathVariable Long id) {
+	public Estado atualizar(@RequestBody @Valid Estado estado, @PathVariable Long id) {
 		return estadoService.salvar(estado, id);
 	}
 	

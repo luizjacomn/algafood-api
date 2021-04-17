@@ -15,6 +15,7 @@ import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.groups.ConvertGroup;
 import javax.validation.groups.Default;
@@ -39,7 +40,7 @@ public class Restaurante {
 	private BigDecimal taxaFrete;
 
 	@Valid
-	@ConvertGroup(from = Default.class, to = Groups.Id.class)
+	@ConvertGroup(to = Groups.Id.class)
 	@NotNull
 	@ManyToOne//(fetch = FetchType.LAZY)
 	@JoinColumn(name = "cozinha_id", nullable = false)

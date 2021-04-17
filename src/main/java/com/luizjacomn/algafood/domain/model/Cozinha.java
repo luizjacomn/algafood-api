@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Cozinha {
 
-	@NotNull(groups = com.luizjacomn.algafood.validation.Groups.Id.class)
+	@NotNull(groups = Groups.Id.class)
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@EqualsAndHashCode.Include
