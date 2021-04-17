@@ -13,6 +13,7 @@ import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +34,7 @@ public class CozinhaController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Cozinha salvar(@RequestBody Cozinha cozinha) {
+    public Cozinha salvar(@RequestBody @Valid Cozinha cozinha) {
         return cozinhaService.salvar(cozinha);
     }
 

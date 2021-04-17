@@ -8,11 +8,13 @@ import com.luizjacomn.algafood.domain.model.Restaurante;
 import com.luizjacomn.algafood.domain.repository.RestauranteRepository;
 import com.luizjacomn.algafood.domain.service.RestauranteService;
 import com.luizjacomn.algafood.util.MergeUtil;
+import com.luizjacomn.algafood.validation.Groups;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.server.ServletServerHttpRequest;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -68,7 +70,7 @@ public class RestauranteController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Restaurante salvar(@RequestBody @Valid Restaurante restaurante) {
+    public Restaurante salvar(@RequestBody @Validated(Groups.CadastroRestaurante.class) Restaurante restaurante) {
         try {
             return restauranteService.salvar(restaurante, null);
         } catch (EntidadeNaoEncontradaException e) {
