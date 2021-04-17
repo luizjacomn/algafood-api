@@ -6,7 +6,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.groups.ConvertGroup;
 
-import com.luizjacomn.algafood.validation.Groups;
+import com.luizjacomn.algafood.core.validation.Groups;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

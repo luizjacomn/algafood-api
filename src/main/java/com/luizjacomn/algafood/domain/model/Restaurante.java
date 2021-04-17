@@ -1,7 +1,7 @@
 package com.luizjacomn.algafood.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.luizjacomn.algafood.validation.Groups;
+import com.luizjacomn.algafood.core.validation.Groups;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
@@ -15,10 +15,8 @@ import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.groups.ConvertGroup;
-import javax.validation.groups.Default;
 
 @Entity
 @Data
