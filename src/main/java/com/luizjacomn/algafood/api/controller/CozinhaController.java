@@ -27,6 +27,9 @@ public class CozinhaController {
     @Autowired
     private CozinhaService cozinhaService;
 
+    @Autowired
+    private MergeUtil mergeUtil;
+
     @GetMapping
     public List<Cozinha> listar() {
         return cozinhaRepository.findAll();
@@ -52,7 +55,7 @@ public class CozinhaController {
         try {
             Cozinha cozinha = cozinhaService.buscar(id);
 
-            MergeUtil.mergeMapIntoObject(dados, cozinha);
+            mergeUtil.mergeMapIntoObject(dados, cozinha, "cozinha");
 
             return atualizar(id, cozinha);
         } catch (IllegalArgumentException e) {

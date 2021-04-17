@@ -31,6 +31,9 @@ public class RestauranteController {
     @Autowired
     private RestauranteRepository restauranteRepository;
 
+    @Autowired
+    private MergeUtil mergeUtil;
+
     @GetMapping
     public List<Restaurante> listar() {
         return restauranteRepository.findAll();
@@ -90,7 +93,7 @@ public class RestauranteController {
         try {
             Restaurante restaurante = restauranteService.buscar(id);
 
-            MergeUtil.mergeMapIntoObject(dados, restaurante);
+            mergeUtil.mergeMapIntoObject(dados, restaurante, "restaurante");
 
             return atualizar(id, restaurante);
         } catch (IllegalArgumentException e) {

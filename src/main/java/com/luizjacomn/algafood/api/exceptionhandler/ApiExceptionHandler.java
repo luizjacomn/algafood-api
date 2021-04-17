@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.fasterxml.jackson.databind.exc.IgnoredPropertyException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
+import com.luizjacomn.algafood.core.validation.exception.ValidacaoException;
 import com.luizjacomn.algafood.domain.exception.EntidadeEmUsoException;
 import com.luizjacomn.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.luizjacomn.algafood.domain.exception.NegocioException;
@@ -86,27 +87,18 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         String detail = "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.";
-
-        BindingResult bindingResult = ex.getBindingResult();
-        List<Problem.Field> fields = bindingResult.getFieldErrors()
-                                                    .stream()
-                                                    .map(fieldError -> {
-                                                        String message = messageSource.getMessage(fieldError, LocaleContextHolder.getLocale());
-
-                                                        return Problem.Field.builder()
-                                                                .name(fieldError.getField())
-                                                                .userMessage(message)
-                                                                .build();
-                                                    })
-                                                    .collect(toList());
-
-        return handle(ProblemType.DADOS_INVALIDOS, fields, ex, detail, request);
+        return handle(ProblemType.DADOS_INVALIDOS, ex.getBindingResult(), ex, detail, request);
     }
 
     @Override
     protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         String detail = String.format("O recurso %s, que você tentou acessar, não existe.", ex.getRequestURL());
         return handle(ProblemType.RECURSO_NAO_ENCONTRADO, ex, detail, request);
+    }
+
+    @ExceptionHandler(ValidacaoException.class)
+    public ResponseEntity<?> handleValidacaoException(ValidacaoException ex, WebRequest request) {
+        return handle(ProblemType.DADOS_INVALIDOS, ex.getBindingResult(), ex, request);
     }
 
     @ExceptionHandler(EntidadeNaoEncontradaException.class)
@@ -147,15 +139,27 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return handle(problemType, null, ex, ex.getMessage(), request);
     }
 
-    private ResponseEntity<Object> handle(ProblemType problemType, List<Problem.Field> fields, Exception ex, WebRequest request) {
-        return handle(problemType, fields, ex, ex.getMessage(), request);
+    private ResponseEntity<Object> handle(ProblemType problemType, BindingResult bindingResult, Exception ex, WebRequest request) {
+        return handle(problemType, bindingResult, ex, ex.getMessage(), request);
     }
 
     private ResponseEntity<Object> handle(ProblemType problemType, Exception ex, String message, WebRequest request) {
         return handle(problemType, null, ex, message, request);
     }
 
-    private ResponseEntity<Object> handle(ProblemType problemType, List<Problem.Field> fields, Exception ex, String message, WebRequest request) {
+    private ResponseEntity<Object> handle(ProblemType problemType, BindingResult bindingResult, Exception ex, String message, WebRequest request) {
+        List<Problem.Field> fields = bindingResult.getFieldErrors()
+                .stream()
+                .map(fieldError -> {
+                    String userMessage = messageSource.getMessage(fieldError, LocaleContextHolder.getLocale());
+
+                    return Problem.Field.builder()
+                            .name(fieldError.getField())
+                            .userMessage(userMessage)
+                            .build();
+                })
+                .collect(toList());
+
         Problem problem = new Problem.Builder()
                 .withProblemType(problemType)
                 .withDetail(message)
