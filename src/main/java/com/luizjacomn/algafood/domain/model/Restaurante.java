@@ -25,6 +25,7 @@ import javax.validation.groups.Default;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Restaurante {
 
+	@NotNull(groups = Groups.Id.class)
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@EqualsAndHashCode.Include
