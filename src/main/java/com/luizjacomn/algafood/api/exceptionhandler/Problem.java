@@ -1,9 +1,11 @@
 package com.luizjacomn.algafood.api.exceptionhandler;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
@@ -20,6 +22,16 @@ public class Problem {
 
     /* Campos extras */
     private LocalDateTime timestamp;
+
+    private List<Field> fields;
+
+    @Getter
+    @lombok.Builder
+    public static class Field {
+        private String name;
+
+        private String userMessage;
+    }
 
     public static class Builder {
         private Problem problem;
@@ -59,6 +71,11 @@ public class Problem {
 
         public Builder withDetail(String detail) {
             problem.detail = detail;
+            return this;
+        }
+
+        public Builder withFields(List<Field> fields) {
+            problem.fields = fields;
             return this;
         }
 

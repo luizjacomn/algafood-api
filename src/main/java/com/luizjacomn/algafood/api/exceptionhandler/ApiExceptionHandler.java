@@ -13,6 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,7 +22,11 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
@@ -75,7 +80,17 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         String detail = "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.";
-        return handle(ProblemType.DADOS_INVALIDOS, ex, detail, request);
+
+        BindingResult bindingResult = ex.getBindingResult();
+        List<Problem.Field> fields = bindingResult.getFieldErrors()
+                                                    .stream()
+                                                    .map(fieldError -> Problem.Field.builder()
+                                                                                    .name(fieldError.getField())
+                                                                                    .userMessage(fieldError.getDefaultMessage())
+                                                                                    .build())
+                                                    .collect(toList());
+
+        return handle(ProblemType.DADOS_INVALIDOS, fields, ex, detail, request);
     }
 
     @Override
@@ -119,13 +134,22 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private ResponseEntity<Object> handle(ProblemType problemType, Exception ex, WebRequest request) {
-        return handle(problemType, ex, ex.getMessage(), request);
+        return handle(problemType, null, ex, ex.getMessage(), request);
+    }
+
+    private ResponseEntity<Object> handle(ProblemType problemType, List<Problem.Field> fields, Exception ex, WebRequest request) {
+        return handle(problemType, fields, ex, ex.getMessage(), request);
     }
 
     private ResponseEntity<Object> handle(ProblemType problemType, Exception ex, String message, WebRequest request) {
+        return handle(problemType, null, ex, message, request);
+    }
+
+    private ResponseEntity<Object> handle(ProblemType problemType, List<Problem.Field> fields, Exception ex, String message, WebRequest request) {
         Problem problem = new Problem.Builder()
                 .withProblemType(problemType)
                 .withDetail(message)
+                .withFields(fields)
                 .build();
 
         return handleExceptionInternal(ex, problem, new HttpHeaders(), HttpStatus.resolve(problem.getStatus()), request);
