@@ -3,10 +3,9 @@ package com.luizjacomn.algafood.api.controller;
 import com.luizjacomn.algafood.domain.model.Cozinha;
 import com.luizjacomn.algafood.domain.repository.CozinhaRepository;
 import com.luizjacomn.algafood.util.DatabaseCleaner;
+import com.luizjacomn.algafood.util.ResourceUtils;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import org.flywaydb.core.Flyway;
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,7 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
@@ -37,6 +37,8 @@ public class CozinhaControllerTest {
 
     @Autowired
     private CozinhaRepository cozinhaRepository;
+
+    private List<Cozinha> cozinhasCargaDados = new ArrayList<>();
 
     @Before
     public void setup() {
@@ -72,8 +74,9 @@ public class CozinhaControllerTest {
 
     @Test
     public void deve_validar_status_e_corpo_da_resposta_na_busca_de_cozinha() {
+        int parametro = cozinhasCargaDados.size();
         given()
-            .pathParam("id", 2)
+            .pathParam("id", parametro)
             .accept(ContentType.JSON)
         .when()
             .get("/{id}")
@@ -84,20 +87,23 @@ public class CozinhaControllerTest {
 
     @Test
     public void deve_validar_status_e_corpo_da_resposta_na_busca_de_cozinha_inexistente() {
+        int parametro = cozinhasCargaDados.size() + 1;
         given()
-            .pathParam("id", 200)
+            .pathParam("id", parametro)
             .accept(ContentType.JSON)
         .when()
             .get("/{id}")
         .then()
             .statusCode(HttpStatus.NOT_FOUND.value())
-            .body("detail", equalTo("Cozinha com id 200 não foi encontrada"));
+            .body("detail", equalTo(String.format("Cozinha com id %d não foi encontrada", parametro)));
     }
 
     @Test
     public void deve_retornar_201_no_cadastro_de_cozinha() {
+        String json = ResourceUtils.getContentFromResource("/data/success/cozinha/cadastro_test.json");
+
         given()
-            .body(" { \"nome\": \"Moradanovense\" } ")
+            .body(json)
             .contentType(ContentType.JSON)
             .accept(ContentType.JSON)
         .when()
@@ -109,10 +115,12 @@ public class CozinhaControllerTest {
     private void carregarDadosIniciais() {
         Cozinha cozinha1 = new Cozinha();
         cozinha1.setNome("Tailandesa");
+        cozinhasCargaDados.add(cozinha1);
 
         Cozinha cozinha2 = new Cozinha();
         cozinha2.setNome("Brasileira");
+        cozinhasCargaDados.add(cozinha2);
 
-        cozinhaRepository.saveAll(Arrays.asList(cozinha1, cozinha2));
+        cozinhaRepository.saveAll(cozinhasCargaDados);
     }
 }
