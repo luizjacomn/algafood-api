@@ -20,8 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.Arrays;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -41,7 +40,7 @@ public class CozinhaControllerTest {
 
     @Before
     public void setup() {
-//        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
         RestAssured.port = port;
         RestAssured.basePath = URI;
 
@@ -69,6 +68,30 @@ public class CozinhaControllerTest {
             .statusCode(HttpStatus.OK.value())
             .body("", hasSize(2))
             .body("nome", hasItems("Tailandesa", "Brasileira"));
+    }
+
+    @Test
+    public void deve_validar_status_e_corpo_da_resposta_na_busca_de_cozinha() {
+        given()
+            .pathParam("id", 2)
+            .accept(ContentType.JSON)
+        .when()
+            .get("/{id}")
+        .then()
+            .statusCode(HttpStatus.OK.value())
+            .body("nome", equalTo("Brasileira"));
+    }
+
+    @Test
+    public void deve_validar_status_e_corpo_da_resposta_na_busca_de_cozinha_inexistente() {
+        given()
+            .pathParam("id", 200)
+            .accept(ContentType.JSON)
+        .when()
+            .get("/{id}")
+        .then()
+            .statusCode(HttpStatus.NOT_FOUND.value())
+            .body("detail", equalTo("Cozinha com id 200 não foi encontrada"));
     }
 
     @Test

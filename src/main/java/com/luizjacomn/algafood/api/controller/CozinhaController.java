@@ -35,6 +35,11 @@ public class CozinhaController {
         return cozinhaRepository.findAll();
     }
 
+    @GetMapping("/{id}")
+    public Cozinha buscar(@PathVariable Long id) {
+        return cozinhaService.buscar(id);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Cozinha salvar(@RequestBody @Valid Cozinha cozinha) {

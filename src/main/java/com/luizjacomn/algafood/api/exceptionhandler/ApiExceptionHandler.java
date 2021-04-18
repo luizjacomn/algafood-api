@@ -148,17 +148,21 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private ResponseEntity<Object> handle(ProblemType problemType, BindingResult bindingResult, Exception ex, String message, WebRequest request) {
-        List<Problem.Field> fields = bindingResult.getFieldErrors()
-                .stream()
-                .map(fieldError -> {
-                    String userMessage = messageSource.getMessage(fieldError, LocaleContextHolder.getLocale());
+        List<Problem.Field> fields = null;
 
-                    return Problem.Field.builder()
-                            .name(fieldError.getField())
-                            .userMessage(userMessage)
-                            .build();
-                })
-                .collect(toList());
+        if (bindingResult != null && bindingResult.hasFieldErrors()) {
+            fields = bindingResult.getFieldErrors()
+                    .stream()
+                    .map(fieldError -> {
+                        String userMessage = messageSource.getMessage(fieldError, LocaleContextHolder.getLocale());
+
+                        return Problem.Field.builder()
+                                .name(fieldError.getField())
+                                .userMessage(userMessage)
+                                .build();
+                    })
+                    .collect(toList());
+        }
 
         Problem problem = new Problem.Builder()
                 .withProblemType(problemType)
