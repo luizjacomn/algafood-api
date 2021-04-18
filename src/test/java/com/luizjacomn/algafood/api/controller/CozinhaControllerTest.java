@@ -68,7 +68,7 @@ public class CozinhaControllerTest {
             .get()
         .then()
             .statusCode(HttpStatus.OK.value())
-            .body("", hasSize(2))
+            .body("", hasSize(cozinhasCargaDados.size()))
             .body("nome", hasItems("Tailandesa", "Brasileira"));
     }
 

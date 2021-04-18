@@ -1,0 +1,7 @@
+{
+  "nome": "Ponto do Baião de Dois",
+  "taxaFrete": 1.5,
+  "cozinha": {
+    "id": 2
+  }
+}
