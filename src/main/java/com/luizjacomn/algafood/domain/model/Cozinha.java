@@ -8,6 +8,9 @@ import com.luizjacomn.algafood.core.validation.Groups;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -22,6 +25,9 @@ public class Cozinha {
 	@NotBlank
 	@Column(nullable = false)
 	private String nome;
+
+	@OneToMany(mappedBy = "cozinha")
+	private List<Restaurante> restaurantes = new ArrayList<>();
 	
 	public Cozinha() {
 	}

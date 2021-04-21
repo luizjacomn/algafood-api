@@ -13,6 +13,7 @@ public class JacksonMixinModule extends SimpleModule {
     public JacksonMixinModule() {
         setMixInAnnotation(Restaurante.class, RestauranteMixin.class);
         setMixInAnnotation(Cidade.class, CidadeMixin.class);
+        setMixInAnnotation(Cozinha.class, CozinhaMixin.class);
     }
 
 }
