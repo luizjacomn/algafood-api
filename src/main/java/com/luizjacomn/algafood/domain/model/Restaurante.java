@@ -1,6 +1,5 @@
 package com.luizjacomn.algafood.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.luizjacomn.algafood.core.validation.Groups;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -45,21 +44,17 @@ public class Restaurante {
 	@JoinColumn(name = "cozinha_id", nullable = false)
 	private Cozinha cozinha;
 
-	@JsonIgnore
 	@Embedded
 	private Endereco endereco;
 
-	@JsonIgnore
 	@CreationTimestamp
 	@Column(nullable = false, columnDefinition = "datetime")
 	private LocalDateTime dataCadastro;
 
-	@JsonIgnore
 	@UpdateTimestamp
 	@Column(nullable = false, columnDefinition = "datetime")
 	private LocalDateTime dataAtualizacao;
 
-	@JsonIgnore
 	@ManyToMany
 	@JoinTable(
 			name = "restaurante_forma_pagamento",
@@ -68,7 +63,6 @@ public class Restaurante {
 	)
 	private List<FormaPagamento> formasPagamento = new ArrayList<>();
 
-	@JsonIgnore
 	@OneToMany(mappedBy = "restaurante")
 	private List<Produto> produtos;
 
