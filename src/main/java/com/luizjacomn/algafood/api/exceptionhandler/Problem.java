@@ -1,10 +1,9 @@
 package com.luizjacomn.algafood.api.exceptionhandler;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -21,7 +20,7 @@ public class Problem {
     private String detail;
 
     /* Campos extras */
-    private LocalDateTime timestamp;
+    private OffsetDateTime timestamp;
 
     private List<Field> fields;
 
@@ -38,7 +37,7 @@ public class Problem {
 
         public Builder() {
             problem = new Problem();
-            problem.timestamp = LocalDateTime.now();
+            problem.timestamp = OffsetDateTime.now();
         }
 
         /**
