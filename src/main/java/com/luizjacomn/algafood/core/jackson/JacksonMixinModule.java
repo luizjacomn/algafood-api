@@ -2,7 +2,7 @@ package com.luizjacomn.algafood.core.jackson;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.luizjacomn.algafood.domain.model.*;
-import com.luizjacomn.algafood.model.mixin.*;
+import com.luizjacomn.algafood.api.model.mixin.*;
 import org.springframework.stereotype.Component;
 
 @Component

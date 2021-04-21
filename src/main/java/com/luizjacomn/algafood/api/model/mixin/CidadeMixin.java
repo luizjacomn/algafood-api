@@ -1,4 +1,4 @@
-package com.luizjacomn.algafood.model.mixin;
+package com.luizjacomn.algafood.api.model.mixin;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.luizjacomn.algafood.domain.model.Estado;
