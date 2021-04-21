@@ -34,6 +34,7 @@ public class EstadoService {
 	public void excluir(Long id) {
 		try {
 			estadoRepository.deleteById(id);
+			estadoRepository.flush();
 		} catch (EmptyResultDataAccessException e) {
 			throw new EstadoNaoEncontradoException("Estado informado não foi encontrado.");
 		} catch (DataIntegrityViolationException e) {
