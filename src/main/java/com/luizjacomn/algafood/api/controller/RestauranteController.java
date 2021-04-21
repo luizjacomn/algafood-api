@@ -1,5 +1,8 @@
 package com.luizjacomn.algafood.api.controller;
 
+import com.luizjacomn.algafood.api.model.converter.RestauranteConverter;
+import com.luizjacomn.algafood.api.model.input.RestauranteInput;
+import com.luizjacomn.algafood.api.model.output.RestauranteOutput;
 import com.luizjacomn.algafood.domain.exception.CidadeNaoEncontradaException;
 import com.luizjacomn.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.luizjacomn.algafood.domain.exception.EntidadeNaoEncontradaException;
@@ -32,21 +35,24 @@ public class RestauranteController {
     private RestauranteRepository restauranteRepository;
 
     @Autowired
+    private RestauranteConverter restauranteConverter;
+
+    @Autowired
     private MergeUtil mergeUtil;
 
     @GetMapping
-    public List<Restaurante> listar() {
-        return restauranteRepository.findAll();
+    public List<RestauranteOutput> listar() {
+        return restauranteConverter.toOutputDTOList(restauranteRepository.findAll());
     }
 
     @GetMapping("/{id}")
-    public Restaurante buscar(@PathVariable Long id) {
-        return restauranteService.buscar(id);
+    public RestauranteOutput buscar(@PathVariable Long id) {
+        return restauranteConverter.toOutputDTO(restauranteService.buscar(id));
     }
 
     @GetMapping("/por-nome-e-cozinha")
-    public List<Restaurante> listarPorNomeECozinha(String nome, @RequestParam("cozinha") Long cozinhaId) {
-        return restauranteRepository.listarPorNome(nome, cozinhaId);
+    public List<RestauranteOutput> listarPorNomeECozinha(String nome, @RequestParam("cozinha") Long cozinhaId) {
+        return restauranteConverter.toOutputDTOList(restauranteRepository.listarPorNome(nome, cozinhaId));
     }
 
     @GetMapping("/quantidade-por-cozinha")
@@ -55,47 +61,53 @@ public class RestauranteController {
     }
 
     @GetMapping("/por-nome-e-frete-gratis")
-    public List<Restaurante> listarPorNomeEFreteGratis(String nome) {
-        return restauranteRepository.buscarComFreteGratis(nome);
+    public List<RestauranteOutput> listarPorNomeEFreteGratis(String nome) {
+        return restauranteConverter.toOutputDTOList(restauranteRepository.buscarComFreteGratis(nome));
     }
 
     @GetMapping("/por-nome-e-intervalo-taxas")
-    public List<Restaurante> listarPorNomeETaxas(String nome, BigDecimal taxaInicial, BigDecimal taxaFinal) {
-        return restauranteRepository.buscarPorNomeEIntervaloDeTaxas(nome, taxaInicial, taxaFinal);
+    public List<RestauranteOutput> listarPorNomeETaxas(String nome, BigDecimal taxaInicial, BigDecimal taxaFinal) {
+        return restauranteConverter.toOutputDTOList(restauranteRepository.buscarPorNomeEIntervaloDeTaxas(nome, taxaInicial, taxaFinal));
     }
 
     @GetMapping("/por-intervalo-taxas")
-    public List<Restaurante> listarPorTaxas(BigDecimal taxaInicial, BigDecimal taxaFinal) {
-        return restauranteRepository.findByTaxaFreteBetweenOrderByTaxaFrete(taxaInicial, taxaFinal);
+    public List<RestauranteOutput> listarPorTaxas(BigDecimal taxaInicial, BigDecimal taxaFinal) {
+        return restauranteConverter.toOutputDTOList(restauranteRepository.findByTaxaFreteBetweenOrderByTaxaFrete(taxaInicial, taxaFinal));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Restaurante salvar(@RequestBody @Valid Restaurante restaurante) {
+    public RestauranteOutput salvar(@RequestBody @Valid RestauranteInput restauranteInput) {
         try {
-            return restauranteService.salvar(restaurante, null);
+            Restaurante restaurante = restauranteConverter.toEntity(restauranteInput);
+
+            return restauranteConverter.toOutputDTO(restauranteService.salvar(restaurante));
         } catch (EntidadeNaoEncontradaException e) {
             throw new NegocioException(e.getMessage());
         }
     }
 
     @PutMapping("/{id}")
-    public Restaurante atualizar(@PathVariable Long id, @RequestBody @Valid Restaurante restaurante) {
+    public RestauranteOutput atualizar(@PathVariable Long id, @RequestBody @Valid RestauranteInput restauranteInput) throws Exception {
         try {
-            return restauranteService.salvar(restaurante, id);
+            Restaurante restauranteAtual = restauranteService.buscar(id);
+
+            restauranteConverter.copyToEntity(restauranteInput, restauranteAtual);
+
+            return restauranteConverter.toOutputDTO(restauranteService.salvar(restauranteAtual));
         } catch (CidadeNaoEncontradaException | CozinhaNaoEncontradaException e) {
             throw new NegocioException(e.getMessage());
         }
     }
 
     @PatchMapping("/{id}")
-    public Restaurante mesclar(@PathVariable Long id, @RequestBody Map<String, Object> dados, HttpServletRequest request) {
+    public RestauranteOutput mesclar(@PathVariable Long id, @RequestBody Map<String, Object> dados, HttpServletRequest request) throws Exception {
         try {
-            Restaurante restaurante = restauranteService.buscar(id);
+            RestauranteInput restauranteInput = restauranteConverter.toInputDTO(restauranteService.buscar(id));
 
-            mergeUtil.mergeMapIntoObject(dados, restaurante, "restaurante");
+            mergeUtil.mergeMapIntoObject(dados, restauranteInput, "restaurante");
 
-            return atualizar(id, restaurante);
+            return atualizar(id, restauranteInput);
         } catch (IllegalArgumentException e) {
             Throwable rootCause = ExceptionUtils.getRootCause(e);
             throw new HttpMessageNotReadableException(e.getMessage(), rootCause, new ServletServerHttpRequest(request));

@@ -5,7 +5,6 @@ import com.luizjacomn.algafood.domain.exception.EntidadeEmUsoException;
 import com.luizjacomn.algafood.domain.model.Cidade;
 import com.luizjacomn.algafood.domain.model.Estado;
 import com.luizjacomn.algafood.domain.repository.CidadeRepository;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -24,18 +23,10 @@ public class CidadeService {
 	private CidadeRepository cidadeRepository;
 
 	@Transactional
-	public Cidade salvar(Cidade cidade, Long id) {
+	public Cidade salvar(Cidade cidade) {
 		Estado estado = estadoService.buscar(cidade.getEstado().getId());
 
 		cidade.setEstado(estado);
-
-		if (id != null) {
-			Cidade cidadeAtual = buscar(id);
-
-			BeanUtils.copyProperties(cidade, cidadeAtual, "id");
-
-			return cidadeRepository.save(cidadeAtual);
-		}
 
 		return cidadeRepository.save(cidade);
 	}

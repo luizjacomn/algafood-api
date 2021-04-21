@@ -4,7 +4,6 @@ import com.luizjacomn.algafood.domain.exception.EntidadeEmUsoException;
 import com.luizjacomn.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.luizjacomn.algafood.domain.model.Estado;
 import com.luizjacomn.algafood.domain.repository.EstadoRepository;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -18,15 +17,7 @@ public class EstadoService {
 	private EstadoRepository estadoRepository;
 
 	@Transactional
-	public Estado salvar(Estado estado, Long id) {
-		if (id != null) {
-			Estado estadoAtual = buscar(id);
-
-			BeanUtils.copyProperties(estado, estadoAtual, "id");
-
-			return estadoRepository.save(estadoAtual);
-		}
-
+	public Estado salvar(Estado estado) {
 		return estadoRepository.save(estado);
 	}
 

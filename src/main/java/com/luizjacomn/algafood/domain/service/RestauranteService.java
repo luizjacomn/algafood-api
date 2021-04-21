@@ -6,7 +6,6 @@ import com.luizjacomn.algafood.domain.model.Cidade;
 import com.luizjacomn.algafood.domain.model.Cozinha;
 import com.luizjacomn.algafood.domain.model.Restaurante;
 import com.luizjacomn.algafood.domain.repository.RestauranteRepository;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -28,7 +27,7 @@ public class RestauranteService {
 	private RestauranteRepository restauranteRepository;
 
 	@Transactional
-	public Restaurante salvar(Restaurante restaurante, Long id) {
+	public Restaurante salvar(Restaurante restaurante) {
 		Cozinha cozinha = cozinhaService.buscar(restaurante.getCozinha().getId());
 
 		restaurante.setCozinha(cozinha);
@@ -37,14 +36,6 @@ public class RestauranteService {
 			Cidade cidade = cidadeService.buscar(restaurante.getEndereco().getCidade().getId());
 
 			restaurante.getEndereco().setCidade(cidade);
-		}
-
-		if (id != null) {
-			Restaurante restauranteAtual = buscar(id);
-
-			BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "endereco", "formasPagamento", "dataCadastro");
-
-			return restauranteRepository.save(restauranteAtual);
 		}
 
 		return restauranteRepository.save(restaurante);

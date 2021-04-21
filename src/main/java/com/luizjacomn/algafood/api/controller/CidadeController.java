@@ -1,5 +1,8 @@
 package com.luizjacomn.algafood.api.controller;
 
+import com.luizjacomn.algafood.api.model.converter.CidadeConverter;
+import com.luizjacomn.algafood.api.model.input.CidadeInput;
+import com.luizjacomn.algafood.api.model.output.CidadeOutput;
 import com.luizjacomn.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.luizjacomn.algafood.domain.exception.NegocioException;
 import com.luizjacomn.algafood.domain.model.Cidade;
@@ -22,30 +25,38 @@ public class CidadeController {
     @Autowired
     private CidadeRepository cidadeRepository;
 
+    @Autowired
+    private CidadeConverter cidadeConverter;
+
     @GetMapping
-    public List<Cidade> listar() {
-        return cidadeRepository.findAll();
+    public List<CidadeOutput> listar() {
+        return cidadeConverter.toOutputDTOList(cidadeRepository.findAll());
     }
 
     @GetMapping("/{id}")
-    public Cidade buscar(@PathVariable Long id) {
-        return cidadeService.buscar(id);
+    public CidadeOutput buscar(@PathVariable Long id) {
+        return cidadeConverter.toOutputDTO(cidadeService.buscar(id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Cidade salvar(@RequestBody @Valid Cidade cidade) {
+    public CidadeOutput salvar(@RequestBody @Valid CidadeInput cidadeInput) {
         try {
-            return cidadeService.salvar(cidade, null);
+            Cidade cidade = cidadeConverter.toEntity(cidadeInput);
+
+            return cidadeConverter.toOutputDTO(cidadeService.salvar(cidade));
         } catch (EstadoNaoEncontradoException e) {
             throw new NegocioException(e.getMessage());
         }
     }
 
     @PutMapping("/{id}")
-    public Cidade salvar(@PathVariable Long id, @RequestBody @Valid Cidade cidade) {
+    public CidadeOutput atualizar(@PathVariable Long id, @RequestBody @Valid CidadeInput cidadeInput) throws Exception {
         try {
-            return cidadeService.salvar(cidade, id);
+            Cidade cidade = cidadeService.buscar(id);
+            cidadeConverter.copyToEntity(cidadeInput, cidade);
+
+            return cidadeConverter.toOutputDTO(cidadeService.salvar(cidade));
         } catch (EstadoNaoEncontradoException e) {
             throw new NegocioException(e.getMessage());
         }
