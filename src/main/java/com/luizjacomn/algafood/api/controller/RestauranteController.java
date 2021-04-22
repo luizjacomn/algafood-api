@@ -1,6 +1,6 @@
 package com.luizjacomn.algafood.api.controller;
 
-import com.luizjacomn.algafood.api.model.converter.RestauranteConverter;
+import com.luizjacomn.algafood.api.model.mapper.RestauranteMapper;
 import com.luizjacomn.algafood.api.model.input.RestauranteInput;
 import com.luizjacomn.algafood.api.model.output.RestauranteOutput;
 import com.luizjacomn.algafood.domain.exception.CidadeNaoEncontradaException;
@@ -35,24 +35,24 @@ public class RestauranteController {
     private RestauranteRepository restauranteRepository;
 
     @Autowired
-    private RestauranteConverter restauranteConverter;
+    private RestauranteMapper restauranteMapper;
 
     @Autowired
     private MergeUtil mergeUtil;
 
     @GetMapping
     public List<RestauranteOutput> listar() {
-        return restauranteConverter.toOutputDTOList(restauranteRepository.findAll());
+        return restauranteMapper.toOutputDTOList(restauranteRepository.findAll());
     }
 
     @GetMapping("/{id}")
     public RestauranteOutput buscar(@PathVariable Long id) {
-        return restauranteConverter.toOutputDTO(restauranteService.buscar(id));
+        return restauranteMapper.toOutputDTO(restauranteService.buscar(id));
     }
 
     @GetMapping("/por-nome-e-cozinha")
     public List<RestauranteOutput> listarPorNomeECozinha(String nome, @RequestParam("cozinha") Long cozinhaId) {
-        return restauranteConverter.toOutputDTOList(restauranteRepository.listarPorNome(nome, cozinhaId));
+        return restauranteMapper.toOutputDTOList(restauranteRepository.listarPorNome(nome, cozinhaId));
     }
 
     @GetMapping("/quantidade-por-cozinha")
@@ -62,26 +62,26 @@ public class RestauranteController {
 
     @GetMapping("/por-nome-e-frete-gratis")
     public List<RestauranteOutput> listarPorNomeEFreteGratis(String nome) {
-        return restauranteConverter.toOutputDTOList(restauranteRepository.buscarComFreteGratis(nome));
+        return restauranteMapper.toOutputDTOList(restauranteRepository.buscarComFreteGratis(nome));
     }
 
     @GetMapping("/por-nome-e-intervalo-taxas")
     public List<RestauranteOutput> listarPorNomeETaxas(String nome, BigDecimal taxaInicial, BigDecimal taxaFinal) {
-        return restauranteConverter.toOutputDTOList(restauranteRepository.buscarPorNomeEIntervaloDeTaxas(nome, taxaInicial, taxaFinal));
+        return restauranteMapper.toOutputDTOList(restauranteRepository.buscarPorNomeEIntervaloDeTaxas(nome, taxaInicial, taxaFinal));
     }
 
     @GetMapping("/por-intervalo-taxas")
     public List<RestauranteOutput> listarPorTaxas(BigDecimal taxaInicial, BigDecimal taxaFinal) {
-        return restauranteConverter.toOutputDTOList(restauranteRepository.findByTaxaFreteBetweenOrderByTaxaFrete(taxaInicial, taxaFinal));
+        return restauranteMapper.toOutputDTOList(restauranteRepository.findByTaxaFreteBetweenOrderByTaxaFrete(taxaInicial, taxaFinal));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public RestauranteOutput salvar(@RequestBody @Valid RestauranteInput restauranteInput) {
         try {
-            Restaurante restaurante = restauranteConverter.toEntity(restauranteInput);
+            Restaurante restaurante = restauranteMapper.toEntity(restauranteInput);
 
-            return restauranteConverter.toOutputDTO(restauranteService.salvar(restaurante));
+            return restauranteMapper.toOutputDTO(restauranteService.salvar(restaurante));
         } catch (EntidadeNaoEncontradaException e) {
             throw new NegocioException(e.getMessage());
         }
@@ -92,9 +92,9 @@ public class RestauranteController {
         try {
             Restaurante restauranteAtual = restauranteService.buscar(id);
 
-            restauranteConverter.copyToEntity(restauranteInput, restauranteAtual);
+            restauranteMapper.copyToEntity(restauranteInput, restauranteAtual);
 
-            return restauranteConverter.toOutputDTO(restauranteService.salvar(restauranteAtual));
+            return restauranteMapper.toOutputDTO(restauranteService.salvar(restauranteAtual));
         } catch (CidadeNaoEncontradaException | CozinhaNaoEncontradaException e) {
             throw new NegocioException(e.getMessage());
         }
@@ -103,7 +103,7 @@ public class RestauranteController {
     @PatchMapping("/{id}")
     public RestauranteOutput mesclar(@PathVariable Long id, @RequestBody Map<String, Object> dados, HttpServletRequest request) throws Exception {
         try {
-            RestauranteInput restauranteInput = restauranteConverter.toInputDTO(restauranteService.buscar(id));
+            RestauranteInput restauranteInput = restauranteMapper.toInputDTO(restauranteService.buscar(id));
 
             mergeUtil.mergeMapIntoObject(dados, restauranteInput, "restaurante");
 

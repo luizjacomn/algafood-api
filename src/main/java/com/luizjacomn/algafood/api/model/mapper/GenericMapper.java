@@ -1,4 +1,4 @@
-package com.luizjacomn.algafood.api.model.converter;
+package com.luizjacomn.algafood.api.model.mapper;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +9,17 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
-public abstract class GenericConverter<E, I, O> implements RelationshipAttributes {
+interface RelationshipAttributes {
+
+    default String[] getRelationshipAttributes() {
+        return new String[0];
+    }
+}
+
+public abstract class GenericMapper<E, I, O> implements RelationshipAttributes {
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     private Class<E> entityClass;
 
@@ -17,10 +27,7 @@ public abstract class GenericConverter<E, I, O> implements RelationshipAttribute
 
     private Class<O> outputClass;
 
-    @Autowired
-    private ModelMapper modelMapper;
-
-    public GenericConverter() {
+    public GenericMapper() {
         this.entityClass = (Class<E>) ((ParameterizedType) getClass()
                 .getGenericSuperclass()).getActualTypeArguments()[0];
         this.inputClass = (Class<I>) ((ParameterizedType) getClass()
@@ -56,8 +63,8 @@ public abstract class GenericConverter<E, I, O> implements RelationshipAttribute
         return modelMapper.map(entity, outputClass);
     }
 
-    public List<O> toOutputDTOList(List<E> entitys) {
-        return entitys.stream()
+    public List<O> toOutputDTOList(List<E> entities) {
+        return entities.stream()
                 .map(this::toOutputDTO)
                 .collect(toList());
     }

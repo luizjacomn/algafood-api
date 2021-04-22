@@ -1,6 +1,6 @@
 package com.luizjacomn.algafood.api.controller;
 
-import com.luizjacomn.algafood.api.model.converter.CozinhaConverter;
+import com.luizjacomn.algafood.api.model.mapper.CozinhaMapper;
 import com.luizjacomn.algafood.api.model.input.CozinhaInput;
 import com.luizjacomn.algafood.api.model.output.CozinhaOutput;
 import com.luizjacomn.algafood.domain.model.Cozinha;
@@ -8,7 +8,6 @@ import com.luizjacomn.algafood.domain.repository.CozinhaRepository;
 import com.luizjacomn.algafood.domain.service.CozinhaService;
 import com.luizjacomn.algafood.util.MergeUtil;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -31,36 +30,36 @@ public class CozinhaController {
     private CozinhaService cozinhaService;
 
     @Autowired
-    private CozinhaConverter cozinhaConverter;
+    private CozinhaMapper cozinhaMapper;
 
     @Autowired
     private MergeUtil mergeUtil;
 
     @GetMapping
     public List<CozinhaOutput> listar() {
-        return cozinhaConverter.toOutputDTOList(cozinhaRepository.findAll());
+        return cozinhaMapper.toOutputDTOList(cozinhaRepository.findAll());
     }
 
     @GetMapping("/{id}")
     public CozinhaOutput buscar(@PathVariable Long id) {
-        return cozinhaConverter.toOutputDTO(cozinhaService.buscar(id));
+        return cozinhaMapper.toOutputDTO(cozinhaService.buscar(id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CozinhaOutput salvar(@RequestBody @Valid CozinhaInput cozinhaInput) {
-        Cozinha cozinha = cozinhaConverter.toEntity(cozinhaInput);
+        Cozinha cozinha = cozinhaMapper.toEntity(cozinhaInput);
 
-        return cozinhaConverter.toOutputDTO(cozinhaService.salvar(cozinha));
+        return cozinhaMapper.toOutputDTO(cozinhaService.salvar(cozinha));
     }
 
     @PutMapping("/{id}")
     public CozinhaOutput atualizar(@PathVariable Long id, @RequestBody @Valid CozinhaInput cozinhaInput) throws Exception {
         Cozinha cozinha = cozinhaService.buscar(id);
 
-        cozinhaConverter.copyToEntity(cozinhaInput, cozinha);
+        cozinhaMapper.copyToEntity(cozinhaInput, cozinha);
 
-        return cozinhaConverter.toOutputDTO(cozinhaService.salvar(cozinha));
+        return cozinhaMapper.toOutputDTO(cozinhaService.salvar(cozinha));
     }
 
     @PatchMapping("/{id}")
@@ -68,7 +67,7 @@ public class CozinhaController {
         try {
             Cozinha cozinha = cozinhaService.buscar(id);
 
-            CozinhaInput cozinhaInput = cozinhaConverter.toInputDTO(cozinha);
+            CozinhaInput cozinhaInput = cozinhaMapper.toInputDTO(cozinha);
 
             mergeUtil.mergeMapIntoObject(dados, cozinhaInput, "cozinha");
 

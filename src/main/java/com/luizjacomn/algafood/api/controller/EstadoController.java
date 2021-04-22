@@ -1,6 +1,6 @@
 package com.luizjacomn.algafood.api.controller;
 
-import com.luizjacomn.algafood.api.model.converter.EstadoConverter;
+import com.luizjacomn.algafood.api.model.mapper.EstadoMapper;
 import com.luizjacomn.algafood.api.model.input.EstadoInput;
 import com.luizjacomn.algafood.api.model.output.EstadoOutput;
 import com.luizjacomn.algafood.domain.model.Estado;
@@ -24,33 +24,33 @@ public class EstadoController {
 	private EstadoRepository estadoRepository;
 
 	@Autowired
-	private EstadoConverter estadoConverter;
+	private EstadoMapper estadoMapper;
 	
 	@GetMapping
 	public List<EstadoOutput> listar() {
-		return estadoConverter.toOutputDTOList(estadoRepository.findAll());
+		return estadoMapper.toOutputDTOList(estadoRepository.findAll());
 	}
 	
 	@GetMapping("/{id}")
 	public EstadoOutput buscar(@PathVariable Long id) {
-		return estadoConverter.toOutputDTO(estadoService.buscar(id));
+		return estadoMapper.toOutputDTO(estadoService.buscar(id));
 	}
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public EstadoOutput salvar(@RequestBody @Valid EstadoInput estadoInput) {
-		Estado estado = estadoConverter.toEntity(estadoInput);
+		Estado estado = estadoMapper.toEntity(estadoInput);
 
-		return estadoConverter.toOutputDTO(estadoService.salvar(estado));
+		return estadoMapper.toOutputDTO(estadoService.salvar(estado));
 	}
 	
 	@PutMapping("{id}")
 	public EstadoOutput atualizar(@RequestBody @Valid EstadoInput estadoInput, @PathVariable Long id) throws Exception {
 		Estado estado = estadoService.buscar(id);
 
-		estadoConverter.copyToEntity(estadoInput, estado);
+		estadoMapper.copyToEntity(estadoInput, estado);
 
-		return estadoConverter.toOutputDTO(estadoService.salvar(estado));
+		return estadoMapper.toOutputDTO(estadoService.salvar(estado));
 	}
 	
 	@DeleteMapping("{id}")

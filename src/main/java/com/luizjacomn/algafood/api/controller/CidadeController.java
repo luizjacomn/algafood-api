@@ -1,6 +1,6 @@
 package com.luizjacomn.algafood.api.controller;
 
-import com.luizjacomn.algafood.api.model.converter.CidadeConverter;
+import com.luizjacomn.algafood.api.model.mapper.CidadeMapper;
 import com.luizjacomn.algafood.api.model.input.CidadeInput;
 import com.luizjacomn.algafood.api.model.output.CidadeOutput;
 import com.luizjacomn.algafood.domain.exception.EstadoNaoEncontradoException;
@@ -26,25 +26,25 @@ public class CidadeController {
     private CidadeRepository cidadeRepository;
 
     @Autowired
-    private CidadeConverter cidadeConverter;
+    private CidadeMapper cidadeMapper;
 
     @GetMapping
     public List<CidadeOutput> listar() {
-        return cidadeConverter.toOutputDTOList(cidadeRepository.findAll());
+        return cidadeMapper.toOutputDTOList(cidadeRepository.findAll());
     }
 
     @GetMapping("/{id}")
     public CidadeOutput buscar(@PathVariable Long id) {
-        return cidadeConverter.toOutputDTO(cidadeService.buscar(id));
+        return cidadeMapper.toOutputDTO(cidadeService.buscar(id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CidadeOutput salvar(@RequestBody @Valid CidadeInput cidadeInput) {
         try {
-            Cidade cidade = cidadeConverter.toEntity(cidadeInput);
+            Cidade cidade = cidadeMapper.toEntity(cidadeInput);
 
-            return cidadeConverter.toOutputDTO(cidadeService.salvar(cidade));
+            return cidadeMapper.toOutputDTO(cidadeService.salvar(cidade));
         } catch (EstadoNaoEncontradoException e) {
             throw new NegocioException(e.getMessage());
         }
@@ -54,9 +54,9 @@ public class CidadeController {
     public CidadeOutput atualizar(@PathVariable Long id, @RequestBody @Valid CidadeInput cidadeInput) throws Exception {
         try {
             Cidade cidade = cidadeService.buscar(id);
-            cidadeConverter.copyToEntity(cidadeInput, cidade);
+            cidadeMapper.copyToEntity(cidadeInput, cidade);
 
-            return cidadeConverter.toOutputDTO(cidadeService.salvar(cidade));
+            return cidadeMapper.toOutputDTO(cidadeService.salvar(cidade));
         } catch (EstadoNaoEncontradoException e) {
             throw new NegocioException(e.getMessage());
         }

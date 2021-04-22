@@ -1,4 +1,4 @@
-package com.luizjacomn.algafood.api.model.converter;
+package com.luizjacomn.algafood.api.model.mapper;
 
 import com.luizjacomn.algafood.api.model.input.RestauranteInput;
 import com.luizjacomn.algafood.api.model.output.RestauranteOutput;
@@ -6,7 +6,7 @@ import com.luizjacomn.algafood.domain.model.Restaurante;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RestauranteConverter extends GenericConverter<Restaurante, RestauranteInput, RestauranteOutput> {
+public class RestauranteMapper extends GenericMapper<Restaurante, RestauranteInput, RestauranteOutput> {
 
     @Override
     public String[] getRelationshipAttributes() {
