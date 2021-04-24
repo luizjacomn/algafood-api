@@ -7,6 +7,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 
+import com.luizjacomn.algafood.api.model.input.id.CozinhaIdInput;
 import lombok.Getter;
 import lombok.Setter;
 

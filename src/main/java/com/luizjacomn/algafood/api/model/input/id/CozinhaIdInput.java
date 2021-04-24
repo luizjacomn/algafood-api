@@ -1,4 +1,4 @@
-package com.luizjacomn.algafood.api.model.input;
+package com.luizjacomn.algafood.api.model.input.id;
 
 import javax.validation.constraints.NotNull;
 

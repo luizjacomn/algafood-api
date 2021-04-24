@@ -1,5 +1,6 @@
 package com.luizjacomn.algafood.api.model.input;
 
+import com.luizjacomn.algafood.api.model.input.id.EstadoIdInput;
 import lombok.Getter;
 import lombok.Setter;
 
