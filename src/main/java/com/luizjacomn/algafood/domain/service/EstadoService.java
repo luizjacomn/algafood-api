@@ -27,7 +27,7 @@ public class EstadoService {
 			estadoRepository.deleteById(id);
 			estadoRepository.flush();
 		} catch (EmptyResultDataAccessException e) {
-			throw new EstadoNaoEncontradoException("Estado informado não foi encontrado.");
+			throw new EstadoNaoEncontradoException(id);
 		} catch (DataIntegrityViolationException e) {
 			throw new EntidadeEmUsoException("Estado está sendo utilizado e não pode ser excluído.");
 		}

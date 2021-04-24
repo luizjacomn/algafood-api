@@ -44,7 +44,7 @@ public class EstadoController {
 		return estadoMapper.toOutputDTO(estadoService.salvar(estado));
 	}
 	
-	@PutMapping("{id}")
+	@PutMapping("/{id}")
 	public EstadoOutput atualizar(@RequestBody @Valid EstadoInput estadoInput, @PathVariable Long id) throws Exception {
 		Estado estado = estadoService.buscar(id);
 
@@ -53,7 +53,7 @@ public class EstadoController {
 		return estadoMapper.toOutputDTO(estadoService.salvar(estado));
 	}
 	
-	@DeleteMapping("{id}")
+	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void excluir(@PathVariable Long id) {
 		estadoService.excluir(id);
