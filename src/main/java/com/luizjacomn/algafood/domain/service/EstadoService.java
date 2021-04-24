@@ -13,28 +13,28 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class EstadoService {
 
-	@Autowired
-	private EstadoRepository estadoRepository;
+    @Autowired
+    private EstadoRepository estadoRepository;
 
-	@Transactional
-	public Estado salvar(Estado estado) {
-		return estadoRepository.save(estado);
-	}
+    @Transactional
+    public Estado salvar(Estado estado) {
+        return estadoRepository.save(estado);
+    }
 
-	@Transactional
-	public void excluir(Long id) {
-		try {
-			estadoRepository.deleteById(id);
-			estadoRepository.flush();
-		} catch (EmptyResultDataAccessException e) {
-			throw new EstadoNaoEncontradoException(id);
-		} catch (DataIntegrityViolationException e) {
-			throw new EntidadeEmUsoException("Estado está sendo utilizado e não pode ser excluído.");
-		}
-	}
+    @Transactional
+    public void excluir(Long id) {
+        try {
+            estadoRepository.deleteById(id);
+            estadoRepository.flush();
+        } catch (EmptyResultDataAccessException e) {
+            throw new EstadoNaoEncontradoException(id);
+        } catch (DataIntegrityViolationException e) {
+            throw EntidadeEmUsoException.nomeMasculino("Estado");
+        }
+    }
 
-	public Estado buscar(Long estadoId) {
-		return estadoRepository.findById(estadoId)
-				.orElseThrow(() -> new EstadoNaoEncontradoException(estadoId));
-	}
+    public Estado buscar(Long estadoId) {
+        return estadoRepository.findById(estadoId)
+                .orElseThrow(() -> new EstadoNaoEncontradoException(estadoId));
+    }
 }

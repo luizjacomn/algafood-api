@@ -13,8 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class CozinhaService {
 
-	private static final String MSG_COZINHA_EM_USO = "Cozinha está sendo utilizada e não pode ser excluída.";
-
 	@Autowired
 	private CozinhaRepository cozinhaRepository;
 
@@ -31,7 +29,7 @@ public class CozinhaService {
 		} catch (EmptyResultDataAccessException e) {
 			throw new CozinhaNaoEncontradaException(id);
 		} catch (DataIntegrityViolationException e) {
-			throw new EntidadeEmUsoException(MSG_COZINHA_EM_USO);
+			throw EntidadeEmUsoException.nomeFeminino("Cozinha");
 		}
 	}
 

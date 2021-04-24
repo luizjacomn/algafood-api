@@ -21,6 +21,7 @@ public class FormaPagamentoService {
         return formaPagamentoRepository.save(formaPagamento);
     }
 
+    @Transactional
     public void excluir(Long id) {
         try {
             formaPagamentoRepository.deleteById(id);
@@ -28,7 +29,7 @@ public class FormaPagamentoService {
         } catch (EmptyResultDataAccessException e) {
             throw new FormaPagamentoNaoEncontradaException(id);
         } catch (DataIntegrityViolationException e) {
-            throw new EntidadeEmUsoException("Forma de pagamento está sendo utilizada e não pode ser excluída.");
+            throw EntidadeEmUsoException.nomeFeminino("Forma de pagamento");
         }
     }
 

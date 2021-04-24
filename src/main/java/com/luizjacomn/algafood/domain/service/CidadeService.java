@@ -14,37 +14,35 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class CidadeService {
 
-	private static final String MSG_CIDADE_EM_USO = "Cidade está sendo utilizada e não pode ser excluída.";
+    @Autowired
+    private EstadoService estadoService;
 
-	@Autowired
-	private EstadoService estadoService;
+    @Autowired
+    private CidadeRepository cidadeRepository;
 
-	@Autowired
-	private CidadeRepository cidadeRepository;
+    @Transactional
+    public Cidade salvar(Cidade cidade) {
+        Estado estado = estadoService.buscar(cidade.getEstado().getId());
 
-	@Transactional
-	public Cidade salvar(Cidade cidade) {
-		Estado estado = estadoService.buscar(cidade.getEstado().getId());
+        cidade.setEstado(estado);
 
-		cidade.setEstado(estado);
+        return cidadeRepository.save(cidade);
+    }
 
-		return cidadeRepository.save(cidade);
-	}
+    @Transactional
+    public void excluir(Long id) {
+        try {
+            cidadeRepository.deleteById(id);
+            cidadeRepository.flush();
+        } catch (EmptyResultDataAccessException e) {
+            throw new CidadeNaoEncontradaException(id);
+        } catch (DataIntegrityViolationException e) {
+            throw EntidadeEmUsoException.nomeFeminino("Cidade");
+        }
+    }
 
-	@Transactional
-	public void excluir(Long id) {
-		try {
-			cidadeRepository.deleteById(id);
-			cidadeRepository.flush();
-		} catch (EmptyResultDataAccessException e) {
-			throw new CidadeNaoEncontradaException(id);
-		} catch (DataIntegrityViolationException e) {
-			throw new EntidadeEmUsoException(MSG_CIDADE_EM_USO);
-		}
-	}
-
-	public Cidade buscar(Long cidadeId) {
-		return cidadeRepository.findById(cidadeId)
-				.orElseThrow(() -> new CidadeNaoEncontradaException(cidadeId));
-	}
+    public Cidade buscar(Long cidadeId) {
+        return cidadeRepository.findById(cidadeId)
+                .orElseThrow(() -> new CidadeNaoEncontradaException(cidadeId));
+    }
 }

@@ -15,8 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class RestauranteService {
 
-	private static final String MSG_RESTAURANTE_EM_USO = "Restaurante está sendo utilizado e não pode ser excluído.";
-
 	@Autowired
 	private CozinhaService cozinhaService;
 
@@ -49,7 +47,7 @@ public class RestauranteService {
 		} catch (EmptyResultDataAccessException e) {
 			throw new RestauranteNaoEncontradoException(id);
 		} catch (DataIntegrityViolationException e) {
-			throw new EntidadeEmUsoException(MSG_RESTAURANTE_EM_USO);
+			throw EntidadeEmUsoException.nomeMasculino("Restaurante");
 		}
 	}
 
