@@ -1,6 +1,7 @@
 package com.luizjacomn.algafood.api.model.mapper;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.Field;
@@ -46,9 +47,27 @@ public abstract class GenericMapper<E, I, O> implements RelationshipAttributes {
          * <entity.relationshipAttribute> was altered from 1 to 2
          */
         for (String attribute : getRelationshipAttributes()) {
-            Field field = entityClass.getDeclaredField(attribute);
-            field.setAccessible(true);
-            field.set(entity, field.getType().newInstance());
+            String[] objects = attribute.split("\\.");
+            if (objects.length <= 1) {
+                Field field = entityClass.getDeclaredField(attribute);
+                field.setAccessible(true);
+                field.set(entity, field.getType().newInstance());
+            } else {
+                Field tempField;
+                Field entityField = entityClass.getDeclaredField(objects[0]);
+                Object value = entity;
+                for (int i = 1; i < objects.length; i++) {
+                    tempField = entityField;
+                    entityField = entityField.getType().getDeclaredField(objects[i]);
+                    tempField.setAccessible(true);
+                    value = tempField.get(value);
+                    if (value == null) {
+                        value = tempField.getType().newInstance();
+                    }
+                }
+                entityField.setAccessible(true);
+                entityField.set(value, entityField.getType().newInstance());
+            }
         }
 
         modelMapper.map(input, entity);

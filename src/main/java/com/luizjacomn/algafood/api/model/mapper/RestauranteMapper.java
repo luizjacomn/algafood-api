@@ -10,6 +10,6 @@ public class RestauranteMapper extends GenericMapper<Restaurante, RestauranteInp
 
     @Override
     public String[] getRelationshipAttributes() {
-        return new String[] { "cozinha" };
+        return new String[] { "cozinha", "endereco.cidade" };
     }
 }
