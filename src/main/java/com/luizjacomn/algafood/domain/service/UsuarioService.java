@@ -1,7 +1,7 @@
 package com.luizjacomn.algafood.domain.service;
 
-import com.luizjacomn.algafood.domain.exception.generics.EntidadeEmUsoException;
 import com.luizjacomn.algafood.domain.exception.UsuarioNaoEncontradoException;
+import com.luizjacomn.algafood.domain.exception.generics.EntidadeEmUsoException;
 import com.luizjacomn.algafood.domain.exception.generics.NegocioException;
 import com.luizjacomn.algafood.domain.model.Usuario;
 import com.luizjacomn.algafood.domain.repository.UsuarioRepository;
@@ -11,6 +11,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 public class UsuarioService {
 
@@ -19,6 +21,14 @@ public class UsuarioService {
 
     @Transactional
     public Usuario salvar(Usuario usuario) {
+        usuarioRepository.detach(usuario);
+
+        Optional<Usuario> usuarioPorEmail = usuarioRepository.findByEmail(usuario.getEmail());
+
+        if (usuarioPorEmail.isPresent() && !usuarioPorEmail.get().equals(usuario)) {
+            throw new NegocioException(String.format("Já existe um usuário cadastrado com o e-mail '%s'", usuario.getEmail()));
+        }
+
         return usuarioRepository.save(usuario);
     }
 
