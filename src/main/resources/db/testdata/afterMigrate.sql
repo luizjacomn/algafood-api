@@ -72,3 +72,11 @@ INSERT INTO produto (nome, descricao, preco, ativo, restaurante_id) VALUES ('San
 INSERT INTO produto (nome, descricao, preco, ativo, restaurante_id) VALUES ('Espetinho de Cupim', 'Acompanha farinha, mandioca e vinagrete', 8, 1, 6);
 
 INSERT INTO grupo (nome) VALUES ('Gerente'), ('Vendedor(a)'), ('Secretário(a)'), ('Cadastrador(a)');
+
+INSERT INTO usuario (nome, email, senha, data_cadastro, data_atualizacao) VALUES ('Rivaldo', 'rivaldo@api.com', 'maestro', utc_timestamp, utc_timestamp);
+
+INSERT INTO usuario (nome, email, senha, data_cadastro, data_atualizacao) VALUES ('Cristiano', 'cristiano@api.com', 'cr7', utc_timestamp, utc_timestamp);
+
+INSERT INTO usuario (nome, email, senha, data_cadastro, data_atualizacao) VALUES ('Lionel', 'lionel@api.com', 'l10', utc_timestamp, utc_timestamp);
+
+INSERT INTO usuario (nome, email, senha, data_cadastro, data_atualizacao) VALUES ('Ronaldo', 'ronaldinho@api.com', 'r10', utc_timestamp, utc_timestamp);
