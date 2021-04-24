@@ -1,7 +1,7 @@
 package com.luizjacomn.algafood.domain.service;
 
-import com.luizjacomn.algafood.domain.exception.EntidadeEmUsoException;
 import com.luizjacomn.algafood.domain.exception.EstadoNaoEncontradoException;
+import com.luizjacomn.algafood.domain.exception.generics.EntidadeEmUsoException;
 import com.luizjacomn.algafood.domain.model.Estado;
 import com.luizjacomn.algafood.domain.repository.EstadoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class EstadoService {
             estadoRepository.deleteById(id);
             estadoRepository.flush();
         } catch (EmptyResultDataAccessException e) {
-            throw new EstadoNaoEncontradoException(id);
+            throw EstadoNaoEncontradoException.nomeMasculino("Estado", id);
         } catch (DataIntegrityViolationException e) {
             throw EntidadeEmUsoException.nomeMasculino("Estado");
         }
@@ -35,6 +35,6 @@ public class EstadoService {
 
     public Estado buscar(Long estadoId) {
         return estadoRepository.findById(estadoId)
-                .orElseThrow(() -> new EstadoNaoEncontradoException(estadoId));
+                .orElseThrow(() -> EstadoNaoEncontradoException.nomeMasculino("Estado", estadoId));
     }
 }

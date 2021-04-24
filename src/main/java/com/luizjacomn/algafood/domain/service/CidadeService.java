@@ -1,7 +1,7 @@
 package com.luizjacomn.algafood.domain.service;
 
 import com.luizjacomn.algafood.domain.exception.CidadeNaoEncontradaException;
-import com.luizjacomn.algafood.domain.exception.EntidadeEmUsoException;
+import com.luizjacomn.algafood.domain.exception.generics.EntidadeEmUsoException;
 import com.luizjacomn.algafood.domain.model.Cidade;
 import com.luizjacomn.algafood.domain.model.Estado;
 import com.luizjacomn.algafood.domain.repository.CidadeRepository;
@@ -35,7 +35,7 @@ public class CidadeService {
             cidadeRepository.deleteById(id);
             cidadeRepository.flush();
         } catch (EmptyResultDataAccessException e) {
-            throw new CidadeNaoEncontradaException(id);
+            throw CidadeNaoEncontradaException.nomeFeminino("Cidade", id);
         } catch (DataIntegrityViolationException e) {
             throw EntidadeEmUsoException.nomeFeminino("Cidade");
         }
@@ -43,6 +43,6 @@ public class CidadeService {
 
     public Cidade buscar(Long cidadeId) {
         return cidadeRepository.findById(cidadeId)
-                .orElseThrow(() -> new CidadeNaoEncontradaException(cidadeId));
+                .orElseThrow(() -> CidadeNaoEncontradaException.nomeFeminino("Cidade", cidadeId));
     }
 }

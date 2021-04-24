@@ -1,7 +1,7 @@
 package com.luizjacomn.algafood.domain.service;
 
-import com.luizjacomn.algafood.domain.exception.EntidadeEmUsoException;
 import com.luizjacomn.algafood.domain.exception.FormaPagamentoNaoEncontradaException;
+import com.luizjacomn.algafood.domain.exception.generics.EntidadeEmUsoException;
 import com.luizjacomn.algafood.domain.model.FormaPagamento;
 import com.luizjacomn.algafood.domain.repository.FormaPagamentoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,14 +27,14 @@ public class FormaPagamentoService {
             formaPagamentoRepository.deleteById(id);
             formaPagamentoRepository.flush();
         } catch (EmptyResultDataAccessException e) {
-            throw new FormaPagamentoNaoEncontradaException(id);
+            throw FormaPagamentoNaoEncontradaException.nomeFeminino("Forma de pagamento", id);
         } catch (DataIntegrityViolationException e) {
             throw EntidadeEmUsoException.nomeFeminino("Forma de pagamento");
         }
     }
 
     public FormaPagamento buscar(Long id) {
-        return formaPagamentoRepository.findById(id).orElseThrow(() -> new FormaPagamentoNaoEncontradaException(id));
+        return formaPagamentoRepository.findById(id).orElseThrow(() -> FormaPagamentoNaoEncontradaException.nomeFeminino("Forma de pagamento", id));
     }
 
 }

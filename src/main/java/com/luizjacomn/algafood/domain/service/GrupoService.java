@@ -1,7 +1,7 @@
 package com.luizjacomn.algafood.domain.service;
 
-import com.luizjacomn.algafood.domain.exception.EntidadeEmUsoException;
 import com.luizjacomn.algafood.domain.exception.GrupoNaoEncontradoException;
+import com.luizjacomn.algafood.domain.exception.generics.EntidadeEmUsoException;
 import com.luizjacomn.algafood.domain.model.Grupo;
 import com.luizjacomn.algafood.domain.repository.GrupoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,18 +21,19 @@ public class GrupoService {
         return grupoRepository.save(grupo);
     }
 
+    @Transactional
     public void excluir(Long id) {
         try {
             grupoRepository.deleteById(id);
             grupoRepository.flush();
         } catch (EmptyResultDataAccessException e) {
-            throw new GrupoNaoEncontradoException(id);
+            throw GrupoNaoEncontradoException.nomeMasculino("Grupo", id);
         } catch (DataIntegrityViolationException e) {
             throw EntidadeEmUsoException.nomeMasculino("Grupo");
         }
     }
 
     public Grupo buscar(Long id) {
-        return grupoRepository.findById(id).orElseThrow(() -> new GrupoNaoEncontradoException(id));
+        return grupoRepository.findById(id).orElseThrow(() -> GrupoNaoEncontradoException.nomeMasculino("Grupo", id));
     }
 }
