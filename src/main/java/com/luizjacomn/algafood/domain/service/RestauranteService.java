@@ -53,6 +53,22 @@ public class RestauranteService {
 		}
 	}
 
+	@Transactional
+	public void ativar(Long id) {
+		Restaurante restaurante = buscar(id);
+
+		restaurante.ativar();
+	}
+
+	@Transactional
+	public void desativar(Long id) {
+		Restaurante restaurante = buscar(id);
+
+		// TODO verificar se há algum pedido em aberto, pois só poderia desativar um restaurante sem pedidos em aberto
+
+		restaurante.desativar();
+	}
+
 	public Restaurante buscar(Long restauranteId) {
 		return restauranteRepository.findById(restauranteId)
 				.orElseThrow(() -> new RestauranteNaoEncontradoException(restauranteId));

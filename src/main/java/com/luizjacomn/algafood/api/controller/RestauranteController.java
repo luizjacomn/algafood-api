@@ -120,4 +120,16 @@ public class RestauranteController {
         restauranteService.excluir(id);
     }
 
+    @PutMapping("/{id}/ativar")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void ativar(@PathVariable Long id) {
+        restauranteService.ativar(id);
+    }
+
+    @DeleteMapping("/{id}/desativar")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void desativar(@PathVariable Long id) {
+        restauranteService.desativar(id);
+    }
+
 }

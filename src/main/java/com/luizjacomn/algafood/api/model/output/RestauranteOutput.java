@@ -17,4 +17,6 @@ public class RestauranteOutput {
 
     private CozinhaOutput cozinha;
 
+    private boolean ativo;
+
 }
