@@ -1,12 +1,10 @@
 package com.luizjacomn.algafood.api.controller;
 
-import com.luizjacomn.algafood.api.model.mapper.RestauranteMapper;
 import com.luizjacomn.algafood.api.model.input.RestauranteInput;
+import com.luizjacomn.algafood.api.model.mapper.RestauranteMapper;
 import com.luizjacomn.algafood.api.model.output.RestauranteOutput;
-import com.luizjacomn.algafood.domain.exception.CidadeNaoEncontradaException;
-import com.luizjacomn.algafood.domain.exception.CozinhaNaoEncontradaException;
-import com.luizjacomn.algafood.domain.exception.EntidadeNaoEncontradaException;
-import com.luizjacomn.algafood.domain.exception.NegocioException;
+import com.luizjacomn.algafood.domain.exception.generics.EntidadeNaoEncontradaException;
+import com.luizjacomn.algafood.domain.exception.generics.NegocioException;
 import com.luizjacomn.algafood.domain.model.Restaurante;
 import com.luizjacomn.algafood.domain.repository.RestauranteRepository;
 import com.luizjacomn.algafood.domain.service.RestauranteService;
@@ -83,7 +81,7 @@ public class RestauranteController {
 
             return restauranteMapper.toOutputDTO(restauranteService.salvar(restaurante));
         } catch (EntidadeNaoEncontradaException e) {
-            throw new NegocioException(e.getMessage());
+            throw new NegocioException(e.getMessage(), e);
         }
     }
 
@@ -95,8 +93,8 @@ public class RestauranteController {
             restauranteMapper.copyToEntity(restauranteInput, restauranteAtual);
 
             return restauranteMapper.toOutputDTO(restauranteService.salvar(restauranteAtual));
-        } catch (CidadeNaoEncontradaException | CozinhaNaoEncontradaException e) {
-            throw new NegocioException(e.getMessage());
+        } catch (EntidadeNaoEncontradaException e) {
+            throw new NegocioException(e.getMessage(), e);
         }
     }
 

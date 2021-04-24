@@ -5,9 +5,9 @@ import com.fasterxml.jackson.databind.exc.IgnoredPropertyException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.luizjacomn.algafood.core.validation.exception.ValidacaoException;
-import com.luizjacomn.algafood.domain.exception.EntidadeEmUsoException;
-import com.luizjacomn.algafood.domain.exception.EntidadeNaoEncontradaException;
-import com.luizjacomn.algafood.domain.exception.NegocioException;
+import com.luizjacomn.algafood.domain.exception.generics.EntidadeEmUsoException;
+import com.luizjacomn.algafood.domain.exception.generics.EntidadeNaoEncontradaException;
+import com.luizjacomn.algafood.domain.exception.generics.NegocioException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,6 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;

@@ -1,5 +1,7 @@
 package com.luizjacomn.algafood.domain.exception;
 
+import com.luizjacomn.algafood.domain.exception.generics.EntidadeNaoEncontradaException;
+
 public class FormaPagamentoNaoEncontradaException extends EntidadeNaoEncontradaException {
 
     private static final long serialVersionUID = -6893353224456594333L;
@@ -8,7 +10,4 @@ public class FormaPagamentoNaoEncontradaException extends EntidadeNaoEncontradaE
         super(message);
     }
 
-    public FormaPagamentoNaoEncontradaException(Long id) {
-        this(String.format("Forma de pagamento com id %d não foi encontrada", id));
-    }
 }

@@ -1,4 +1,4 @@
-package com.luizjacomn.algafood.domain.exception;
+package com.luizjacomn.algafood.domain.exception.generics;
 
 import com.luizjacomn.algafood.core.enums.Genero;
 
@@ -11,7 +11,7 @@ public class EntidadeEmUsoException extends RuntimeException {
     }
 
     public EntidadeEmUsoException(String nomeEntidade, Genero genero) {
-        this(String.format("%1$s está sendo utilizad%2$s e não pode ser excluíd%2$s.",
+        this(String.format("%1$s está sendo utilizad%2$s e não pode ser excluíd%2$s",
 				nomeEntidade,
 				Genero.MASCULINO.equals(genero) ? "o" : "a"));
     }

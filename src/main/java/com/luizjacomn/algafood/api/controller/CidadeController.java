@@ -4,7 +4,7 @@ import com.luizjacomn.algafood.api.model.mapper.CidadeMapper;
 import com.luizjacomn.algafood.api.model.input.CidadeInput;
 import com.luizjacomn.algafood.api.model.output.CidadeOutput;
 import com.luizjacomn.algafood.domain.exception.EstadoNaoEncontradoException;
-import com.luizjacomn.algafood.domain.exception.NegocioException;
+import com.luizjacomn.algafood.domain.exception.generics.NegocioException;
 import com.luizjacomn.algafood.domain.model.Cidade;
 import com.luizjacomn.algafood.domain.repository.CidadeRepository;
 import com.luizjacomn.algafood.domain.service.CidadeService;

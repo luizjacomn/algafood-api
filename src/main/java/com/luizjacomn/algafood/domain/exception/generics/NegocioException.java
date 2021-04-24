@@ -1,4 +1,4 @@
-package com.luizjacomn.algafood.domain.exception;
+package com.luizjacomn.algafood.domain.exception.generics;
 
 public class NegocioException extends RuntimeException {
 
