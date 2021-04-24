@@ -1,11 +1,9 @@
 package com.luizjacomn.algafood.domain.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.luizjacomn.algafood.domain.model.Estado;
 import org.springframework.stereotype.Repository;
 
-import com.luizjacomn.algafood.domain.model.Estado;
-
 @Repository
-public interface EstadoRepository extends JpaRepository<Estado, Long> {
+public interface EstadoRepository extends CustomJpaRepository<Estado, Long> {
 
 }
