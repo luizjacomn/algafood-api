@@ -84,3 +84,5 @@ INSERT INTO usuario (nome, email, senha, data_cadastro, data_atualizacao) VALUES
 INSERT INTO usuario (nome, email, senha, data_cadastro, data_atualizacao) VALUES ('Ronaldo', 'ronaldinho@api.com', 'r10', utc_timestamp, utc_timestamp);
 
 INSERT INTO usuario_grupo (usuario_id, grupo_id) VALUES (1, 1), (1, 2), (2, 2);
+
+INSERT INTO restaurante_responsavel (restaurante_id, usuario_id) VALUES (1, 1), (3, 1);

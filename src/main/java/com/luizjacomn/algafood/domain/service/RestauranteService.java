@@ -2,10 +2,7 @@ package com.luizjacomn.algafood.domain.service;
 
 import com.luizjacomn.algafood.domain.exception.RestauranteNaoEncontradoException;
 import com.luizjacomn.algafood.domain.exception.generics.EntidadeEmUsoException;
-import com.luizjacomn.algafood.domain.model.Cidade;
-import com.luizjacomn.algafood.domain.model.Cozinha;
-import com.luizjacomn.algafood.domain.model.FormaPagamento;
-import com.luizjacomn.algafood.domain.model.Restaurante;
+import com.luizjacomn.algafood.domain.model.*;
 import com.luizjacomn.algafood.domain.repository.RestauranteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -24,6 +21,9 @@ public class RestauranteService {
 
     @Autowired
     private FormaPagamentoService formaPagamentoService;
+
+    @Autowired
+    private UsuarioService usuarioService;
 
     @Autowired
     private RestauranteRepository restauranteRepository;
@@ -56,7 +56,7 @@ public class RestauranteService {
     }
 
     @Transactional
-    public void associar(Long restauranteId, Long formaPagamentoId) {
+    public void associarFormaPagamento(Long restauranteId, Long formaPagamentoId) {
         Restaurante restaurante = buscar(restauranteId);
         FormaPagamento formaPagamento = formaPagamentoService.buscar(formaPagamentoId);
 
@@ -64,11 +64,27 @@ public class RestauranteService {
     }
 
     @Transactional
-    public void desassociar(Long restauranteId, Long formaPagamentoId) {
+    public void desassociarFormaPagamento(Long restauranteId, Long formaPagamentoId) {
         Restaurante restaurante = buscar(restauranteId);
         FormaPagamento formaPagamento = formaPagamentoService.buscar(formaPagamentoId);
 
         restaurante.desassociar(formaPagamento);
+    }
+
+    @Transactional
+    public void associarResponsavel(Long restauranteId, Long usuarioId) {
+        Restaurante restaurante = buscar(restauranteId);
+        Usuario usuario = usuarioService.buscar(usuarioId);
+
+        restaurante.associar(usuario);
+    }
+
+    @Transactional
+    public void desassociarResponsavel(Long restauranteId, Long usuarioId) {
+        Restaurante restaurante = buscar(restauranteId);
+        Usuario usuario = usuarioService.buscar(usuarioId);
+
+        restaurante.desassociar(usuario);
     }
 
     @Transactional
