@@ -1,5 +1,6 @@
 package com.luizjacomn.algafood.domain.service;
 
+import com.luizjacomn.algafood.core.enums.Genero;
 import com.luizjacomn.algafood.domain.exception.GrupoNaoEncontradoException;
 import com.luizjacomn.algafood.domain.exception.generics.EntidadeEmUsoException;
 import com.luizjacomn.algafood.domain.model.Grupo;
@@ -31,7 +32,7 @@ public class GrupoService {
             grupoRepository.deleteById(id);
             grupoRepository.flush();
         } catch (EmptyResultDataAccessException e) {
-            throw GrupoNaoEncontradoException.nomeMasculino("Grupo", id);
+            throw new GrupoNaoEncontradoException("Grupo", id, Genero.MASCULINO);
         } catch (DataIntegrityViolationException e) {
             throw EntidadeEmUsoException.nomeMasculino("Grupo");
         }
@@ -54,6 +55,6 @@ public class GrupoService {
     }
 
     public Grupo buscar(Long id) {
-        return grupoRepository.findById(id).orElseThrow(() -> GrupoNaoEncontradoException.nomeMasculino("Grupo", id));
+        return grupoRepository.findById(id).orElseThrow(() -> new GrupoNaoEncontradoException("Grupo", id, Genero.MASCULINO));
     }
 }

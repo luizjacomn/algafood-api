@@ -1,5 +1,6 @@
 package com.luizjacomn.algafood.domain.service;
 
+import com.luizjacomn.algafood.core.enums.Genero;
 import com.luizjacomn.algafood.domain.exception.FormaPagamentoNaoEncontradaException;
 import com.luizjacomn.algafood.domain.exception.generics.EntidadeEmUsoException;
 import com.luizjacomn.algafood.domain.model.FormaPagamento;
@@ -27,14 +28,14 @@ public class FormaPagamentoService {
             formaPagamentoRepository.deleteById(id);
             formaPagamentoRepository.flush();
         } catch (EmptyResultDataAccessException e) {
-            throw FormaPagamentoNaoEncontradaException.nomeFeminino("Forma de pagamento", id);
+            throw new FormaPagamentoNaoEncontradaException("Forma de pagamento", id, Genero.FEMININO);
         } catch (DataIntegrityViolationException e) {
             throw EntidadeEmUsoException.nomeFeminino("Forma de pagamento");
         }
     }
 
     public FormaPagamento buscar(Long id) {
-        return formaPagamentoRepository.findById(id).orElseThrow(() -> FormaPagamentoNaoEncontradaException.nomeFeminino("Forma de pagamento", id));
+        return formaPagamentoRepository.findById(id).orElseThrow(() -> new FormaPagamentoNaoEncontradaException("Forma de pagamento", id, Genero.FEMININO));
     }
 
 }

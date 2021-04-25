@@ -1,5 +1,6 @@
 package com.luizjacomn.algafood.domain.service;
 
+import com.luizjacomn.algafood.core.enums.Genero;
 import com.luizjacomn.algafood.domain.exception.UsuarioNaoEncontradoException;
 import com.luizjacomn.algafood.domain.exception.generics.EntidadeEmUsoException;
 import com.luizjacomn.algafood.domain.exception.generics.NegocioException;
@@ -42,7 +43,7 @@ public class UsuarioService {
             usuarioRepository.deleteById(id);
             usuarioRepository.flush();
         } catch (EmptyResultDataAccessException e) {
-            throw UsuarioNaoEncontradoException.nomeMasculino("Usuário", id);
+            throw new UsuarioNaoEncontradoException("Usuário", id, Genero.MASCULINO);
         } catch (DataIntegrityViolationException e) {
             throw EntidadeEmUsoException.nomeMasculino("Usuário");
         }
@@ -76,6 +77,6 @@ public class UsuarioService {
     }
 
     public Usuario buscar(Long id) {
-        return usuarioRepository.findById(id).orElseThrow(() -> UsuarioNaoEncontradoException.nomeMasculino("Usuário", id));
+        return usuarioRepository.findById(id).orElseThrow(() -> new UsuarioNaoEncontradoException("Usuário", id, Genero.MASCULINO));
     }
 }

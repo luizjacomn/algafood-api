@@ -1,5 +1,6 @@
 package com.luizjacomn.algafood.domain.service;
 
+import com.luizjacomn.algafood.core.enums.Genero;
 import com.luizjacomn.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.luizjacomn.algafood.domain.exception.generics.EntidadeEmUsoException;
 import com.luizjacomn.algafood.domain.model.Cozinha;
@@ -27,7 +28,7 @@ public class CozinhaService {
             cozinhaRepository.deleteById(id);
             cozinhaRepository.flush();
         } catch (EmptyResultDataAccessException e) {
-            throw CozinhaNaoEncontradaException.nomeFeminino("Cozinha", id);
+            throw new CozinhaNaoEncontradaException("Cozinha", id, Genero.FEMININO);
         } catch (DataIntegrityViolationException e) {
             throw EntidadeEmUsoException.nomeFeminino("Cozinha");
         }
@@ -35,6 +36,6 @@ public class CozinhaService {
 
     public Cozinha buscar(Long cozinhaId) {
         return cozinhaRepository.findById(cozinhaId)
-                .orElseThrow(() -> CozinhaNaoEncontradaException.nomeFeminino("Cozinha", cozinhaId));
+                .orElseThrow(() -> new CozinhaNaoEncontradaException("Cozinha", cozinhaId, Genero.FEMININO));
     }
 }

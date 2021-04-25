@@ -1,5 +1,6 @@
 package com.luizjacomn.algafood.domain.service;
 
+import com.luizjacomn.algafood.core.enums.Genero;
 import com.luizjacomn.algafood.domain.exception.PermissaoNaoEncontradaException;
 import com.luizjacomn.algafood.domain.model.Permissao;
 import com.luizjacomn.algafood.domain.repository.PermissaoRepository;
@@ -19,6 +20,6 @@ public class PermissaoService {
     }
 
     public Permissao buscar(Long id) {
-        return permissaoRepository.findById(id).orElseThrow(() -> PermissaoNaoEncontradaException.nomeFeminino("Permissão", id));
+        return permissaoRepository.findById(id).orElseThrow(() -> new PermissaoNaoEncontradaException("Permissão", id, Genero.FEMININO));
     }
 }

@@ -1,5 +1,6 @@
 package com.luizjacomn.algafood.domain.exception;
 
+import com.luizjacomn.algafood.core.enums.Genero;
 import com.luizjacomn.algafood.domain.exception.generics.EntidadeNaoEncontradaException;
 
 public class EstadoNaoEncontradoException extends EntidadeNaoEncontradaException {
@@ -10,4 +11,7 @@ public class EstadoNaoEncontradoException extends EntidadeNaoEncontradaException
         super(message);
     }
 
+    public EstadoNaoEncontradoException(String nomeEntidade, Long id, Genero genero) {
+        super(nomeEntidade, id, genero);
+    }
 }

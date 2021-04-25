@@ -17,12 +17,4 @@ public class EntidadeNaoEncontradaException extends NegocioException {
                 Genero.MASCULINO.equals(genero) ? "o" : "a"));
     }
 
-    public static EntidadeNaoEncontradaException nomeMasculino(String nomeEntidade, Long id) {
-        return new EntidadeNaoEncontradaException(nomeEntidade, id, Genero.MASCULINO);
-    }
-
-    public static EntidadeNaoEncontradaException nomeFeminino(String nomeEntidade, Long id) {
-        return new EntidadeNaoEncontradaException(nomeEntidade, id, Genero.FEMININO);
-    }
-
 }

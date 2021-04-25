@@ -11,4 +11,7 @@ public class PermissaoNaoEncontradaException extends EntidadeNaoEncontradaExcept
         super(message);
     }
 
+    public PermissaoNaoEncontradaException(String nomeEntidade, Long id, Genero genero) {
+        super(nomeEntidade, id, genero);
+    }
 }

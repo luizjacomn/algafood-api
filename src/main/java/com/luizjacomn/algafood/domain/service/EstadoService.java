@@ -1,5 +1,6 @@
 package com.luizjacomn.algafood.domain.service;
 
+import com.luizjacomn.algafood.core.enums.Genero;
 import com.luizjacomn.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.luizjacomn.algafood.domain.exception.generics.EntidadeEmUsoException;
 import com.luizjacomn.algafood.domain.model.Estado;
@@ -27,7 +28,7 @@ public class EstadoService {
             estadoRepository.deleteById(id);
             estadoRepository.flush();
         } catch (EmptyResultDataAccessException e) {
-            throw EstadoNaoEncontradoException.nomeMasculino("Estado", id);
+            throw new EstadoNaoEncontradoException("Estado", id, Genero.MASCULINO);
         } catch (DataIntegrityViolationException e) {
             throw EntidadeEmUsoException.nomeMasculino("Estado");
         }
@@ -35,6 +36,6 @@ public class EstadoService {
 
     public Estado buscar(Long estadoId) {
         return estadoRepository.findById(estadoId)
-                .orElseThrow(() -> EstadoNaoEncontradoException.nomeMasculino("Estado", estadoId));
+                .orElseThrow(() -> new EstadoNaoEncontradoException("Estado", estadoId, Genero.MASCULINO));
     }
 }

@@ -1,5 +1,6 @@
 package com.luizjacomn.algafood.domain.service;
 
+import com.luizjacomn.algafood.core.enums.Genero;
 import com.luizjacomn.algafood.domain.exception.CidadeNaoEncontradaException;
 import com.luizjacomn.algafood.domain.exception.generics.EntidadeEmUsoException;
 import com.luizjacomn.algafood.domain.model.Cidade;
@@ -35,7 +36,7 @@ public class CidadeService {
             cidadeRepository.deleteById(id);
             cidadeRepository.flush();
         } catch (EmptyResultDataAccessException e) {
-            throw CidadeNaoEncontradaException.nomeFeminino("Cidade", id);
+            throw new CidadeNaoEncontradaException("Cidade", id, Genero.FEMININO);
         } catch (DataIntegrityViolationException e) {
             throw EntidadeEmUsoException.nomeFeminino("Cidade");
         }
@@ -43,6 +44,6 @@ public class CidadeService {
 
     public Cidade buscar(Long cidadeId) {
         return cidadeRepository.findById(cidadeId)
-                .orElseThrow(() -> CidadeNaoEncontradaException.nomeFeminino("Cidade", cidadeId));
+                .orElseThrow(() -> new CidadeNaoEncontradaException("Cidade", cidadeId, Genero.FEMININO));
     }
 }
