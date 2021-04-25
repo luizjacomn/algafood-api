@@ -3,6 +3,7 @@ package com.luizjacomn.algafood.domain.service;
 import com.luizjacomn.algafood.domain.exception.GrupoNaoEncontradoException;
 import com.luizjacomn.algafood.domain.exception.generics.EntidadeEmUsoException;
 import com.luizjacomn.algafood.domain.model.Grupo;
+import com.luizjacomn.algafood.domain.model.Permissao;
 import com.luizjacomn.algafood.domain.repository.GrupoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -12,6 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class GrupoService {
+
+    @Autowired
+    private PermissaoService permissaoService;
 
     @Autowired
     private GrupoRepository grupoRepository;
@@ -31,6 +35,22 @@ public class GrupoService {
         } catch (DataIntegrityViolationException e) {
             throw EntidadeEmUsoException.nomeMasculino("Grupo");
         }
+    }
+
+    @Transactional
+    public void adicionarPermissao(Long grupoId, Long permissaoId) {
+        Grupo grupo = buscar(grupoId);
+        Permissao permissao = permissaoService.buscar(permissaoId);
+
+        grupo.adicionar(permissao);
+    }
+
+    @Transactional
+    public void removerPermissao(Long grupoId, Long permissaoId) {
+        Grupo grupo = buscar(grupoId);
+        Permissao permissao = permissaoService.buscar(permissaoId);
+
+        grupo.remover(permissao);
     }
 
     public Grupo buscar(Long id) {

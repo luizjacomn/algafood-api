@@ -51,9 +51,6 @@ INSERT INTO forma_pagamento (id, descricao) VALUES (1, 'Cartão de crédito');
 INSERT INTO forma_pagamento (id, descricao) VALUES (2, 'Cartão de débito');
 INSERT INTO forma_pagamento (id, descricao) VALUES (3, 'Dinheiro');
 
-INSERT INTO permissao (id, nome, descricao) VALUES (1, 'CONSULTAR_COZINHAS', 'Permite consultar cozinhas');
-INSERT INTO permissao (id, nome, descricao) VALUES (2, 'EDITAR_COZINHAS', 'Permite editar cozinhas');
-
 INSERT INTO restaurante_forma_pagamento (restaurante_id, forma_pagamento_id) VALUES (1, 1), (1, 2), (1, 3), (2, 3), (3, 2), (3, 3), (4, 1), (4, 2), (5, 1), (5, 2), (6, 3);
 
 INSERT INTO produto (nome, descricao, preco, ativo, restaurante_id) VALUES ('Porco com molho agridoce', 'Deliciosa carne suína ao molho especial', 78.90, 1, 1);
@@ -72,6 +69,11 @@ INSERT INTO produto (nome, descricao, preco, ativo, restaurante_id) VALUES ('San
 INSERT INTO produto (nome, descricao, preco, ativo, restaurante_id) VALUES ('Espetinho de Cupim', 'Acompanha farinha, mandioca e vinagrete', 8, 1, 6);
 
 INSERT INTO grupo (nome) VALUES ('Gerente'), ('Vendedor(a)'), ('Secretário(a)'), ('Cadastrador(a)');
+
+INSERT INTO permissao (id, nome, descricao) VALUES (1, 'CONSULTAR_COZINHAS', 'Permite consultar cozinhas');
+INSERT INTO permissao (id, nome, descricao) VALUES (2, 'EDITAR_COZINHAS', 'Permite editar cozinhas');
+
+INSERT INTO grupo_permissao (grupo_id, permissao_id) VALUES (1, 1), (1, 2), (2, 1), (2, 2), (3, 1);
 
 INSERT INTO usuario (nome, email, senha, data_cadastro, data_atualizacao) VALUES ('Rivaldo', 'rivaldo@api.com', 'maestro', utc_timestamp, utc_timestamp);
 
