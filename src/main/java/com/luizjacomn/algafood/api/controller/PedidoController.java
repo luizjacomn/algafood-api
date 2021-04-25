@@ -1,7 +1,9 @@
 package com.luizjacomn.algafood.api.controller;
 
 import com.luizjacomn.algafood.api.model.mapper.PedidoMapper;
+import com.luizjacomn.algafood.api.model.mapper.PedidoResumeMapper;
 import com.luizjacomn.algafood.api.model.output.PedidoOutput;
+import com.luizjacomn.algafood.api.model.output.PedidoResumeOutput;
 import com.luizjacomn.algafood.domain.model.Pedido;
 import com.luizjacomn.algafood.domain.repository.PedidoRepository;
 import com.luizjacomn.algafood.domain.service.PedidoService;
@@ -26,9 +28,12 @@ public class PedidoController {
     @Autowired
     private PedidoMapper pedidoMapper;
 
+    @Autowired
+    private PedidoResumeMapper pedidoResumeMapper;
+
     @GetMapping
-    public List<PedidoOutput> listar() {
-        return pedidoMapper.toOutputDTOList(pedidoRepository.findAll());
+    public List<PedidoResumeOutput> listar() {
+        return pedidoResumeMapper.toOutputDTOList(pedidoRepository.findAll());
     }
 
     @GetMapping("/{id}")
