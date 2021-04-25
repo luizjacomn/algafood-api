@@ -16,13 +16,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/restaurantes/{restauranteId}/produtos")
-public class ProdutoController {
-
-    @Autowired
-    private ProdutoService produtoService;
+public class RestauranteProdutoController {
 
     @Autowired
     private RestauranteService restauranteService;
+
+    @Autowired
+    private ProdutoService produtoService;
 
     @Autowired
     private ProdutoMapper produtoMapper;
