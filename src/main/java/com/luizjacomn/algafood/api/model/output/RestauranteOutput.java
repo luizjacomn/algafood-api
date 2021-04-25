@@ -23,4 +23,6 @@ public class RestauranteOutput {
 
     private boolean ativo;
 
+    private boolean aberto;
+
 }

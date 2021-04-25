@@ -87,6 +87,22 @@ public class RestauranteService {
         restaurante.desativar();
     }
 
+    @Transactional
+    public void abrir(Long id) {
+        Restaurante restaurante = buscar(id);
+
+        restaurante.abrir();
+    }
+
+    @Transactional
+    public void fechar(Long id) {
+        Restaurante restaurante = buscar(id);
+
+        // TODO verificar se há algum pedido em aberto, pois só poderia desativar um restaurante sem pedidos em aberto
+
+        restaurante.fechar();
+    }
+
     public Restaurante buscar(Long restauranteId) {
         return restauranteRepository.findById(restauranteId)
                 .orElseThrow(() -> RestauranteNaoEncontradoException.nomeMasculino("Restaurante", restauranteId));

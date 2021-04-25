@@ -57,6 +57,8 @@ public class Restaurante {
 
     private boolean ativo = true;
 
+    private boolean aberto = true;
+
     public Restaurante() {
     }
 
@@ -78,5 +80,13 @@ public class Restaurante {
 
     public void desativar() {
         setAtivo(false);
+    }
+
+    public void abrir() {
+        setAberto(true);
+    }
+
+    public void fechar() {
+        setAberto(false);
     }
 }
