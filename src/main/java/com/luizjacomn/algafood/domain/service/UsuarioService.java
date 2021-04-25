@@ -3,6 +3,7 @@ package com.luizjacomn.algafood.domain.service;
 import com.luizjacomn.algafood.domain.exception.UsuarioNaoEncontradoException;
 import com.luizjacomn.algafood.domain.exception.generics.EntidadeEmUsoException;
 import com.luizjacomn.algafood.domain.exception.generics.NegocioException;
+import com.luizjacomn.algafood.domain.model.Grupo;
 import com.luizjacomn.algafood.domain.model.Usuario;
 import com.luizjacomn.algafood.domain.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,9 @@ import java.util.Optional;
 
 @Service
 public class UsuarioService {
+
+    @Autowired
+    private GrupoService grupoService;
 
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -53,6 +57,22 @@ public class UsuarioService {
         }
 
         usuario.setSenha(novaSenha);
+    }
+
+    @Transactional
+    public void adicionarGrupo(Long usuarioId, Long grupoId) {
+        Usuario usuario = buscar(usuarioId);
+        Grupo grupo = grupoService.buscar(grupoId);
+
+        usuario.adicionar(grupo);
+    }
+
+    @Transactional
+    public void removerGrupo(Long usuarioId, Long grupoId) {
+        Usuario usuario = buscar(usuarioId);
+        Grupo grupo = grupoService.buscar(grupoId);
+
+        usuario.remover(grupo);
     }
 
     public Usuario buscar(Long id) {

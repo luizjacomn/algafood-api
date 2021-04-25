@@ -8,8 +8,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Data
@@ -47,7 +47,7 @@ public class Usuario {
             joinColumns = @JoinColumn(name = "usuario_id"),
             inverseJoinColumns = @JoinColumn(name = "grupo_id")
     )
-    private List<Grupo> grupos = new ArrayList<>();
+    private Set<Grupo> grupos = new HashSet<>();
 
     public boolean senhaCoincideCom(String confirmacaoSenha) {
         return getSenha().equals(confirmacaoSenha);
@@ -55,5 +55,13 @@ public class Usuario {
 
     public boolean senhaNaoCoincideCom(String confirmacaoSenha) {
         return !senhaCoincideCom(confirmacaoSenha);
+    }
+
+    public void adicionar(Grupo grupo) {
+        getGrupos().add(grupo);
+    }
+
+    public void remover(Grupo grupo) {
+        getGrupos().remove(grupo);
     }
 }
