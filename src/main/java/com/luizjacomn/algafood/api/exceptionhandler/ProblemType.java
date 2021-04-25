@@ -9,6 +9,7 @@ public enum ProblemType {
     ERRO_NEGOCIO("/erro-negocio", "Violação de regra de negócio", 400),
     MENSAGEM_INCOMPREENSIVEL("/mensagem-incompreensivel", "Mensagem incompreensível", 400),
     PARAMETRO_INVALIDO("/parametro-invalido", "Parâmetro inválido", 400),
+    METODO_HTTP_NA0_SUPORTADO("/metodo-http-nao-suportado", "Método HTTP não suportado", 400),
     DADOS_INVALIDOS("/dados-invalidos", "Dados inválidos", 400),
     PROBLEMA_NO_SISTEMA("/problema-no-sistema", "Problema no sistema", 500);
 
