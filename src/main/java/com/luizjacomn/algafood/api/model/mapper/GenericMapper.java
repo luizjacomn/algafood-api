@@ -1,11 +1,11 @@
 package com.luizjacomn.algafood.api.model.mapper;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
+import java.util.Collection;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -82,7 +82,7 @@ public abstract class GenericMapper<E, I, O> implements RelationshipAttributes {
         return modelMapper.map(entity, outputClass);
     }
 
-    public List<O> toOutputDTOList(List<E> entities) {
+    public List<O> toOutputDTOList(Collection<E> entities) {
         return entities.stream()
                 .map(this::toOutputDTO)
                 .collect(toList());

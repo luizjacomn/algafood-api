@@ -4,6 +4,7 @@ import com.luizjacomn.algafood.domain.exception.RestauranteNaoEncontradoExceptio
 import com.luizjacomn.algafood.domain.exception.generics.EntidadeEmUsoException;
 import com.luizjacomn.algafood.domain.model.Cidade;
 import com.luizjacomn.algafood.domain.model.Cozinha;
+import com.luizjacomn.algafood.domain.model.FormaPagamento;
 import com.luizjacomn.algafood.domain.model.Restaurante;
 import com.luizjacomn.algafood.domain.repository.RestauranteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ public class RestauranteService {
 
     @Autowired
     private CidadeService cidadeService;
+
+    @Autowired
+    private FormaPagamentoService formaPagamentoService;
 
     @Autowired
     private RestauranteRepository restauranteRepository;
@@ -49,6 +53,22 @@ public class RestauranteService {
         } catch (DataIntegrityViolationException e) {
             throw EntidadeEmUsoException.nomeMasculino("Restaurante");
         }
+    }
+
+    @Transactional
+    public void associar(Long restauranteId, Long formaPagamentoId) {
+        Restaurante restaurante = buscar(restauranteId);
+        FormaPagamento formaPagamento = formaPagamentoService.buscar(formaPagamentoId);
+
+        restaurante.associar(formaPagamento);
+    }
+
+    @Transactional
+    public void desassociar(Long restauranteId, Long formaPagamentoId) {
+        Restaurante restaurante = buscar(restauranteId);
+        FormaPagamento formaPagamento = formaPagamentoService.buscar(formaPagamentoId);
+
+        restaurante.desassociar(formaPagamento);
     }
 
     @Transactional
