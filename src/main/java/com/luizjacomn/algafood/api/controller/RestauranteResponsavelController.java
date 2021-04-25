@@ -3,7 +3,6 @@ package com.luizjacomn.algafood.api.controller;
 import com.luizjacomn.algafood.api.model.mapper.UsuarioMapper;
 import com.luizjacomn.algafood.api.model.output.UsuarioOutput;
 import com.luizjacomn.algafood.domain.model.Restaurante;
-import com.luizjacomn.algafood.domain.repository.UsuarioRepository;
 import com.luizjacomn.algafood.domain.service.RestauranteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,9 +16,6 @@ public class RestauranteResponsavelController {
 
     @Autowired
     private RestauranteService restauranteService;
-
-    @Autowired
-    private UsuarioRepository usuarioRepository;
 
     @Autowired
     private UsuarioMapper usuarioMapper;

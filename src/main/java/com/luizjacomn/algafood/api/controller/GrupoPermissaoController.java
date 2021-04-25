@@ -4,7 +4,6 @@ import com.luizjacomn.algafood.api.model.mapper.PermissaoMapper;
 import com.luizjacomn.algafood.api.model.output.PermissaoOutput;
 import com.luizjacomn.algafood.domain.model.Grupo;
 import com.luizjacomn.algafood.domain.service.GrupoService;
-import com.luizjacomn.algafood.domain.service.PermissaoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -17,9 +16,6 @@ public class GrupoPermissaoController {
 
     @Autowired
     private GrupoService grupoService;
-
-    @Autowired
-    private PermissaoService permissaoService;
 
     @Autowired
     private PermissaoMapper permissaoMapper;
