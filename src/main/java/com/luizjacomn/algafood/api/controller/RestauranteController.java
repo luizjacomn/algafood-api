@@ -3,6 +3,7 @@ package com.luizjacomn.algafood.api.controller;
 import com.luizjacomn.algafood.api.model.input.RestauranteInput;
 import com.luizjacomn.algafood.api.model.mapper.RestauranteMapper;
 import com.luizjacomn.algafood.api.model.output.RestauranteOutput;
+import com.luizjacomn.algafood.domain.exception.RestauranteNaoEncontradoException;
 import com.luizjacomn.algafood.domain.exception.generics.EntidadeNaoEncontradaException;
 import com.luizjacomn.algafood.domain.exception.generics.NegocioException;
 import com.luizjacomn.algafood.domain.model.Restaurante;
@@ -128,6 +129,27 @@ public class RestauranteController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void desativar(@PathVariable Long id) {
         restauranteService.desativar(id);
+    }
+
+    @PutMapping("/ativar-em-lote")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void ativarEmLote(@RequestBody List<Long> ids) {
+        try {
+            restauranteService.ativar(ids);
+        } catch (RestauranteNaoEncontradoException e) {
+            throw new NegocioException(e.getMessage(), e);
+        }
+    }
+
+    @DeleteMapping("/desativar-em-lote")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void desativarEmLote(@RequestBody List<Long> ids) {
+        try {
+            restauranteService.desativar(ids);
+        } catch (RestauranteNaoEncontradoException e) {
+            System.out.println(e.getClass());
+            throw new NegocioException(e.getMessage(), e);
+        }
     }
 
     @PutMapping("/{id}/abrir")

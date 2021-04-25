@@ -1,5 +1,6 @@
 package com.luizjacomn.algafood.domain.service;
 
+import com.luizjacomn.algafood.core.enums.Genero;
 import com.luizjacomn.algafood.domain.exception.RestauranteNaoEncontradoException;
 import com.luizjacomn.algafood.domain.exception.generics.EntidadeEmUsoException;
 import com.luizjacomn.algafood.domain.model.*;
@@ -9,6 +10,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class RestauranteService {
@@ -49,7 +52,7 @@ public class RestauranteService {
             restauranteRepository.deleteById(id);
             restauranteRepository.flush();
         } catch (EmptyResultDataAccessException e) {
-            throw RestauranteNaoEncontradoException.nomeMasculino("Restaurante", id);
+            throw new RestauranteNaoEncontradoException("Restaurante", id, Genero.MASCULINO);
         } catch (DataIntegrityViolationException e) {
             throw EntidadeEmUsoException.nomeMasculino("Restaurante");
         }
@@ -95,12 +98,22 @@ public class RestauranteService {
     }
 
     @Transactional
+    public void ativar(List<Long> ids) {
+        ids.forEach(this::ativar);
+    }
+
+    @Transactional
     public void desativar(Long id) {
         Restaurante restaurante = buscar(id);
 
         // TODO verificar se há algum pedido em aberto, pois só poderia desativar um restaurante sem pedidos em aberto
 
         restaurante.desativar();
+    }
+
+    @Transactional
+    public void desativar(List<Long> ids) {
+        ids.forEach(this::desativar);
     }
 
     @Transactional
@@ -121,6 +134,6 @@ public class RestauranteService {
 
     public Restaurante buscar(Long restauranteId) {
         return restauranteRepository.findById(restauranteId)
-                .orElseThrow(() -> RestauranteNaoEncontradoException.nomeMasculino("Restaurante", restauranteId));
+                .orElseThrow(() -> new RestauranteNaoEncontradoException("Restaurante", restauranteId, Genero.MASCULINO));
     }
 }
