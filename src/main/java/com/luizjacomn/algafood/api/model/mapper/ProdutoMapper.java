@@ -6,10 +6,4 @@ import com.luizjacomn.algafood.domain.model.Produto;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ProdutoMapper extends GenericMapper<Produto, ProdutoInput, ProdutoOutput> {
-
-//    @Override
-//    public String[] getRelationshipAttributes() {
-//        return new String[] { "restaurante" };
-//    }
-}
+public class ProdutoMapper extends GenericMapper<Produto, ProdutoInput, ProdutoOutput> { }
