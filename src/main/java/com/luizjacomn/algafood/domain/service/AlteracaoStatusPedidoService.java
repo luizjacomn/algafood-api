@@ -4,6 +4,7 @@ import com.luizjacomn.algafood.domain.exception.generics.NegocioException;
 import com.luizjacomn.algafood.domain.model.Pedido;
 import com.luizjacomn.algafood.domain.model.StatusPedido;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +17,9 @@ public class AlteracaoStatusPedidoService {
 
     @Autowired
     private PedidoService pedidoService;
+
+    @Value("${api.pedido.habilita-erro.alteracao-para-o-mesmo-status:false}")
+    private boolean habilitaErroAlteracaoMesmoStatus;
 
     @Transactional
     public void confirmarPedido(String codigo) {
@@ -42,9 +46,15 @@ public class AlteracaoStatusPedidoService {
     private void alterarStatus(Pedido pedido, Predicate<Pedido> lancaExcecaoSe, StatusPedido proximoStatus,
                                Consumer<OffsetDateTime> setterDataAlteracaoStatus) {
 
-        validar(pedido, lancaExcecaoSe, proximoStatus);
+        if (pedido.getStatus().equals(proximoStatus)) {
+            if (habilitaErroAlteracaoMesmoStatus) {
+                throw new NegocioException(String.format("Este pedido foi %s anteriormente", proximoStatus.getDescricao().toLowerCase()));
+            }
+        } else {
+            validar(pedido, lancaExcecaoSe, proximoStatus);
 
-        pedido.paraProximoStatus(proximoStatus, setterDataAlteracaoStatus);
+            pedido.paraProximoStatus(proximoStatus, setterDataAlteracaoStatus);
+        }
     }
 
     private void validar(Pedido pedido, Predicate<Pedido> lancaExcecaoSe, StatusPedido proximoStatus) {
