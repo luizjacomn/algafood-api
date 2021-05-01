@@ -35,7 +35,6 @@ public class PedidoService {
         validarPedido(pedido);
         validarItens(pedido);
 
-        pedido.setTaxaFrete(pedido.getRestaurante().getTaxaFrete());
         pedido.calcularValorTotal();
 
         return pedidoRepository.save(pedido);

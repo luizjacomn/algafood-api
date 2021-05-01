@@ -66,6 +66,8 @@ public class Pedido {
     private List<ItemPedido> itens = new ArrayList<>();
 
     public void calcularValorTotal() {
+        setTaxaFrete(getRestaurante().getTaxaFrete());
+
         getItens().forEach(ItemPedido::calcularPrecoTotal);
 
         this.subTotal = getItens().stream()
@@ -73,14 +75,6 @@ public class Pedido {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         this.valorTotal = this.subTotal.add(this.taxaFrete);
-    }
-
-    public void definirFrete() {
-        setTaxaFrete(getRestaurante().getTaxaFrete());
-    }
-
-    public void atribuirPedidoAosItens() {
-        getItens().forEach(item -> item.setPedido(this));
     }
 
     public void paraProximoStatus(StatusPedido statusPedido, Consumer<OffsetDateTime> setterDataAlteracaoStatus) {
