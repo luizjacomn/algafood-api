@@ -41,5 +41,5 @@ public class PedidoOutput {
 
     private FormaPagamentoOutput formaPagamento;
 
-    private List<ItemPedidoOutput> itensPedido;
+    private List<ItemPedidoOutput> itens;
 }
