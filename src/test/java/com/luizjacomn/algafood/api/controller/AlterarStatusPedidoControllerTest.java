@@ -3,9 +3,7 @@ package com.luizjacomn.algafood.api.controller;
 import com.luizjacomn.algafood.domain.model.*;
 import com.luizjacomn.algafood.domain.repository.*;
 import com.luizjacomn.algafood.util.DatabaseCleaner;
-import com.luizjacomn.algafood.util.ResourceUtils;
 import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,7 +17,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.math.BigDecimal;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
 
 @RunWith(SpringRunner.class)
@@ -59,6 +56,8 @@ public class AlterarStatusPedidoControllerTest {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    private String uuidGerado;
+
     @Before
     public void setup() {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
@@ -73,7 +72,7 @@ public class AlterarStatusPedidoControllerTest {
     public void deve_retornar_204_na_alteracao_status() {
         given()
                 .when()
-                .put("/1/confirmacao")
+                .put(String.format("/%s/confirmacao", uuidGerado))
                 .then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }
@@ -82,10 +81,10 @@ public class AlterarStatusPedidoControllerTest {
     public void deve_retornar_400_na_alteracao_status() {
         given()
                 .when()
-                .put("/1/entrega")
+                .put(String.format("/%s/entrega", uuidGerado))
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
-                .body("detail", is("Status do pedido 1 não pode ser alterado de 'Criado' para 'Entregue'"));
+                .body("detail", is(String.format("Status do pedido %s não pode ser alterado de 'Criado' para 'Entregue'", uuidGerado)));
     }
 
     private void carregarDadosIniciais() {
@@ -152,6 +151,7 @@ public class AlterarStatusPedidoControllerTest {
         enderecoEntrega.setCidade(cidade);
 
         Pedido pedido = new Pedido();
+        pedido.setCodigo("f9981ca4-5a5e-4da3-af04-933861df3e55");
         pedido.setCliente(usuario);
         pedido.setRestaurante(restaurante);
         pedido.setFormaPagamento(formaPagamento);
@@ -162,6 +162,7 @@ public class AlterarStatusPedidoControllerTest {
         item1.setPedido(pedido);
         item2.setPedido(pedido);
         pedido.calcularValorTotal();
-        pedidoRepository.save(pedido);
+        pedido = pedidoRepository.save(pedido);
+        uuidGerado = pedido.getCodigo();
     }
 }
