@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 public class PedidoResumeOutput {
 
-    private Long id;
+    private String codigo;
 
     private BigDecimal subTotal;
 

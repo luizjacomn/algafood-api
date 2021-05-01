@@ -39,9 +39,9 @@ public class PedidoController {
         return pedidoResumeMapper.toOutputDTOList(pedidoRepository.findAll());
     }
 
-    @GetMapping("/{id}")
-    public PedidoOutput buscar(@PathVariable Long id) {
-        Pedido pedido = pedidoService.buscar(id);
+    @GetMapping("/{codigoPedido}")
+    public PedidoOutput buscar(@PathVariable String codigoPedido) {
+        Pedido pedido = pedidoService.buscar(codigoPedido);
 
         return pedidoMapper.toOutputDTO(pedido);
     }

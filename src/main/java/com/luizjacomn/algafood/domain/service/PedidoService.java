@@ -1,6 +1,5 @@
 package com.luizjacomn.algafood.domain.service;
 
-import com.luizjacomn.algafood.core.enums.Genero;
 import com.luizjacomn.algafood.domain.exception.PedidoNaoEncontradoException;
 import com.luizjacomn.algafood.domain.exception.generics.NegocioException;
 import com.luizjacomn.algafood.domain.model.*;
@@ -66,8 +65,8 @@ public class PedidoService {
         });
     }
 
-    public Pedido buscar(Long id) {
-        return pedidoRepository.findById(id).orElseThrow(() -> new PedidoNaoEncontradoException("Pedido", id, Genero.MASCULINO));
+    public Pedido buscar(String codigo) {
+        return pedidoRepository.findByCodigo(codigo).orElseThrow(() -> new PedidoNaoEncontradoException(codigo));
     }
 
 }

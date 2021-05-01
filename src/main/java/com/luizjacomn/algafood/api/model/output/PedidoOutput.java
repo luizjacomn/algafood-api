@@ -15,7 +15,7 @@ import java.util.List;
 @Setter
 public class PedidoOutput {
 
-    private Long id;
+    private String codigo;
 
     private BigDecimal subTotal;
 

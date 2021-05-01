@@ -92,10 +92,10 @@ INSERT INTO usuario_grupo (usuario_id, grupo_id) VALUES (1, 1), (1, 2), (2, 2);
 
 INSERT INTO restaurante_responsavel (restaurante_id, usuario_id) VALUES (1, 1), (3, 1);
 
-INSERT INTO pedido (id, restaurante_id, cliente_id, forma_pagamento_id, endereco_cidade_id, endereco_cep,
+INSERT INTO pedido (id, codigo, restaurante_id, cliente_id, forma_pagamento_id, endereco_cidade_id, endereco_cep,
     endereco_logradouro, endereco_numero, endereco_complemento, endereco_bairro,
     status, data_criacao, sub_total, taxa_frete, valor_total)
-VALUES (1, 1, 1, 1, 1, '38400-000', 'Rua Floriano Peixoto', '500', 'Apto 801', 'Brasil',
+VALUES (1, 'f9981ca4-5a5e-4da3-af04-933861df3e55', 1, 1, 1, 1, '38400-000', 'Rua Floriano Peixoto', '500', 'Apto 801', 'Brasil',
 'CRIADO', utc_timestamp, 298.90, 10, 308.90);
 
 INSERT INTO item_pedido (id, pedido_id, produto_id, quantidade, preco_unitario, preco_total, observacao)
@@ -105,10 +105,10 @@ INSERT INTO item_pedido (id, pedido_id, produto_id, quantidade, preco_unitario, 
 VALUES (2, 1, 2, 2, 110, 220, 'Menos picante, por favor');
 
 
-INSERT INTO pedido (id, restaurante_id, cliente_id, forma_pagamento_id, endereco_cidade_id, endereco_cep,
+INSERT INTO pedido (id, codigo, restaurante_id, cliente_id, forma_pagamento_id, endereco_cidade_id, endereco_cep,
         endereco_logradouro, endereco_numero, endereco_complemento, endereco_bairro,
         status, data_criacao, sub_total, taxa_frete, valor_total)
-values (2, 4, 1, 2, 1, '38400-111', 'Rua Acre', '300', 'Casa 2', 'Centro',
+values (2, 'd178b637-a785-4768-a3cb-aa1ce5a8cdab', 4, 1, 2, 1, '38400-111', 'Rua Acre', '300', 'Casa 2', 'Centro',
 'CRIADO', utc_timestamp, 79, 0, 79);
 
 INSERT INTO item_pedido (id, pedido_id, produto_id, quantidade, preco_unitario, preco_total, observacao)

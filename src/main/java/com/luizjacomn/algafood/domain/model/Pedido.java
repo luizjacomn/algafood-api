@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 @Entity
@@ -20,6 +21,8 @@ public class Pedido {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Long id;
+
+    private String codigo;
 
     @Column(name = "sub_total", nullable = false)
     private BigDecimal subTotal;
@@ -80,6 +83,11 @@ public class Pedido {
     public void paraProximoStatus(StatusPedido statusPedido, Consumer<OffsetDateTime> setterDataAlteracaoStatus) {
         setStatus(statusPedido);
         setterDataAlteracaoStatus.accept(OffsetDateTime.now());
+    }
+
+    @PrePersist
+    private void gerarUUID() {
+        setCodigo(UUID.randomUUID().toString());
     }
 
     private void setStatus(StatusPedido status) {
