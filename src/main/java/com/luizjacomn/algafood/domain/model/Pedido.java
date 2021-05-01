@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 @Entity
 @Data
@@ -80,6 +81,15 @@ public class Pedido {
 
     public void atribuirPedidoAosItens() {
         getItens().forEach(item -> item.setPedido(this));
+    }
+
+    public void paraProximoStatus(StatusPedido statusPedido, Consumer<OffsetDateTime> setterDataAlteracaoStatus) {
+        setStatus(statusPedido);
+        setterDataAlteracaoStatus.accept(OffsetDateTime.now());
+    }
+
+    private void setStatus(StatusPedido status) {
+        this.status = status;
     }
 }
 

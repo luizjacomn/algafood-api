@@ -1,5 +1,8 @@
 package com.luizjacomn.algafood.domain.model;
 
+import lombok.Getter;
+
+@Getter
 public enum StatusPedido {
     CRIADO("Criado"),
     CONFIRMADO("Confirmado"),
@@ -10,9 +13,5 @@ public enum StatusPedido {
 
     StatusPedido(String descricao) {
         this.descricao = descricao;
-    }
-
-    public String getDescricao() {
-        return descricao;
     }
 }
