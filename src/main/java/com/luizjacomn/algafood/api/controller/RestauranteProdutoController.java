@@ -5,6 +5,7 @@ import com.luizjacomn.algafood.api.model.mapper.ProdutoMapper;
 import com.luizjacomn.algafood.api.model.output.ProdutoOutput;
 import com.luizjacomn.algafood.domain.model.Produto;
 import com.luizjacomn.algafood.domain.model.Restaurante;
+import com.luizjacomn.algafood.domain.repository.ProdutoRepository;
 import com.luizjacomn.algafood.domain.service.ProdutoService;
 import com.luizjacomn.algafood.domain.service.RestauranteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +26,24 @@ public class RestauranteProdutoController {
     private ProdutoService produtoService;
 
     @Autowired
+    private ProdutoRepository produtoRepository;
+
+    @Autowired
     private ProdutoMapper produtoMapper;
 
     @GetMapping
-    public List<ProdutoOutput> listar(@PathVariable Long restauranteId) {
+    public List<ProdutoOutput> listar(@PathVariable Long restauranteId,
+                                      @RequestParam(value = "incluir-inativos", required = false) boolean incluirInativos) {
         Restaurante restaurante = restauranteService.buscar(restauranteId);
 
-        return produtoMapper.toOutputDTOList(restaurante.getProdutos());
+        List<Produto> produtos;
+        if (incluirInativos) {
+            produtos = produtoRepository.findByRestaurante(restaurante);
+        } else {
+            produtos = produtoRepository.findByRestauranteAndAtivoTrue(restaurante);
+        }
+
+        return produtoMapper.toOutputDTOList(produtos);
     }
 
     @GetMapping("/{produtoId}")
