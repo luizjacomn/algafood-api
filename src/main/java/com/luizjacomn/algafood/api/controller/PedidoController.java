@@ -1,5 +1,6 @@
 package com.luizjacomn.algafood.api.controller;
 
+import com.luizjacomn.algafood.api.filter.PedidoFilter;
 import com.luizjacomn.algafood.api.model.input.PedidoInput;
 import com.luizjacomn.algafood.api.model.mapper.PedidoMapper;
 import com.luizjacomn.algafood.api.model.mapper.PedidoResumeMapper;
@@ -11,6 +12,7 @@ import com.luizjacomn.algafood.domain.model.Pedido;
 import com.luizjacomn.algafood.domain.model.Usuario;
 import com.luizjacomn.algafood.domain.repository.PedidoRepository;
 import com.luizjacomn.algafood.domain.service.PedidoService;
+import com.luizjacomn.algafood.infra.repository.spec.PedidoSpecs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -35,8 +37,8 @@ public class PedidoController {
     private PedidoResumeMapper pedidoResumeMapper;
 
     @GetMapping
-    public List<PedidoResumeOutput> listar() {
-        return pedidoResumeMapper.toOutputDTOList(pedidoRepository.findAll());
+    public List<PedidoResumeOutput> pesquisar(PedidoFilter filter) {
+        return pedidoResumeMapper.toOutputDTOList(pedidoRepository.findAll(PedidoSpecs.filtrandoPor(filter)));
     }
 
     @GetMapping("/{codigoPedido}")
