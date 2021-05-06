@@ -2,6 +2,9 @@ package com.luizjacomn.algafood.api.model.mapper;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -86,5 +89,9 @@ public abstract class GenericMapper<E, I, O> implements RelationshipAttributes {
         return entities.stream()
                 .map(this::toOutputDTO)
                 .collect(toList());
+    }
+
+    public Page<O> toOutputDTOPage(Pageable pageable, Page<E> page) {
+        return new PageImpl<O>(toOutputDTOList(page.getContent()), pageable, page.getTotalElements());
     }
 }

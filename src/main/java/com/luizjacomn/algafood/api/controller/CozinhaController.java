@@ -9,6 +9,8 @@ import com.luizjacomn.algafood.domain.service.CozinhaService;
 import com.luizjacomn.algafood.util.MergeUtil;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.server.ServletServerHttpRequest;
@@ -36,8 +38,8 @@ public class CozinhaController {
     private MergeUtil mergeUtil;
 
     @GetMapping
-    public List<CozinhaOutput> listar() {
-        return cozinhaMapper.toOutputDTOList(cozinhaRepository.findAll());
+    public Page<CozinhaOutput> listar(Pageable pageable) {
+        return cozinhaMapper.toOutputDTOPage(pageable, cozinhaRepository.findAll(pageable));
     }
 
     @GetMapping("/{id}")
