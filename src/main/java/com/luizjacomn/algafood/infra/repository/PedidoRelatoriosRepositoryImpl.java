@@ -4,7 +4,7 @@ import com.luizjacomn.algafood.api.filter.VendaDiariaFilter;
 import com.luizjacomn.algafood.api.model.dto.VendaDiaria;
 import com.luizjacomn.algafood.domain.model.Pedido;
 import com.luizjacomn.algafood.domain.model.StatusPedido;
-import com.luizjacomn.algafood.domain.repository.PedidoRelatoriosRepository;
+import com.luizjacomn.algafood.domain.repository.reports.PedidoRelatoriosRepository;
 import org.hibernate.query.criteria.internal.OrderImpl;
 import org.springframework.stereotype.Repository;
 

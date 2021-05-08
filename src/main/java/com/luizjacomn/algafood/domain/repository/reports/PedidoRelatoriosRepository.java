@@ -1,4 +1,4 @@
-package com.luizjacomn.algafood.domain.repository;
+package com.luizjacomn.algafood.domain.repository.reports;
 
 import com.luizjacomn.algafood.api.filter.VendaDiariaFilter;
 import com.luizjacomn.algafood.api.model.dto.VendaDiaria;
