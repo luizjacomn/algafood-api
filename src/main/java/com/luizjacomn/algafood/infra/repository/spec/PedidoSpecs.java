@@ -2,7 +2,6 @@ package com.luizjacomn.algafood.infra.repository.spec;
 
 import com.luizjacomn.algafood.api.filter.PedidoFilter;
 import com.luizjacomn.algafood.domain.model.Pedido;
-import com.luizjacomn.algafood.domain.model.Restaurante;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.Predicate;
@@ -15,8 +14,10 @@ public class PedidoSpecs {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            root.fetch("cliente");
-            root.fetch("restaurante").fetch("cozinha");
+            if (Pedido.class.equals(query.getResultType())) {
+                root.fetch("cliente");
+                root.fetch("restaurante").fetch("cozinha");
+            }
 
             if (filter.getClienteId() != null) {
                 predicates.add(criteriaBuilder.equal(root.get("cliente"), filter.getClienteId()));

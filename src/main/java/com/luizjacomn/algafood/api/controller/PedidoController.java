@@ -14,6 +14,8 @@ import com.luizjacomn.algafood.domain.repository.PedidoRepository;
 import com.luizjacomn.algafood.domain.service.PedidoService;
 import com.luizjacomn.algafood.infra.repository.spec.PedidoSpecs;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,8 +39,8 @@ public class PedidoController {
     private PedidoResumeMapper pedidoResumeMapper;
 
     @GetMapping
-    public List<PedidoResumeOutput> pesquisar(PedidoFilter filter) {
-        return pedidoResumeMapper.toOutputDTOList(pedidoRepository.findAll(PedidoSpecs.filtrandoPor(filter)));
+    public Page<PedidoResumeOutput> pesquisar(PedidoFilter filter, Pageable pageable) {
+        return pedidoResumeMapper.toOutputDTOPage(pageable, pedidoRepository.findAll(PedidoSpecs.filtrandoPor(filter), pageable));
     }
 
     @GetMapping("/{codigoPedido}")
