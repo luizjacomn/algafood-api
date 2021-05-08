@@ -3,6 +3,7 @@ package com.luizjacomn.algafood.infra.repository;
 import com.luizjacomn.algafood.api.filter.VendaDiariaFilter;
 import com.luizjacomn.algafood.api.model.dto.VendaDiaria;
 import com.luizjacomn.algafood.domain.model.Pedido;
+import com.luizjacomn.algafood.domain.model.StatusPedido;
 import com.luizjacomn.algafood.domain.repository.PedidoRelatoriosRepository;
 import org.hibernate.query.criteria.internal.OrderImpl;
 import org.springframework.stereotype.Repository;
@@ -44,6 +45,8 @@ public class PedidoRelatoriosRepositoryImpl implements PedidoRelatoriosRepositor
         query.select(selection);
 
         List<Predicate> predicates = new ArrayList<>();
+
+        predicates.add(builder.in(root.get("status")).value(StatusPedido.CONFIRMADO).value(StatusPedido.ENTREGUE));
 
         if (filter.getRestauranteId() != null) {
             predicates.add(builder.equal(root.get("restaurante"), filter.getRestauranteId()));
