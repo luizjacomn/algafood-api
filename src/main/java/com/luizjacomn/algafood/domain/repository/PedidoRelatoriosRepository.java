@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface PedidoRelatoriosRepository {
 
-    List<VendaDiaria> pesquisarVendasDiarias(VendaDiariaFilter filter);
+    List<VendaDiaria> pesquisarVendasDiarias(VendaDiariaFilter filter, String timeOffset);
 
 }

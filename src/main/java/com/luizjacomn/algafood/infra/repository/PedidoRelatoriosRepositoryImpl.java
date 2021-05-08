@@ -22,21 +22,18 @@ public class PedidoRelatoriosRepositoryImpl implements PedidoRelatoriosRepositor
     private EntityManager manager;
 
     @Override
-    public List<VendaDiaria> pesquisarVendasDiarias(VendaDiariaFilter filter) {
-        /*
-        select
-        date(p.data_criacao),
-        count(p.id),
-        sum(p.valor_total)
-        from
-        pedido p
-        group by p.data_criacao
-         */
-
+    public List<VendaDiaria> pesquisarVendasDiarias(VendaDiariaFilter filter, String timeOffset) {
         CriteriaBuilder builder = manager.getCriteriaBuilder();
         CriteriaQuery<VendaDiaria> query = builder.createQuery(VendaDiaria.class);
         Root<Pedido> root = query.from(Pedido.class);
-        Expression<Date> dataCriacaoTrunc = builder.function("date", Date.class, root.get("dataCriacao"));
+
+        Expression<Date> dataCriacaoConvertTimezone = builder.function("convert_tz",
+                                                                        Date.class,
+                                                                        root.get("dataCriacao"),
+                                                                        builder.literal("+00:00"),
+                                                                        builder.literal(timeOffset));
+
+        Expression<Date> dataCriacaoTrunc = builder.function("date", Date.class, dataCriacaoConvertTimezone);
 
         CompoundSelection<VendaDiaria> selection = builder.construct(VendaDiaria.class,
                 dataCriacaoTrunc,
