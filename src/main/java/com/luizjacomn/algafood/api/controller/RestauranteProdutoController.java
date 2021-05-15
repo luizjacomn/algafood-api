@@ -1,5 +1,6 @@
 package com.luizjacomn.algafood.api.controller;
 
+import com.luizjacomn.algafood.api.model.input.FotoProdutoInput;
 import com.luizjacomn.algafood.api.model.input.ProdutoInput;
 import com.luizjacomn.algafood.api.model.mapper.ProdutoMapper;
 import com.luizjacomn.algafood.api.model.output.ProdutoOutput;
@@ -13,7 +14,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/restaurantes/{restauranteId}/produtos")
@@ -78,6 +82,23 @@ public class RestauranteProdutoController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void excluir(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
         produtoService.excluir(produtoId, restauranteId);
+    }
+
+    @PutMapping("/{produtoId}/foto")
+    public void uploadFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId, FotoProdutoInput fotoProdutoInput) {
+        String nomeArquivo = UUID.randomUUID().toString();
+
+        Path path = Paths.get("C:\\Users\\ljaco\\Desktop", nomeArquivo);
+
+        System.out.println(fotoProdutoInput.getDescricao());
+        System.out.println(fotoProdutoInput.getArquivo().getContentType());
+        System.out.println(path);
+
+        try {
+            fotoProdutoInput.getArquivo().transferTo(path);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
