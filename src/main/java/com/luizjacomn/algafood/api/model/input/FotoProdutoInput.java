@@ -1,7 +1,9 @@
 package com.luizjacomn.algafood.api.model.input;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.luizjacomn.algafood.core.validation.FileContentType;
 import com.luizjacomn.algafood.core.validation.FileSize;
+import com.luizjacomn.algafood.domain.model.Produto;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.MediaType;
@@ -21,5 +23,8 @@ public class FotoProdutoInput {
 
     @NotBlank
     private String descricao;
+
+    @JsonIgnore
+    private Produto produto;
 
 }

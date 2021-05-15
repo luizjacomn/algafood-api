@@ -2,11 +2,15 @@ package com.luizjacomn.algafood.api.controller;
 
 import com.luizjacomn.algafood.api.model.input.FotoProdutoInput;
 import com.luizjacomn.algafood.api.model.input.ProdutoInput;
+import com.luizjacomn.algafood.api.model.mapper.FotoProdutoMapper;
 import com.luizjacomn.algafood.api.model.mapper.ProdutoMapper;
+import com.luizjacomn.algafood.api.model.output.FotoProdutoOutput;
 import com.luizjacomn.algafood.api.model.output.ProdutoOutput;
+import com.luizjacomn.algafood.domain.model.FotoProduto;
 import com.luizjacomn.algafood.domain.model.Produto;
 import com.luizjacomn.algafood.domain.model.Restaurante;
 import com.luizjacomn.algafood.domain.repository.ProdutoRepository;
+import com.luizjacomn.algafood.domain.service.FotoProdutoService;
 import com.luizjacomn.algafood.domain.service.ProdutoService;
 import com.luizjacomn.algafood.domain.service.RestauranteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/restaurantes/{restauranteId}/produtos")
@@ -27,6 +28,9 @@ public class RestauranteProdutoController {
     private RestauranteService restauranteService;
 
     @Autowired
+    private FotoProdutoService fotoProdutoService;
+
+    @Autowired
     private ProdutoService produtoService;
 
     @Autowired
@@ -34,6 +38,9 @@ public class RestauranteProdutoController {
 
     @Autowired
     private ProdutoMapper produtoMapper;
+
+    @Autowired
+    private FotoProdutoMapper fotoProdutoMapper;
 
     @GetMapping
     public List<ProdutoOutput> listar(@PathVariable Long restauranteId,
@@ -85,21 +92,14 @@ public class RestauranteProdutoController {
     }
 
     @PutMapping("/{produtoId}/foto")
-    public void uploadFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId, @Valid FotoProdutoInput fotoProdutoInput) {
-        String nomeArquivoEntrada = fotoProdutoInput.getArquivo().getOriginalFilename();
-        String nomeArquivo = UUID.randomUUID().toString() + nomeArquivoEntrada.substring(nomeArquivoEntrada.indexOf("."));
+    public FotoProdutoOutput uploadFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId, @Valid FotoProdutoInput fotoProdutoInput) {
+        Produto produto = produtoService.buscar(produtoId, restauranteId);
 
-        Path path = Paths.get("C:\\Users\\ljaco\\Desktop", nomeArquivo);
+        fotoProdutoInput.setProduto(produto);
 
-        System.out.println(fotoProdutoInput.getDescricao());
-        System.out.println(fotoProdutoInput.getArquivo().getContentType());
-        System.out.println(path);
+        FotoProduto fotoProduto = fotoProdutoMapper.toEntity(fotoProdutoInput);
 
-        try {
-            fotoProdutoInput.getArquivo().transferTo(path);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return fotoProdutoMapper.toOutputDTO(fotoProdutoService.salvar(fotoProduto));
     }
 
 }
