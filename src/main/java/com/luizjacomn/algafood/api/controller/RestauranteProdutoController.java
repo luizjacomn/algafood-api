@@ -85,8 +85,9 @@ public class RestauranteProdutoController {
     }
 
     @PutMapping("/{produtoId}/foto")
-    public void uploadFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId, FotoProdutoInput fotoProdutoInput) {
-        String nomeArquivo = UUID.randomUUID().toString();
+    public void uploadFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId, @Valid FotoProdutoInput fotoProdutoInput) {
+        String nomeArquivoEntrada = fotoProdutoInput.getArquivo().getOriginalFilename();
+        String nomeArquivo = UUID.randomUUID().toString() + nomeArquivoEntrada.substring(nomeArquivoEntrada.indexOf("."));
 
         Path path = Paths.get("C:\\Users\\ljaco\\Desktop", nomeArquivo);
 
