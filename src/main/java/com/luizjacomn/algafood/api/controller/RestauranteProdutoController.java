@@ -95,9 +95,7 @@ public class RestauranteProdutoController {
     public FotoProdutoOutput uploadFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId, @Valid FotoProdutoInput fotoProdutoInput) {
         Produto produto = produtoService.buscar(produtoId, restauranteId);
 
-        fotoProdutoInput.setProduto(produto);
-
-        FotoProduto fotoProduto = fotoProdutoMapper.toEntity(fotoProdutoInput);
+        FotoProduto fotoProduto = fotoProdutoMapper.toEntity(fotoProdutoInput, produto);
 
         return fotoProdutoMapper.toOutputDTO(fotoProdutoService.salvar(fotoProduto));
     }

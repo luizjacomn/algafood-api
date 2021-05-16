@@ -3,6 +3,7 @@ package com.luizjacomn.algafood.api.model.mapper;
 import com.luizjacomn.algafood.api.model.input.FotoProdutoInput;
 import com.luizjacomn.algafood.api.model.output.FotoProdutoOutput;
 import com.luizjacomn.algafood.domain.model.FotoProduto;
+import com.luizjacomn.algafood.domain.model.Produto;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,7 +16,13 @@ public class FotoProdutoMapper extends GenericMapper<FotoProduto, FotoProdutoInp
         fotoProduto.setDescricao(input.getDescricao());
         fotoProduto.setContentType(input.getArquivo().getContentType());
         fotoProduto.setTamanho(input.getArquivo().getSize());
-        fotoProduto.setProduto(input.getProduto());
+
+        return fotoProduto;
+    }
+
+    public FotoProduto toEntity(FotoProdutoInput fotoProdutoInput, Produto produto) {
+        FotoProduto fotoProduto = this.toEntity(fotoProdutoInput);
+        fotoProduto.setProduto(produto);
 
         return fotoProduto;
     }
