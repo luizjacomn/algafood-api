@@ -1,5 +1,6 @@
 package com.luizjacomn.algafood.domain.service;
 
+import com.luizjacomn.algafood.domain.exception.FotoProdutoNaoEncontradaException;
 import com.luizjacomn.algafood.domain.model.FotoProduto;
 import com.luizjacomn.algafood.domain.repository.ProdutoRepository;
 import com.luizjacomn.algafood.domain.service.storage.FotoStorageService;
@@ -46,4 +47,8 @@ public class FotoProdutoService {
         return fotoProduto;
     }
 
+    public FotoProduto buscar(Long restauranteId, Long produtoId) {
+        return produtoRepository.findFotoProduto(restauranteId, produtoId)
+                                .orElseThrow(() -> new FotoProdutoNaoEncontradaException(restauranteId, produtoId));
+    }
 }

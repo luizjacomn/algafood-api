@@ -6,6 +6,7 @@ import com.luizjacomn.algafood.api.model.mapper.FotoProdutoMapper;
 import com.luizjacomn.algafood.api.model.mapper.ProdutoMapper;
 import com.luizjacomn.algafood.api.model.output.FotoProdutoOutput;
 import com.luizjacomn.algafood.api.model.output.ProdutoOutput;
+import com.luizjacomn.algafood.domain.exception.generics.EntidadeNaoEncontradaException;
 import com.luizjacomn.algafood.domain.model.FotoProduto;
 import com.luizjacomn.algafood.domain.model.Produto;
 import com.luizjacomn.algafood.domain.model.Restaurante;
@@ -13,8 +14,13 @@ import com.luizjacomn.algafood.domain.repository.ProdutoRepository;
 import com.luizjacomn.algafood.domain.service.FotoProdutoService;
 import com.luizjacomn.algafood.domain.service.ProdutoService;
 import com.luizjacomn.algafood.domain.service.RestauranteService;
+import com.luizjacomn.algafood.domain.service.storage.FotoStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -31,6 +37,9 @@ public class RestauranteProdutoController {
 
     @Autowired
     private FotoProdutoService fotoProdutoService;
+
+    @Autowired
+    private FotoStorageService fotoStorageService;
 
     @Autowired
     private ProdutoService produtoService;
@@ -101,6 +110,44 @@ public class RestauranteProdutoController {
         InputStream inputStream = fotoProdutoInput.getArquivo().getInputStream();
 
         return fotoProdutoMapper.toOutputDTO(fotoProdutoService.salvar(fotoProduto, inputStream));
+    }
+
+    @GetMapping(value = "/{produtoId}/foto", produces = MediaType.APPLICATION_JSON_VALUE)
+    public FotoProdutoOutput recuperarDadosFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
+        FotoProduto fotoProduto = fotoProdutoService.buscar(restauranteId, produtoId);
+
+        return fotoProdutoMapper.toOutputDTO(fotoProduto);
+    }
+
+    @GetMapping(value = "/{produtoId}/foto")
+    public ResponseEntity<InputStreamResource> recuperarFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId,
+                                                             @RequestHeader String accept) throws HttpMediaTypeNotAcceptableException {
+        try {
+            FotoProduto fotoProduto = fotoProdutoService.buscar(restauranteId, produtoId);
+            InputStream inputStream = fotoStorageService.recuperar(fotoProduto.getNomeArquivo());
+
+            MediaType mediaType = verificarCompatibilidade(fotoProduto.getContentType(), accept);
+
+            return ResponseEntity.ok()
+                    .contentType(mediaType)
+                    .body(new InputStreamResource(inputStream));
+        } catch (EntidadeNaoEncontradaException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    private MediaType verificarCompatibilidade(String contentType, String accept) throws HttpMediaTypeNotAcceptableException {
+        MediaType mediaTypeFoto = MediaType.parseMediaType(contentType);
+
+        List<MediaType> mediaTypesAccepted = MediaType.parseMediaTypes(accept);
+
+        boolean compativel = mediaTypesAccepted.stream().anyMatch(mediaTypeFoto::isCompatibleWith);
+
+        if (!compativel) {
+            throw new HttpMediaTypeNotAcceptableException(mediaTypesAccepted);
+        }
+
+        return mediaTypeFoto;
     }
 
 }
