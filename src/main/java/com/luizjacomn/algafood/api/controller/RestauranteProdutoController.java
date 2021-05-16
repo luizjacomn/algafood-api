@@ -18,6 +18,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 @RestController
@@ -92,12 +94,13 @@ public class RestauranteProdutoController {
     }
 
     @PutMapping("/{produtoId}/foto")
-    public FotoProdutoOutput uploadFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId, @Valid FotoProdutoInput fotoProdutoInput) {
+    public FotoProdutoOutput uploadFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId, @Valid FotoProdutoInput fotoProdutoInput) throws IOException {
         Produto produto = produtoService.buscar(produtoId, restauranteId);
 
         FotoProduto fotoProduto = fotoProdutoMapper.toEntity(fotoProdutoInput, produto);
+        InputStream inputStream = fotoProdutoInput.getArquivo().getInputStream();
 
-        return fotoProdutoMapper.toOutputDTO(fotoProdutoService.salvar(fotoProduto));
+        return fotoProdutoMapper.toOutputDTO(fotoProdutoService.salvar(fotoProduto, inputStream));
     }
 
 }
