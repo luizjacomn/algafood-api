@@ -12,6 +12,10 @@ public interface FotoStorageService {
 
     void armazenar(String nomeArquivoAntigo, Foto foto);
 
+    void excluir(String nomeArquivo);
+
+    void init();
+
     default String resolverNomeArquivo(String nomeArquivo) {
         return UUID.randomUUID().toString() + "_" + nomeArquivo.replaceAll("[^a-zA-Z\\d-.]", "-").toLowerCase();
     }

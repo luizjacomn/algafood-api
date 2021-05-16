@@ -36,6 +36,7 @@ public class FotoProdutoService {
 
         fotoProduto.setNomeArquivo(nomeArquivoResolvido);
         fotoProduto = produtoRepository.save(fotoProduto);
+        produtoRepository.flush();
 
         Foto foto = Foto.builder()
                         .nomeArquivo(fotoProduto.getNomeArquivo())
@@ -50,5 +51,14 @@ public class FotoProdutoService {
     public FotoProduto buscar(Long restauranteId, Long produtoId) {
         return produtoRepository.findFotoProduto(restauranteId, produtoId)
                                 .orElseThrow(() -> new FotoProdutoNaoEncontradaException(restauranteId, produtoId));
+    }
+
+    @Transactional
+    public void excluir(Long restauranteId, Long produtoId) {
+        FotoProduto fotoProduto = buscar(restauranteId, produtoId);
+        produtoRepository.delete(fotoProduto);
+        produtoRepository.flush();
+
+        fotoStorageService.excluir(fotoProduto.getNomeArquivo());
     }
 }

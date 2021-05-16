@@ -112,6 +112,12 @@ public class RestauranteProdutoController {
         return fotoProdutoMapper.toOutputDTO(fotoProdutoService.salvar(fotoProduto, inputStream));
     }
 
+    @DeleteMapping("/{produtoId}/foto")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void excluirFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
+        fotoProdutoService.excluir(restauranteId, produtoId);
+    }
+
     @GetMapping(value = "/{produtoId}/foto", produces = MediaType.APPLICATION_JSON_VALUE)
     public FotoProdutoOutput recuperarDadosFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
         FotoProduto fotoProduto = fotoProdutoService.buscar(restauranteId, produtoId);
