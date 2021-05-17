@@ -3,6 +3,8 @@ package com.luizjacomn.algafood.domain.service;
 import com.luizjacomn.algafood.domain.exception.generics.NegocioException;
 import com.luizjacomn.algafood.domain.model.Pedido;
 import com.luizjacomn.algafood.domain.model.StatusPedido;
+import com.luizjacomn.algafood.domain.service.mail.EnvioEmailService;
+import com.luizjacomn.algafood.domain.service.mail.EnvioEmailService.Mensagem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,9 @@ public class AlteracaoStatusPedidoService {
     @Autowired
     private PedidoService pedidoService;
 
+    @Autowired
+    private EnvioEmailService envioEmailService;
+
     @Value("${api.pedido.habilita-erro.alteracao-para-o-mesmo-status:false}")
     private boolean habilitaErroAlteracaoMesmoStatus;
 
@@ -26,6 +31,15 @@ public class AlteracaoStatusPedidoService {
         Pedido pedido = pedidoService.buscar(codigo);
 
         alterarStatus(pedido, p -> !p.getStatus().equals(StatusPedido.CRIADO), StatusPedido.CONFIRMADO, pedido::setDataConfirmacao);
+
+        Mensagem mensagem = Mensagem.builder()
+                                    .assunto(pedido.getRestaurante().getNome() + " - Pedido confirmado")
+                                    .template("pedido-confirmado.html")
+                                    .parametro("pedido", pedido)
+                                    .destinatario(pedido.getCliente().getEmail())
+                                    .build();
+
+        envioEmailService.enviar(mensagem);
     }
 
     @Transactional
