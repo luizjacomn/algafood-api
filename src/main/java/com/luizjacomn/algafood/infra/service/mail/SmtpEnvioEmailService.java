@@ -11,6 +11,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
+import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 @Service
@@ -34,7 +35,7 @@ public class SmtpEnvioEmailService implements EnvioEmailService {
 
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "UTF-8");
             helper.setFrom(mailProperties.getFrom());
-            helper.setTo(mensagem.getDestinatarios().toArray(new String[0]));
+            configurarDestinatario(mensagem, helper);
             helper.setSubject(mensagem.getAssunto());
             helper.setText(template, true);
 
@@ -42,6 +43,10 @@ public class SmtpEnvioEmailService implements EnvioEmailService {
         } catch (Exception e) {
             throw new MailException("Erro ao enviar e-mail", e);
         }
+    }
+
+    protected void configurarDestinatario(Mensagem mensagem, MimeMessageHelper helper) throws Exception {
+        helper.setTo(mensagem.getDestinatarios().toArray(new String[0]));
     }
 
     private String processarTemplate(Mensagem mensagem) throws Exception {

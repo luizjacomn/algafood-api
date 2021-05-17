@@ -3,6 +3,7 @@ package com.luizjacomn.algafood.core.mail;
 import com.luizjacomn.algafood.core.enums.MailImpl;
 import com.luizjacomn.algafood.domain.service.mail.EnvioEmailService;
 import com.luizjacomn.algafood.infra.service.mail.FakeEnvioEmailService;
+import com.luizjacomn.algafood.infra.service.mail.SandboxEnvioEmailService;
 import com.luizjacomn.algafood.infra.service.mail.SmtpEnvioEmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +20,8 @@ public class MailConfig {
         switch (mailProperties.getImpl()) {
             case SMTP:
                 return new SmtpEnvioEmailService();
+            case SANDBOX:
+                return new SandboxEnvioEmailService();
             case FAKE:
                 return new FakeEnvioEmailService();
             default:
