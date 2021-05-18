@@ -1,8 +1,11 @@
 package com.luizjacomn.algafood.domain.model;
 
+import com.luizjacomn.algafood.domain.event.PedidoConfirmadoEvent;
+import com.luizjacomn.algafood.domain.exception.generics.NegocioException;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -10,12 +13,12 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 @Entity
 @Data
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Pedido {
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
+public class Pedido extends AbstractAggregateRoot<Pedido> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -80,9 +83,40 @@ public class Pedido {
         this.valorTotal = this.subTotal.add(this.taxaFrete);
     }
 
-    public void paraProximoStatus(StatusPedido statusPedido, Consumer<OffsetDateTime> setterDataAlteracaoStatus) {
-        setStatus(statusPedido);
-        setterDataAlteracaoStatus.accept(OffsetDateTime.now());
+    public void confirmar(boolean habilitaErroAlteracaoMesmoStatus) {
+        paraProximoStatus(StatusPedido.CONFIRMADO, p -> !p.getStatus().equals(StatusPedido.CRIADO), habilitaErroAlteracaoMesmoStatus);
+        setDataConfirmacao(OffsetDateTime.now());
+
+        registerEvent(new PedidoConfirmadoEvent(this));
+    }
+
+    public void entregar(boolean habilitaErroAlteracaoMesmoStatus) {
+        paraProximoStatus(StatusPedido.ENTREGUE, p -> !p.getStatus().equals(StatusPedido.CONFIRMADO), habilitaErroAlteracaoMesmoStatus);
+        setDataEntrega(OffsetDateTime.now());
+    }
+
+    public void cancelar(boolean habilitaErroAlteracaoMesmoStatus) {
+        paraProximoStatus(StatusPedido.CANCELADO, p -> p.getStatus().equals(StatusPedido.CONFIRMADO) || p.getStatus().equals(StatusPedido.ENTREGUE), habilitaErroAlteracaoMesmoStatus);
+        setDataCancelamento(OffsetDateTime.now());
+    }
+
+    private void paraProximoStatus(StatusPedido statusPedido, Predicate<Pedido> lancaExcecaoSe, boolean habilitaErroAlteracaoMesmoStatus) {
+        if (this.getStatus().equals(statusPedido)) {
+            if (habilitaErroAlteracaoMesmoStatus) {
+                throw new NegocioException(String.format("Este pedido foi %s anteriormente", statusPedido.getDescricao().toLowerCase()));
+            }
+        } else {
+            validar(lancaExcecaoSe, statusPedido);
+
+            setStatus(statusPedido);
+        }
+    }
+
+    private void validar(Predicate<Pedido> lancaExcecaoSe, StatusPedido proximoStatus) {
+        if (lancaExcecaoSe.test(this)) {
+            throw new NegocioException(String.format("Status do pedido %s não pode ser alterado de '%s' para '%s'",
+                    this.getCodigo(), this.getStatus().getDescricao(), proximoStatus.getDescricao()));
+        }
     }
 
     @PrePersist

@@ -1,18 +1,13 @@
 package com.luizjacomn.algafood.domain.service;
 
-import com.luizjacomn.algafood.domain.exception.generics.NegocioException;
 import com.luizjacomn.algafood.domain.model.Pedido;
-import com.luizjacomn.algafood.domain.model.StatusPedido;
-import com.luizjacomn.algafood.domain.service.mail.EnvioEmailService;
-import com.luizjacomn.algafood.domain.service.mail.EnvioEmailService.Mensagem;
+import com.luizjacomn.algafood.domain.repository.PedidoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.OffsetDateTime;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
+import java.util.function.BiConsumer;
 
 @Service
 public class AlteracaoStatusPedidoService {
@@ -21,61 +16,32 @@ public class AlteracaoStatusPedidoService {
     private PedidoService pedidoService;
 
     @Autowired
-    private EnvioEmailService envioEmailService;
+    private PedidoRepository pedidoRepository;
 
     @Value("${api.pedido.habilita-erro.alteracao-para-o-mesmo-status:false}")
     private boolean habilitaErroAlteracaoMesmoStatus;
 
     @Transactional
     public void confirmarPedido(String codigo) {
-        Pedido pedido = pedidoService.buscar(codigo);
-
-        alterarStatus(pedido, p -> !p.getStatus().equals(StatusPedido.CRIADO), StatusPedido.CONFIRMADO, pedido::setDataConfirmacao);
-
-        Mensagem mensagem = Mensagem.builder()
-                                    .assunto(pedido.getRestaurante().getNome() + " - Pedido confirmado")
-                                    .template("pedido-confirmado.html")
-                                    .parametro("pedido", pedido)
-                                    .destinatario(pedido.getCliente().getEmail())
-                                    .build();
-
-        envioEmailService.enviar(mensagem);
+        alterarStatus(codigo, Pedido::confirmar);
     }
 
     @Transactional
     public void entregarPedido(String codigo) {
-        Pedido pedido = pedidoService.buscar(codigo);
-
-        alterarStatus(pedido, p -> !p.getStatus().equals(StatusPedido.CONFIRMADO), StatusPedido.ENTREGUE, pedido::setDataEntrega);
+        alterarStatus(codigo, Pedido::entregar);
     }
 
     @Transactional
     public void cancelarPedido(String codigo) {
+        alterarStatus(codigo, Pedido::cancelar);
+    }
+
+    private void alterarStatus(String codigo, BiConsumer<Pedido, Boolean> consumer) {
         Pedido pedido = pedidoService.buscar(codigo);
 
-        alterarStatus(pedido, p -> p.getStatus().equals(StatusPedido.CONFIRMADO) || p.getStatus().equals(StatusPedido.ENTREGUE),
-                StatusPedido.CANCELADO, pedido::setDataCancelamento);
-    }
+        consumer.accept(pedido, habilitaErroAlteracaoMesmoStatus);
 
-    private void alterarStatus(Pedido pedido, Predicate<Pedido> lancaExcecaoSe, StatusPedido proximoStatus,
-                               Consumer<OffsetDateTime> setterDataAlteracaoStatus) {
-
-        if (pedido.getStatus().equals(proximoStatus)) {
-            if (habilitaErroAlteracaoMesmoStatus) {
-                throw new NegocioException(String.format("Este pedido foi %s anteriormente", proximoStatus.getDescricao().toLowerCase()));
-            }
-        } else {
-            validar(pedido, lancaExcecaoSe, proximoStatus);
-
-            pedido.paraProximoStatus(proximoStatus, setterDataAlteracaoStatus);
-        }
-    }
-
-    private void validar(Pedido pedido, Predicate<Pedido> lancaExcecaoSe, StatusPedido proximoStatus) {
-        if (lancaExcecaoSe.test(pedido)) {
-            throw new NegocioException(String.format("Status do pedido %s não pode ser alterado de '%s' para '%s'",
-                    pedido.getCodigo(), pedido.getStatus().getDescricao(), proximoStatus.getDescricao()));
-        }
+        pedidoRepository.save(pedido);
     }
 
 }
