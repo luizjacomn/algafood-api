@@ -1,5 +1,6 @@
 package com.luizjacomn.algafood.domain.model;
 
+import com.luizjacomn.algafood.domain.event.PedidoCanceladoEvent;
 import com.luizjacomn.algafood.domain.event.PedidoConfirmadoEvent;
 import com.luizjacomn.algafood.domain.exception.generics.NegocioException;
 import lombok.Data;
@@ -98,6 +99,8 @@ public class Pedido extends AbstractAggregateRoot<Pedido> {
     public void cancelar(boolean habilitaErroAlteracaoMesmoStatus) {
         paraProximoStatus(StatusPedido.CANCELADO, p -> p.getStatus().equals(StatusPedido.CONFIRMADO) || p.getStatus().equals(StatusPedido.ENTREGUE), habilitaErroAlteracaoMesmoStatus);
         setDataCancelamento(OffsetDateTime.now());
+
+        registerEvent(new PedidoCanceladoEvent(this));
     }
 
     private void paraProximoStatus(StatusPedido statusPedido, Predicate<Pedido> lancaExcecaoSe, boolean habilitaErroAlteracaoMesmoStatus) {

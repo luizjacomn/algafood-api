@@ -21,21 +21,25 @@ public class SmtpEnvioEmailService implements EnvioEmailService {
     private JavaMailSender mailSender;
 
     @Autowired
-    private MailProperties mailProperties;
+    protected MailProperties mailProperties;
 
     @Autowired
     private Configuration freemarkerConfig;
 
+    protected Mensagem mensagem;
+
     @Override
     public void enviar(Mensagem mensagem) {
         try {
+            this.mensagem = mensagem;
+
             String template = processarTemplate(mensagem);
 
             MimeMessage mimeMessage = mailSender.createMimeMessage();
 
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "UTF-8");
             helper.setFrom(mailProperties.getFrom());
-            configurarDestinatario(mensagem, helper);
+            configurarDestinatario(helper);
             helper.setSubject(mensagem.getAssunto());
             helper.setText(template, true);
 
@@ -45,11 +49,11 @@ public class SmtpEnvioEmailService implements EnvioEmailService {
         }
     }
 
-    protected void configurarDestinatario(Mensagem mensagem, MimeMessageHelper helper) throws Exception {
+    protected void configurarDestinatario(MimeMessageHelper helper) throws Exception {
         helper.setTo(mensagem.getDestinatarios().toArray(new String[0]));
     }
 
-    private String processarTemplate(Mensagem mensagem) throws Exception {
+    protected String processarTemplate(Mensagem mensagem) throws Exception {
         Template template = freemarkerConfig.getTemplate(mensagem.getTemplate());
 
         return FreeMarkerTemplateUtils.processTemplateIntoString(template, mensagem.getParametros());
