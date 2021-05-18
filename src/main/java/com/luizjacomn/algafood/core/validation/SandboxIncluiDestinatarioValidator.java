@@ -10,12 +10,10 @@ public class SandboxIncluiDestinatarioValidator implements ConstraintValidator<S
 
     @Override
     public boolean isValid(MailProperties value, ConstraintValidatorContext context) {
-        boolean valido = true;
-
         if (MailImpl.SANDBOX.equals(value.getImpl())) {
-            valido = value.getSandbox().getDestinatario() != null && !value.getSandbox().getDestinatario().isEmpty();
+            return value.getSandbox().getDestinatario() != null && !value.getSandbox().getDestinatario().isEmpty();
         }
 
-        return valido;
+        return true;
     }
 }
