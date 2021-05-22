@@ -7,11 +7,14 @@ import com.luizjacomn.algafood.domain.model.FormaPagamento;
 import com.luizjacomn.algafood.domain.repository.FormaPagamentoRepository;
 import com.luizjacomn.algafood.domain.service.FormaPagamentoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/formas-pagamento")
@@ -27,13 +30,22 @@ public class FormaPagamentoController {
     private FormaPagamentoMapper formaPagamentoMapper;
 
     @GetMapping
-    public List<FormaPagamentoOutput> listar() {
-        return formaPagamentoMapper.toOutputDTOList(formaPagamentoRepository.findAll());
+    public ResponseEntity<List<FormaPagamentoOutput>> listar() {
+        List<FormaPagamentoOutput> formasPagamento = formaPagamentoMapper.toOutputDTOList(formaPagamentoRepository.findAll());
+        return ResponseEntity
+                    .ok()
+                    .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
+                    .body(formasPagamento);
     }
 
     @GetMapping("/{id}")
-    public FormaPagamentoOutput buscar(@PathVariable Long id) {
-        return formaPagamentoMapper.toOutputDTO(formaPagamentoService.buscar(id));
+    public ResponseEntity<FormaPagamentoOutput> buscar(@PathVariable Long id) {
+        FormaPagamentoOutput formaPagamento = formaPagamentoMapper.toOutputDTO(formaPagamentoService.buscar(id));
+        
+        return ResponseEntity
+                .ok()
+                .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
+                .body(formaPagamento);
     }
 
     @PostMapping
