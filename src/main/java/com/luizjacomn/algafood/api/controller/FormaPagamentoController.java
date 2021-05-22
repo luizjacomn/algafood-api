@@ -11,9 +11,13 @@ import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
 import javax.validation.Valid;
+import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @RestController
@@ -30,21 +34,35 @@ public class FormaPagamentoController {
     private FormaPagamentoMapper formaPagamentoMapper;
 
     @GetMapping
-    public ResponseEntity<List<FormaPagamentoOutput>> listar() {
+    public ResponseEntity<List<FormaPagamentoOutput>> listar(ServletWebRequest request) {
+        String eTag = geteTag(request);
+
+        if (request.checkNotModified(eTag)) {
+            return null;
+        }
+
         List<FormaPagamentoOutput> formasPagamento = formaPagamentoMapper.toOutputDTOList(formaPagamentoRepository.findAll());
         return ResponseEntity
                     .ok()
                     .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
+                    .eTag(eTag)
                     .body(formasPagamento);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<FormaPagamentoOutput> buscar(@PathVariable Long id) {
+    public ResponseEntity<FormaPagamentoOutput> buscar(@PathVariable Long id, ServletWebRequest request) {
+        String eTag = geteTag(request);
+
+        if (request.checkNotModified(eTag)) {
+            return null;
+        }
+
         FormaPagamentoOutput formaPagamento = formaPagamentoMapper.toOutputDTO(formaPagamentoService.buscar(id));
         
         return ResponseEntity
                 .ok()
                 .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
+                .eTag(eTag)
                 .body(formaPagamento);
     }
 
@@ -69,5 +87,17 @@ public class FormaPagamentoController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void excluir(@PathVariable Long id) {
         formaPagamentoService.excluir(id);
+    }
+
+    private String geteTag(ServletWebRequest request) {
+        ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
+
+        Optional<OffsetDateTime> maxDataAtualizacao = formaPagamentoRepository.findMaxDataAtualizacao();
+
+        if (maxDataAtualizacao.isPresent()) {
+            return String.valueOf(maxDataAtualizacao.get().toEpochSecond());
+        } else {
+            return "0"; // default
+        }
     }
 }

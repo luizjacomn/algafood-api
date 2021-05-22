@@ -8,10 +8,15 @@ import javax.persistence.Id;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.OffsetDateTime;
 
 @Entity
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@NoArgsConstructor
 public class FormaPagamento {
 
 	@Id
@@ -21,9 +26,10 @@ public class FormaPagamento {
 	
 	@Column(nullable = false)
 	private String descricao;
-	
-	public FormaPagamento() {
-	}
+
+	@UpdateTimestamp
+	@Column(nullable = false)
+	private OffsetDateTime dataAtualizacao;
 
 	public FormaPagamento(String nome) {
 		this.descricao = nome;
