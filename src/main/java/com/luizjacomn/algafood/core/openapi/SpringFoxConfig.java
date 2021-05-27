@@ -7,10 +7,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.RepresentationBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.builders.ResponseBuilder;
 import springfox.documentation.oas.annotations.EnableOpenApi;
@@ -23,6 +25,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 @Configuration
 @EnableOpenApi
@@ -66,43 +69,46 @@ public class SpringFoxConfig implements WebMvcConfigurer {
     }
 
     private List<Response> globalGetResponseMessages() {
-        return Arrays.asList(new ResponseBuilder().code(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()))
-                        .description("Erro interno do servidor").build(),
-                new ResponseBuilder().code(String.valueOf(HttpStatus.NOT_ACCEPTABLE.value()))
-                        .description("Recurso não possui representação aceita pelo consumidor").build());
+        return Arrays.asList(
+                buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Erro interno do servidor", true),
+                buildResponse(HttpStatus.NOT_ACCEPTABLE, "Recurso não possui representação aceita pelo consumidor", false)
+        );
     }
 
     private List<Response> globalPostPutResponseMessages() {
         return Arrays.asList(
-                new ResponseBuilder()
-                        .code(String.valueOf(HttpStatus.BAD_REQUEST.value()))
-                        .description("Requisição inválida (erro do cliente)")
-                        .build(),
-                new ResponseBuilder()
-                        .code(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()))
-                        .description("Erro interno no servidor")
-                        .build(),
-                new ResponseBuilder()
-                        .code(String.valueOf(HttpStatus.NOT_ACCEPTABLE.value()))
-                        .description("Recurso não possui representação aceita pelo consumidor")
-                        .build(),
-                new ResponseBuilder()
-                        .code(String.valueOf(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value()))
-                        .description("Requisição recusada porque o corpo está em um formato não suportado")
-                        .build()
+                buildResponse(HttpStatus.BAD_REQUEST, "Requisição inválida (erro do cliente)", true),
+                buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Erro interno no servidor", true),
+                buildResponse(HttpStatus.NOT_ACCEPTABLE, "Recurso não possui representação aceita pelo consumidor", false),
+                buildResponse(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "Requisição recusada porque o corpo está em um formato não suportado", true)
         );
     }
 
     private List<Response> globalDeleteResponseMessages() {
         return Arrays.asList(
-                new ResponseBuilder()
-                        .code(String.valueOf(HttpStatus.BAD_REQUEST.value()))
-                        .description("Requisição inválida (erro do cliente)")
-                        .build(),
-                new ResponseBuilder()
-                        .code(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()))
-                        .description("Erro interno no servidor")
-                        .build()
+                buildResponse(HttpStatus.BAD_REQUEST, "Requisição inválida (erro do cliente)", true),
+                buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Erro interno no servidor", true)
         );
+    }
+
+    private Response buildResponse(HttpStatus httpStatus, String description, boolean withModel) {
+        ResponseBuilder builder = new ResponseBuilder()
+                .code(String.valueOf(httpStatus.value()))
+                .description(description);
+
+        if (withModel) {
+            builder.representation(MediaType.APPLICATION_JSON)
+                    .apply(builderModelProblema());
+        }
+
+        return builder.build();
+    }
+
+    private Consumer<RepresentationBuilder> builderModelProblema() {
+        return r -> r.model(m -> m.name("Problema")
+                .referenceModel(ref -> ref.key(k -> k.qualifiedModelName(q ->
+                        q.name("Problema")
+                                .namespace("com.luizjacomn.algafood.api.exceptionhandler")
+                ))));
     }
 }
