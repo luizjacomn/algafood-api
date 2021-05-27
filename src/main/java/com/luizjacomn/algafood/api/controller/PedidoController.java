@@ -6,6 +6,7 @@ import com.luizjacomn.algafood.api.model.mapper.PedidoMapper;
 import com.luizjacomn.algafood.api.model.mapper.PedidoResumeMapper;
 import com.luizjacomn.algafood.api.model.output.PedidoOutput;
 import com.luizjacomn.algafood.api.model.output.PedidoResumeOutput;
+import com.luizjacomn.algafood.api.openapi.controller.PedidoControllerOpenApi;
 import com.luizjacomn.algafood.domain.exception.generics.EntidadeNaoEncontradaException;
 import com.luizjacomn.algafood.domain.exception.generics.NegocioException;
 import com.luizjacomn.algafood.domain.model.Pedido;
@@ -20,11 +21,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/pedidos")
-public class PedidoController {
+public class PedidoController implements PedidoControllerOpenApi {
 
     @Autowired
     private PedidoService pedidoService;
@@ -38,6 +38,7 @@ public class PedidoController {
     @Autowired
     private PedidoResumeMapper pedidoResumeMapper;
 
+    @Override
     @GetMapping
     public Page<PedidoResumeOutput> pesquisar(PedidoFilter filter, Pageable pageable) {
         return pedidoResumeMapper.toOutputDTOPage(pageable, pedidoRepository.findAll(PedidoSpecs.filtrandoPor(filter), pageable));
