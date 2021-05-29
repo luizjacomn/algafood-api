@@ -9,6 +9,7 @@ import com.luizjacomn.algafood.domain.exception.generics.NegocioException;
 import com.luizjacomn.algafood.domain.model.Cidade;
 import com.luizjacomn.algafood.domain.repository.CidadeRepository;
 import com.luizjacomn.algafood.domain.service.CidadeService;
+import com.luizjacomn.algafood.util.ResourceURIUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -48,7 +49,11 @@ public class CidadeController implements CidadeControllerOpenApi {
         try {
             Cidade cidade = cidadeMapper.toEntity(cidadeInput);
 
-            return cidadeMapper.toOutputDTO(cidadeService.salvar(cidade));
+            CidadeOutput cidadeOutput = cidadeMapper.toOutputDTO(cidadeService.salvar(cidade));
+
+            ResourceURIUtil.addURIToResponse(cidadeOutput.getId());
+
+            return cidadeOutput;
         } catch (EstadoNaoEncontradoException e) {
             throw new NegocioException(e.getMessage());
         }
