@@ -11,6 +11,7 @@ public enum ProblemType {
     PARAMETRO_INVALIDO("/parametro-invalido", "Parâmetro inválido", 400),
     METODO_HTTP_NA0_SUPORTADO("/metodo-http-nao-suportado", "Método HTTP não suportado", 400),
     DADOS_INVALIDOS("/dados-invalidos", "Dados inválidos", 400),
+    TAMANHO_REQUISICAO_EXCEDIDO("/tamanho-requisicao-excedido", "Tamanho máximo da requisição foi excedido", 400),
     PROBLEMA_NO_SISTEMA("/problema-no-sistema", "Problema no sistema", 500);
 
     private String uri;

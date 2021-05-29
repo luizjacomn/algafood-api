@@ -8,7 +8,9 @@ import com.luizjacomn.algafood.core.validation.exception.ValidacaoException;
 import com.luizjacomn.algafood.domain.exception.generics.EntidadeEmUsoException;
 import com.luizjacomn.algafood.domain.exception.generics.EntidadeNaoEncontradaException;
 import com.luizjacomn.algafood.domain.exception.generics.NegocioException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -26,15 +28,16 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
+@Slf4j
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -73,6 +76,19 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         }
 
         return handle(ProblemType.MENSAGEM_INCOMPREENSIVEL, ex, "O corpo da requisição está inválido. Verifique erro de sintaxe.", request);
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<Object> handleFileSizeLimitExceededException(MaxUploadSizeExceededException ex, WebRequest request) {
+        Throwable rootCause = ExceptionUtils.getRootCause(ex);
+
+        if (rootCause instanceof FileSizeLimitExceededException) {
+            FileSizeLimitExceededException fsleEx = (FileSizeLimitExceededException) rootCause;
+            String detail = String.format("O tamanho do arquivo excede o máximo suportado de %d", fsleEx.getPermittedSize());
+            return handle(ProblemType.TAMANHO_REQUISICAO_EXCEDIDO, fsleEx, detail, request);
+        }
+
+        return handle(ProblemType.TAMANHO_REQUISICAO_EXCEDIDO, ex, "Tamanho da requisição excede o máximo suportado", request);
     }
 
     @Override
@@ -128,7 +144,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleDemaisExceptions(Exception ex, WebRequest request) {
-        ex.printStackTrace();// TODO substituir por log
+        log.error(ex.getMessage(), ex);
         return handle(ProblemType.PROBLEMA_NO_SISTEMA, ex, "Ocorreu um erro interno inesperado no sistema. Tente novamente e se o problema " +
                 "persistir, entre em contato com o administardor do sistema.", request);
     }

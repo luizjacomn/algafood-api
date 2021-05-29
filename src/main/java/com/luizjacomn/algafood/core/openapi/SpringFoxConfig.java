@@ -8,8 +8,10 @@ import com.luizjacomn.algafood.api.openapi.model.PageableModel;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,6 +29,7 @@ import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
@@ -59,11 +62,14 @@ public class SpringFoxConfig implements WebMvcConfigurer {
 //                                .build()
 //                ))
                 .additionalModels(typeResolver.resolve(Problem.class))
-                .ignoredParameterTypes(ServletWebRequest.class)
+                .ignoredParameterTypes(ServletWebRequest.class, InputStream.class, InputStreamResource.class, Sort.class)
                 .directModelSubstitute(Pageable.class, PageableModel.class)
                 .alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(Page.class, CozinhaOutput.class), CozinhasModel.class))
                 .apiInfo(apiInfo())
-                .tags(new Tag("Cidades", "Gerenciar as cidades"));
+                .tags(
+                        new Tag("Cidades", "Gerenciar as cidades"),
+                        new Tag("Pedidos", "Gerenciar os pedidos")
+                );
     }
 
     public ApiInfo apiInfo() {

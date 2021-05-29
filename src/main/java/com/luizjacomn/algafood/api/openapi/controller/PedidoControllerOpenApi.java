@@ -3,12 +3,14 @@ package com.luizjacomn.algafood.api.openapi.controller;
 import com.luizjacomn.algafood.api.filter.PedidoFilter;
 import com.luizjacomn.algafood.api.model.output.PedidoOutput;
 import com.luizjacomn.algafood.api.model.output.PedidoResumeOutput;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.PathVariable;
 
+@Api(tags = "Pedidos")
 public interface PedidoControllerOpenApi {
 
     @ApiImplicitParams({
