@@ -12,14 +12,10 @@ import com.luizjacomn.algafood.domain.service.CidadeService;
 import com.luizjacomn.algafood.util.ResourceURIUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @RestController
 @RequestMapping(path = "/cidades")
@@ -37,37 +33,13 @@ public class CidadeController implements CidadeControllerOpenApi {
     @Override
     @GetMapping
     public CollectionModel<CidadeOutput> listar() {
-        List<CidadeOutput> cidadesOutput = cidadeMapper.toOutputDTOList(cidadeRepository.findAll());
-
-        cidadesOutput.forEach(item -> {
-            item.add(linkTo(CidadeController.class).slash(item.getId()).withSelfRel());
-
-            item.getEstado().add(linkTo(EstadoController.class).slash(item.getEstado().getId()).withSelfRel());
-
-            item.getEstado().add(linkTo(EstadoController.class).withRel(IanaLinkRelations.COLLECTION));
-        });
-
-        CollectionModel<CidadeOutput> collectionModel = CollectionModel.of(cidadesOutput);
-
-        collectionModel.add(linkTo(CidadeController.class).withRel(IanaLinkRelations.COLLECTION));
-
-        return collectionModel;
+        return cidadeMapper.toCollectionModel(cidadeRepository.findAll());
     }
 
     @Override
     @GetMapping("/{id}")
     public CidadeOutput buscar(@PathVariable Long id) {
-        CidadeOutput cidadeOutput = cidadeMapper.toOutputDTO(cidadeService.buscar(id));
-
-        cidadeOutput.add(linkTo(CidadeController.class).slash(cidadeOutput.getId()).withSelfRel());
-
-        cidadeOutput.add(linkTo(CidadeController.class).withRel(IanaLinkRelations.COLLECTION));
-
-        cidadeOutput.getEstado().add(linkTo(EstadoController.class).slash(cidadeOutput.getEstado().getId()).withSelfRel());
-
-        cidadeOutput.getEstado().add(linkTo(EstadoController.class).withRel(IanaLinkRelations.COLLECTION));
-
-        return cidadeOutput;
+        return cidadeMapper.toModel(cidadeService.buscar(id));
     }
 
     @Override
@@ -77,7 +49,7 @@ public class CidadeController implements CidadeControllerOpenApi {
         try {
             Cidade cidade = cidadeMapper.toEntity(cidadeInput);
 
-            CidadeOutput cidadeOutput = cidadeMapper.toOutputDTO(cidadeService.salvar(cidade));
+            CidadeOutput cidadeOutput = cidadeMapper.toModel(cidadeService.salvar(cidade));
 
             ResourceURIUtil.addURIToResponse(cidadeOutput.getId());
 
@@ -94,7 +66,7 @@ public class CidadeController implements CidadeControllerOpenApi {
             Cidade cidade = cidadeService.buscar(id);
             cidadeMapper.copyToEntity(cidadeInput, cidade);
 
-            return cidadeMapper.toOutputDTO(cidadeService.salvar(cidade));
+            return cidadeMapper.toModel(cidadeService.salvar(cidade));
         } catch (EstadoNaoEncontradoException e) {
             throw new NegocioException(e.getMessage());
         }
