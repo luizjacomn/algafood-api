@@ -9,11 +9,11 @@ import com.luizjacomn.algafood.domain.model.Usuario;
 import com.luizjacomn.algafood.domain.repository.UsuarioRepository;
 import com.luizjacomn.algafood.domain.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -29,13 +29,13 @@ public class UsuarioController {
     private UsuarioMapper usuarioMapper;
 
     @GetMapping
-    public List<UsuarioOutput> listar() {
-        return usuarioMapper.toOutputDTOList(usuarioRepository.findAll());
+    public CollectionModel<UsuarioOutput> listar() {
+        return usuarioMapper.toCollectionModel(usuarioRepository.findAll());
     }
 
     @GetMapping("/{id}")
     public UsuarioOutput buscar(@PathVariable Long id) {
-        return usuarioMapper.toOutputDTO(usuarioService.buscar(id));
+        return usuarioMapper.toModel(usuarioService.buscar(id));
     }
 
     @PostMapping
@@ -43,7 +43,7 @@ public class UsuarioController {
     public UsuarioOutput salvar(@RequestBody @Valid UsuarioSenhaInput usuarioSenhaInput) {
         Usuario usuario = usuarioMapper.toEntity(usuarioSenhaInput);
 
-        return usuarioMapper.toOutputDTO(usuarioService.salvar(usuario));
+        return usuarioMapper.toModel(usuarioService.salvar(usuario));
     }
 
     @PutMapping("/{id}")
@@ -52,7 +52,7 @@ public class UsuarioController {
 
         usuarioMapper.copyToEntity(usuarioInput, usuario);
 
-        return usuarioMapper.toOutputDTO(usuarioService.salvar(usuario));
+        return usuarioMapper.toModel(usuarioService.salvar(usuario));
     }
 
     @DeleteMapping("/{id}")
