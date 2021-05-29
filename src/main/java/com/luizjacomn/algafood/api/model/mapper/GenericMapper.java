@@ -23,13 +23,13 @@ interface RelationshipAttributes {
 public abstract class GenericMapper<E, I, O> implements RelationshipAttributes {
 
     @Autowired
-    private ModelMapper modelMapper;
+    protected ModelMapper modelMapper;
 
-    private Class<E> entityClass;
+    protected Class<E> entityClass;
 
-    private Class<I> inputClass;
+    protected Class<I> inputClass;
 
-    private Class<O> outputClass;
+    protected Class<O> outputClass;
 
     public GenericMapper() {
         this.entityClass = (Class<E>) ((ParameterizedType) getClass()
