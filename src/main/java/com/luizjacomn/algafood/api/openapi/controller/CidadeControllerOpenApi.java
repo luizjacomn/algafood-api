@@ -4,8 +4,7 @@ import com.luizjacomn.algafood.api.exceptionhandler.Problem;
 import com.luizjacomn.algafood.api.model.input.CidadeInput;
 import com.luizjacomn.algafood.api.model.output.CidadeOutput;
 import io.swagger.annotations.*;
-
-import java.util.List;
+import org.springframework.hateoas.CollectionModel;
 
 @Api(tags = "Cidades")
 public interface CidadeControllerOpenApi {
@@ -15,7 +14,7 @@ public interface CidadeControllerOpenApi {
             @ApiResponse(code = 400, message = "ID da cidade inválido", response = Problem.class),
             @ApiResponse(code = 404, message = "Cidade não encontrada", response = Problem.class)
     })
-    List<CidadeOutput> listar();
+    CollectionModel<CidadeOutput> listar();
 
     @ApiOperation("Buscar uma cidade através do ID")
     CidadeOutput buscar(@ApiParam("ID de uma cidade") Long id);
