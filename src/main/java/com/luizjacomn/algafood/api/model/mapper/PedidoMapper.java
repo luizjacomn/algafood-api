@@ -27,6 +27,15 @@ public class PedidoMapper extends GenericRepresentationModelMapper<Pedido, Pedid
     public PedidoOutput toModel(Pedido entity) {
         PedidoOutput pedidoOutput = super.toModel(entity);
 
+        pedidoOutput.add(linkTo(AlteracaoStatusPedidoController.class, pedidoOutput.getCodigo())
+                .slash("/confirmacao").withRel("confirmar"));
+
+        pedidoOutput.add(linkTo(AlteracaoStatusPedidoController.class, pedidoOutput.getCodigo())
+                .slash("/entrega").withRel("entregar"));
+
+        pedidoOutput.add(linkTo(AlteracaoStatusPedidoController.class, pedidoOutput.getCodigo())
+                .slash("/cancelamento").withRel("cancelar"));
+
         pedidoOutput.getRestaurante().add(linkTo(RestauranteController.class)
                 .slash(pedidoOutput.getRestaurante().getId()).withSelfRel());
 
