@@ -1,9 +1,7 @@
 package com.luizjacomn.algafood.api.model.mapper;
 
 import com.luizjacomn.algafood.api.model.output.OutputIdentifier;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.IanaLinkRelations;
-import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.*;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 
 import java.lang.reflect.ParameterizedType;
@@ -24,15 +22,35 @@ public abstract class GenericRepresentationModelMapper<E, I, O extends Represent
                 .getGenericSuperclass()).getActualTypeArguments()[3];
     }
 
+    protected boolean hasCollectionUriTemplate() {
+        return false;
+    }
+
     @Override
     public O toModel(E entity) {
         O output = modelMapper.map(entity, outputClass);
 
         output.add(linkTo(controllerClass).slash(getIdentifier(output)).withSelfRel());
 
-        output.add(linkTo(controllerClass).withRel(IanaLinkRelations.COLLECTION));
+        addSelfCollectionLink(output);
 
         return output;
+    }
+
+    protected void addSelfCollectionLink(O output) {
+        if (hasCollectionUriTemplate()) {
+            TemplateVariables variables = new TemplateVariables(
+                    new TemplateVariable("page", TemplateVariable.VariableType.REQUEST_PARAM),
+                    new TemplateVariable("size", TemplateVariable.VariableType.REQUEST_PARAM),
+                    new TemplateVariable("sort", TemplateVariable.VariableType.REQUEST_PARAM)
+            );
+
+            String path = linkTo(controllerClass).toUri().toString();
+
+            output.add(Link.of(UriTemplate.of(path, variables), IanaLinkRelations.COLLECTION));
+        } else {
+            output.add(linkTo(controllerClass).withRel(IanaLinkRelations.COLLECTION));
+        }
     }
 
     @Override

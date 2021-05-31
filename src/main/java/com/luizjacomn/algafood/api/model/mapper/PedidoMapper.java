@@ -4,7 +4,8 @@ import com.luizjacomn.algafood.api.controller.*;
 import com.luizjacomn.algafood.api.model.input.PedidoInput;
 import com.luizjacomn.algafood.api.model.output.PedidoOutput;
 import com.luizjacomn.algafood.domain.model.Pedido;
-import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.*;
+import org.springframework.hateoas.TemplateVariable.VariableType;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
@@ -44,6 +45,11 @@ public class PedidoMapper extends GenericRepresentationModelMapper<Pedido, Pedid
         });
 
         return pedidoOutput;
+    }
+
+    @Override
+    protected boolean hasCollectionUriTemplate() {
+        return true;
     }
 
     @Override
