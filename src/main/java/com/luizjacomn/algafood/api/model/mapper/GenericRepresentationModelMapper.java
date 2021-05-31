@@ -1,5 +1,6 @@
 package com.luizjacomn.algafood.api.model.mapper;
 
+import com.luizjacomn.algafood.api.model.output.OutputIdentifier;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.RepresentationModel;
@@ -13,14 +14,25 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 public abstract class GenericRepresentationModelMapper<E, I, O extends RepresentationModel<O>, C>
         extends GenericMapper<E, I, O>
-        implements RepresentationModelAssembler<E, O> {
+        implements RepresentationModelAssembler<E, O>, OutputIdentifier<O> {
 
-    private Class<C> controllerClass;
+    protected Class<C> controllerClass;
 
     public GenericRepresentationModelMapper() {
         super();
         this.controllerClass = (Class<C>) ((ParameterizedType) getClass()
                 .getGenericSuperclass()).getActualTypeArguments()[3];
+    }
+
+    @Override
+    public O toModel(E entity) {
+        O output = modelMapper.map(entity, outputClass);
+
+        output.add(linkTo(controllerClass).slash(getIdentifier(output)).withSelfRel());
+
+        output.add(linkTo(controllerClass).withRel(IanaLinkRelations.COLLECTION));
+
+        return output;
     }
 
     @Override

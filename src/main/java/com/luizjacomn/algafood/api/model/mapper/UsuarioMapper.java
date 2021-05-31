@@ -8,6 +8,8 @@ import com.luizjacomn.algafood.domain.model.Usuario;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
+
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -16,14 +18,15 @@ public class UsuarioMapper extends GenericRepresentationModelMapper<Usuario, Usu
 
     @Override
     public UsuarioOutput toModel(Usuario entity) {
-        UsuarioOutput usuarioOutput = modelMapper.map(entity, outputClass);
-
-        usuarioOutput.add(linkTo(UsuarioController.class).slash(usuarioOutput.getId()).withSelfRel());
-
-        usuarioOutput.add(linkTo(UsuarioController.class).withRel(IanaLinkRelations.COLLECTION));
+        UsuarioOutput usuarioOutput = toModel(entity);
 
         usuarioOutput.add(linkTo(UsuarioGrupoController.class, usuarioOutput.getId()).withRel("grupos-usuario"));
 
         return usuarioOutput;
+    }
+
+    @Override
+    public Serializable getIdentifier(UsuarioOutput output) {
+        return output.getId();
     }
 }

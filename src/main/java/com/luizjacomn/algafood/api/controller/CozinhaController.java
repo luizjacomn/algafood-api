@@ -11,6 +11,8 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.server.ServletServerHttpRequest;
@@ -35,16 +37,19 @@ public class CozinhaController {
     private CozinhaMapper cozinhaMapper;
 
     @Autowired
+    private PagedResourcesAssembler<Cozinha> pagedResourcesAssembler;
+
+    @Autowired
     private MergeUtil mergeUtil;
 
     @GetMapping
-    public Page<CozinhaOutput> listar(Pageable pageable) {
-        return cozinhaMapper.toOutputDTOPage(pageable, cozinhaRepository.findAll(pageable));
+    public PagedModel<CozinhaOutput> listar(Pageable pageable) {
+        return pagedResourcesAssembler.toModel(cozinhaRepository.findAll(pageable), cozinhaMapper);
     }
 
     @GetMapping("/{id}")
     public CozinhaOutput buscar(@PathVariable Long id) {
-        return cozinhaMapper.toOutputDTO(cozinhaService.buscar(id));
+        return cozinhaMapper.toModel(cozinhaService.buscar(id));
     }
 
     @PostMapping
@@ -52,7 +57,7 @@ public class CozinhaController {
     public CozinhaOutput salvar(@RequestBody @Valid CozinhaInput cozinhaInput) {
         Cozinha cozinha = cozinhaMapper.toEntity(cozinhaInput);
 
-        return cozinhaMapper.toOutputDTO(cozinhaService.salvar(cozinha));
+        return cozinhaMapper.toModel(cozinhaService.salvar(cozinha));
     }
 
     @PutMapping("/{id}")
@@ -61,7 +66,7 @@ public class CozinhaController {
 
         cozinhaMapper.copyToEntity(cozinhaInput, cozinha);
 
-        return cozinhaMapper.toOutputDTO(cozinhaService.salvar(cozinha));
+        return cozinhaMapper.toModel(cozinhaService.salvar(cozinha));
     }
 
     @PatchMapping("/{id}")

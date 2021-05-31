@@ -8,6 +8,8 @@ import com.luizjacomn.algafood.domain.model.Cidade;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
+
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @Component
@@ -20,16 +22,17 @@ public class CidadeMapper extends GenericRepresentationModelMapper<Cidade, Cidad
 
     @Override
     public CidadeOutput toModel(Cidade entity) {
-        CidadeOutput cidadeOutput = modelMapper.map(entity, outputClass);
-
-        cidadeOutput.add(linkTo(CidadeController.class).slash(cidadeOutput.getId()).withSelfRel());
-
-        cidadeOutput.add(linkTo(CidadeController.class).withRel(IanaLinkRelations.COLLECTION));
+        CidadeOutput cidadeOutput = super.toModel(entity);
 
         cidadeOutput.getEstado().add(linkTo(EstadoController.class).slash(cidadeOutput.getEstado().getId()).withSelfRel());
 
         cidadeOutput.getEstado().add(linkTo(EstadoController.class).withRel(IanaLinkRelations.COLLECTION));
 
         return cidadeOutput;
+    }
+
+    @Override
+    public Serializable getIdentifier(CidadeOutput output) {
+        return output.getId();
     }
 }
