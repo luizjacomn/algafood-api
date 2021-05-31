@@ -4,7 +4,7 @@ import com.luizjacomn.algafood.api.controller.*;
 import com.luizjacomn.algafood.api.model.input.PedidoInput;
 import com.luizjacomn.algafood.api.model.output.PedidoOutput;
 import com.luizjacomn.algafood.domain.model.Pedido;
-import org.springframework.hateoas.*;
+import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.TemplateVariable.VariableType;
 import org.springframework.stereotype.Component;
 
@@ -27,14 +27,20 @@ public class PedidoMapper extends GenericRepresentationModelMapper<Pedido, Pedid
     public PedidoOutput toModel(Pedido entity) {
         PedidoOutput pedidoOutput = super.toModel(entity);
 
-        pedidoOutput.add(linkTo(AlteracaoStatusPedidoController.class, pedidoOutput.getCodigo())
-                .slash("/confirmacao").withRel("confirmar"));
+        if (entity.podeSerConfirmado()) {
+            pedidoOutput.add(linkTo(AlteracaoStatusPedidoController.class, pedidoOutput.getCodigo())
+                    .slash("/confirmacao").withRel("confirmar"));
+        }
 
-        pedidoOutput.add(linkTo(AlteracaoStatusPedidoController.class, pedidoOutput.getCodigo())
-                .slash("/entrega").withRel("entregar"));
+        if (entity.podeSerEntregue()) {
+            pedidoOutput.add(linkTo(AlteracaoStatusPedidoController.class, pedidoOutput.getCodigo())
+                    .slash("/entrega").withRel("entregar"));
+        }
 
-        pedidoOutput.add(linkTo(AlteracaoStatusPedidoController.class, pedidoOutput.getCodigo())
-                .slash("/cancelamento").withRel("cancelar"));
+        if (entity.podeSerCancelado()) {
+            pedidoOutput.add(linkTo(AlteracaoStatusPedidoController.class, pedidoOutput.getCodigo())
+                    .slash("/cancelamento").withRel("cancelar"));
+        }
 
         pedidoOutput.getRestaurante().add(linkTo(RestauranteController.class)
                 .slash(pedidoOutput.getRestaurante().getId()).withSelfRel());
