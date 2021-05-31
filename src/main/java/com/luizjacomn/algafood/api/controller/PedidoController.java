@@ -15,8 +15,9 @@ import com.luizjacomn.algafood.domain.repository.PedidoRepository;
 import com.luizjacomn.algafood.domain.service.PedidoService;
 import com.luizjacomn.algafood.infra.repository.spec.PedidoSpecs;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,17 +39,20 @@ public class PedidoController implements PedidoControllerOpenApi {
     @Autowired
     private PedidoResumeMapper pedidoResumeMapper;
 
+    @Autowired
+    private PagedResourcesAssembler<Pedido> pagedResourcesAssembler;
+
     @Override
     @GetMapping
-    public Page<PedidoResumeOutput> pesquisar(PedidoFilter filter, Pageable pageable) {
-        return pedidoResumeMapper.toOutputDTOPage(pageable, pedidoRepository.findAll(PedidoSpecs.filtrandoPor(filter), pageable));
+    public PagedModel<PedidoResumeOutput> pesquisar(PedidoFilter filter, Pageable pageable) {
+        return pagedResourcesAssembler.toModel(pedidoRepository.findAll(PedidoSpecs.filtrandoPor(filter), pageable), pedidoResumeMapper);
     }
 
     @GetMapping("/{codigoPedido}")
     public PedidoOutput buscar(@PathVariable String codigoPedido) {
         Pedido pedido = pedidoService.buscar(codigoPedido);
 
-        return pedidoMapper.toOutputDTO(pedido);
+        return pedidoMapper.toModel(pedido);
     }
 
     @PostMapping
@@ -60,7 +64,7 @@ public class PedidoController implements PedidoControllerOpenApi {
             pedido.setCliente(new Usuario());
             pedido.getCliente().setId(1L);
 
-            return pedidoMapper.toOutputDTO(pedidoService.emitir(pedido));
+            return pedidoMapper.toModel(pedidoService.emitir(pedido));
         } catch (EntidadeNaoEncontradaException e) {
             throw new NegocioException(e.getMessage(), e);
         }

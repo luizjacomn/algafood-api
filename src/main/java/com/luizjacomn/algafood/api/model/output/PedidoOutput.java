@@ -1,19 +1,18 @@
 package com.luizjacomn.algafood.api.model.output;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.luizjacomn.algafood.domain.model.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
 
-import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
 
+@Relation(collectionRelation = "pedidos")
 @Getter
 @Setter
-public class PedidoOutput {
+public class PedidoOutput extends RepresentationModel<PedidoOutput> {
 
     private String codigo;
 

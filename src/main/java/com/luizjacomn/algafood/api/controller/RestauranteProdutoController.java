@@ -70,7 +70,7 @@ public class RestauranteProdutoController implements FotoProdutoControllerOpenAp
     }
 
     @GetMapping("/{produtoId}")
-    public ProdutoOutput listar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
+    public ProdutoOutput buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
         Produto produto = produtoService.buscar(produtoId, restauranteId);
 
         return produtoMapper.toOutputDTO(produto);
