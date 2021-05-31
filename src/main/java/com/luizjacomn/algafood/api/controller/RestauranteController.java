@@ -12,6 +12,7 @@ import com.luizjacomn.algafood.domain.service.RestauranteService;
 import com.luizjacomn.algafood.util.MergeUtil;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.server.ServletServerHttpRequest;
@@ -40,18 +41,18 @@ public class RestauranteController {
     private MergeUtil mergeUtil;
 
     @GetMapping
-    public List<RestauranteOutput> listar() {
-        return restauranteMapper.toOutputDTOList(restauranteRepository.findAll());
+    public CollectionModel<RestauranteOutput> listar() {
+        return restauranteMapper.toCollectionModel(restauranteRepository.findAll());
     }
 
     @GetMapping("/{id}")
     public RestauranteOutput buscar(@PathVariable Long id) {
-        return restauranteMapper.toOutputDTO(restauranteService.buscar(id));
+        return restauranteMapper.toModel(restauranteService.buscar(id));
     }
 
     @GetMapping("/por-nome-e-cozinha")
-    public List<RestauranteOutput> listarPorNomeECozinha(String nome, @RequestParam("cozinha") Long cozinhaId) {
-        return restauranteMapper.toOutputDTOList(restauranteRepository.listarPorNome(nome, cozinhaId));
+    public CollectionModel<RestauranteOutput> listarPorNomeECozinha(String nome, @RequestParam("cozinha") Long cozinhaId) {
+        return restauranteMapper.toCollectionModel(restauranteRepository.listarPorNome(nome, cozinhaId));
     }
 
     @GetMapping("/quantidade-por-cozinha")
@@ -60,18 +61,18 @@ public class RestauranteController {
     }
 
     @GetMapping("/por-nome-e-frete-gratis")
-    public List<RestauranteOutput> listarPorNomeEFreteGratis(String nome) {
-        return restauranteMapper.toOutputDTOList(restauranteRepository.buscarComFreteGratis(nome));
+    public CollectionModel<RestauranteOutput> listarPorNomeEFreteGratis(String nome) {
+        return restauranteMapper.toCollectionModel(restauranteRepository.buscarComFreteGratis(nome));
     }
 
     @GetMapping("/por-nome-e-intervalo-taxas")
-    public List<RestauranteOutput> listarPorNomeETaxas(String nome, BigDecimal taxaInicial, BigDecimal taxaFinal) {
-        return restauranteMapper.toOutputDTOList(restauranteRepository.buscarPorNomeEIntervaloDeTaxas(nome, taxaInicial, taxaFinal));
+    public CollectionModel<RestauranteOutput> listarPorNomeETaxas(String nome, BigDecimal taxaInicial, BigDecimal taxaFinal) {
+        return restauranteMapper.toCollectionModel(restauranteRepository.buscarPorNomeEIntervaloDeTaxas(nome, taxaInicial, taxaFinal));
     }
 
     @GetMapping("/por-intervalo-taxas")
-    public List<RestauranteOutput> listarPorTaxas(BigDecimal taxaInicial, BigDecimal taxaFinal) {
-        return restauranteMapper.toOutputDTOList(restauranteRepository.findByTaxaFreteBetweenOrderByTaxaFrete(taxaInicial, taxaFinal));
+    public CollectionModel<RestauranteOutput> listarPorTaxas(BigDecimal taxaInicial, BigDecimal taxaFinal) {
+        return restauranteMapper.toCollectionModel(restauranteRepository.findByTaxaFreteBetweenOrderByTaxaFrete(taxaInicial, taxaFinal));
     }
 
     @PostMapping
@@ -80,7 +81,7 @@ public class RestauranteController {
         try {
             Restaurante restaurante = restauranteMapper.toEntity(restauranteInput);
 
-            return restauranteMapper.toOutputDTO(restauranteService.salvar(restaurante));
+            return restauranteMapper.toModel(restauranteService.salvar(restaurante));
         } catch (EntidadeNaoEncontradaException e) {
             throw new NegocioException(e.getMessage(), e);
         }
@@ -93,7 +94,7 @@ public class RestauranteController {
 
             restauranteMapper.copyToEntity(restauranteInput, restauranteAtual);
 
-            return restauranteMapper.toOutputDTO(restauranteService.salvar(restauranteAtual));
+            return restauranteMapper.toModel(restauranteService.salvar(restauranteAtual));
         } catch (EntidadeNaoEncontradaException e) {
             throw new NegocioException(e.getMessage(), e);
         }
