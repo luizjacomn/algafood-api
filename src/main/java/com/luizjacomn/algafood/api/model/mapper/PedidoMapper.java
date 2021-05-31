@@ -15,6 +15,14 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 @Component
 public class PedidoMapper extends GenericRepresentationModelMapper<Pedido, PedidoInput, PedidoOutput, PedidoController> {
 
+    public PedidoMapper() {
+        addFilterTemplateVariable("clienteId", VariableType.REQUEST_PARAM);
+        addFilterTemplateVariable("restauranteId", VariableType.REQUEST_PARAM);
+        addFilterTemplateVariable("dataCriacaoInicio", VariableType.REQUEST_PARAM);
+        addFilterTemplateVariable("dataCriacaoFim", VariableType.REQUEST_PARAM);
+        addFilterTemplateVariable("campos", VariableType.REQUEST_PARAM);
+    }
+
     @Override
     public PedidoOutput toModel(Pedido entity) {
         PedidoOutput pedidoOutput = super.toModel(entity);
