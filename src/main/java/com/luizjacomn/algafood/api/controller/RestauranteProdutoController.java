@@ -113,7 +113,7 @@ public class RestauranteProdutoController implements FotoProdutoControllerOpenAp
         FotoProduto fotoProduto = fotoProdutoMapper.toEntity(fotoProdutoInput, produto);
         InputStream inputStream = fotoProdutoInput.getArquivo().getInputStream();
 
-        return fotoProdutoMapper.toOutputDTO(fotoProdutoService.salvar(fotoProduto, inputStream));
+        return fotoProdutoMapper.toModel(fotoProdutoService.salvar(fotoProduto, inputStream));
     }
 
     @Override
@@ -128,7 +128,7 @@ public class RestauranteProdutoController implements FotoProdutoControllerOpenAp
     public FotoProdutoOutput recuperarDadosFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
         FotoProduto fotoProduto = fotoProdutoService.buscar(restauranteId, produtoId);
 
-        return fotoProdutoMapper.toOutputDTO(fotoProduto);
+        return fotoProdutoMapper.toModel(fotoProduto);
     }
 
     @Override

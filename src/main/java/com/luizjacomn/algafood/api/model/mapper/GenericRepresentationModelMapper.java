@@ -68,6 +68,18 @@ public abstract class GenericRepresentationModelMapper<E, I, O extends Represent
         }
     }
 
+    protected Link linkToCollection(Long parentId) {
+        if (hasCollectionUriTemplate()) {
+            TemplateVariables templateVariables = new TemplateVariables(variables);
+
+            String path = linkTo(controllerClass, parentId).toUri().toString();
+
+            return Link.of(UriTemplate.of(path, templateVariables), IanaLinkRelations.COLLECTION);
+        } else {
+            return linkTo(controllerClass, parentId).withRel(IanaLinkRelations.COLLECTION);
+        }
+    }
+
     @Override
     public CollectionModel<O> toCollectionModel(Iterable<? extends E> entities) {
         return RepresentationModelAssembler.super.toCollectionModel(entities)
