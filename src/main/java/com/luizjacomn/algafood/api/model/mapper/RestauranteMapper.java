@@ -4,6 +4,7 @@ import com.luizjacomn.algafood.api.controller.*;
 import com.luizjacomn.algafood.api.model.input.RestauranteInput;
 import com.luizjacomn.algafood.api.model.output.RestauranteOutput;
 import com.luizjacomn.algafood.domain.model.Restaurante;
+import org.springframework.hateoas.TemplateVariable;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
@@ -12,6 +13,10 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @Component
 public class RestauranteMapper extends GenericRepresentationModelMapper<Restaurante, RestauranteInput, RestauranteOutput, RestauranteController> {
+
+    public RestauranteMapper() {
+        addFilterTemplateVariable("campos", TemplateVariable.VariableType.REQUEST_PARAM);
+    }
 
     @Override
     public RestauranteOutput toModel(Restaurante entity) {
@@ -52,6 +57,11 @@ public class RestauranteMapper extends GenericRepresentationModelMapper<Restaura
         }
 
         return restauranteOutput;
+    }
+
+    @Override
+    protected boolean hasCollectionUriTemplate() {
+        return true;
     }
 
     @Override

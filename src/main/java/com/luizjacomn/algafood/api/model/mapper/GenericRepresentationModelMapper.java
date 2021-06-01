@@ -26,7 +26,7 @@ public abstract class GenericRepresentationModelMapper<E, I, O extends Represent
         this.controllerClass = (Class<C>) ((ParameterizedType) getClass()
                 .getGenericSuperclass()).getActualTypeArguments()[3];
 
-        if (hasCollectionUriTemplate()) {
+        if (hasSort() && hasCollectionUriTemplate()) {
             variables.add(new TemplateVariable("page", TemplateVariable.VariableType.REQUEST_PARAM));
             variables.add(new TemplateVariable("size", TemplateVariable.VariableType.REQUEST_PARAM));
             variables.add(new TemplateVariable("sort", TemplateVariable.VariableType.REQUEST_PARAM));
@@ -34,6 +34,10 @@ public abstract class GenericRepresentationModelMapper<E, I, O extends Represent
     }
 
     protected boolean hasCollectionUriTemplate() {
+        return false;
+    }
+
+    protected boolean hasSort() {
         return false;
     }
 

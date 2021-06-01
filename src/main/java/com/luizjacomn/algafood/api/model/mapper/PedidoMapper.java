@@ -76,6 +76,11 @@ public class PedidoMapper extends GenericRepresentationModelMapper<Pedido, Pedid
     }
 
     @Override
+    protected boolean hasSort() {
+        return true;
+    }
+
+    @Override
     public Serializable getIdentifier(PedidoOutput output) {
         return output.getCodigo();
     }

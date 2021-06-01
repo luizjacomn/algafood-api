@@ -12,6 +12,16 @@ import java.io.Serializable;
 public class CozinhaMapper extends GenericRepresentationModelMapper<Cozinha, CozinhaInput, CozinhaOutput, CozinhaController> {
 
     @Override
+    protected boolean hasSort() {
+        return true;
+    }
+
+    @Override
+    protected boolean hasCollectionUriTemplate() {
+        return true;
+    }
+
+    @Override
     public Serializable getIdentifier(CozinhaOutput output) {
         return output.getId();
     }
