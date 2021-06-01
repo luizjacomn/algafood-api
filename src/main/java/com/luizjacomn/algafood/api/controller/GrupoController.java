@@ -7,6 +7,7 @@ import com.luizjacomn.algafood.domain.model.Grupo;
 import com.luizjacomn.algafood.domain.repository.GrupoRepository;
 import com.luizjacomn.algafood.domain.service.GrupoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,13 +28,13 @@ public class GrupoController {
 	private GrupoMapper grupoMapper;
 	
 	@GetMapping
-	public List<GrupoOutput> listar() {
-		return grupoMapper.toOutputDTOList(grupoRepository.findAll());
+	public CollectionModel<GrupoOutput> listar() {
+		return grupoMapper.toCollectionModel(grupoRepository.findAll());
 	}
 	
 	@GetMapping("/{id}")
 	public GrupoOutput buscar(@PathVariable Long id) {
-		return grupoMapper.toOutputDTO(grupoService.buscar(id));
+		return grupoMapper.toModel(grupoService.buscar(id));
 	}
 	
 	@PostMapping
@@ -41,7 +42,7 @@ public class GrupoController {
 	public GrupoOutput salvar(@RequestBody @Valid GrupoInput grupoInput) {
 		Grupo grupo = grupoMapper.toEntity(grupoInput);
 
-		return grupoMapper.toOutputDTO(grupoService.salvar(grupo));
+		return grupoMapper.toModel(grupoService.salvar(grupo));
 	}
 	
 	@PutMapping("/{id}")
@@ -50,7 +51,7 @@ public class GrupoController {
 
 		grupoMapper.copyToEntity(grupoInput, grupo);
 
-		return grupoMapper.toOutputDTO(grupoService.salvar(grupo));
+		return grupoMapper.toModel(grupoService.salvar(grupo));
 	}
 	
 	@DeleteMapping("/{id}")
