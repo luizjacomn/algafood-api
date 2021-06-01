@@ -4,7 +4,7 @@ import com.luizjacomn.algafood.api.controller.RestauranteProdutoController;
 import com.luizjacomn.algafood.api.model.input.ProdutoInput;
 import com.luizjacomn.algafood.api.model.output.ProdutoOutput;
 import com.luizjacomn.algafood.domain.model.Produto;
-import org.springframework.hateoas.*;
+import org.springframework.hateoas.TemplateVariable;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
@@ -30,12 +30,6 @@ public class ProdutoMapper extends GenericRepresentationModelMapper<Produto, Pro
                 .slash("/foto").withRel("foto"));
 
         return output;
-    }
-
-    @Override
-    public CollectionModel<ProdutoOutput> toCollectionModel(Iterable<? extends Produto> entities) {
-        Long idRestaurante = entities.iterator().next().getRestaurante().getId();
-        return super.toCollectionModel(entities, linkToCollection(idRestaurante));
     }
 
     @Override

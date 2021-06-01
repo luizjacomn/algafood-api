@@ -86,8 +86,9 @@ public abstract class GenericRepresentationModelMapper<E, I, O extends Represent
                 .add(linkTo(controllerClass).withRel(IanaLinkRelations.COLLECTION));
     }
 
-    protected CollectionModel<O> toCollectionModel(Iterable<? extends E> entities, Link linkToCollection) {
-        return RepresentationModelAssembler.super.toCollectionModel(entities).add(linkToCollection);
+    public CollectionModel<O> toCollectionModel(Iterable<? extends E> entities, Object... args) {
+        return RepresentationModelAssembler.super.toCollectionModel(entities)
+                .add(linkTo(controllerClass, args).withRel(IanaLinkRelations.COLLECTION));
     }
 
     /**

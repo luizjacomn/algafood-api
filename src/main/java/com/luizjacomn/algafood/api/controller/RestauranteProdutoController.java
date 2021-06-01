@@ -67,7 +67,7 @@ public class RestauranteProdutoController implements FotoProdutoControllerOpenAp
             produtos = produtoRepository.findByRestauranteAndAtivoTrue(restaurante);
         }
 
-        return produtoMapper.toCollectionModel(produtos);
+        return produtoMapper.toCollectionModel(produtos, restauranteId);
     }
 
     @GetMapping("/{produtoId}")

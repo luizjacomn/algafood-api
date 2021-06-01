@@ -5,10 +5,12 @@ import com.luizjacomn.algafood.api.model.output.PermissaoOutput;
 import com.luizjacomn.algafood.domain.model.Grupo;
 import com.luizjacomn.algafood.domain.service.GrupoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/grupos/{grupoId}/permissoes")
@@ -21,21 +23,31 @@ public class GrupoPermissaoController {
     private PermissaoMapper permissaoMapper;
 
     @GetMapping
-    public List<PermissaoOutput> listar(@PathVariable Long grupoId) {
+    public CollectionModel<PermissaoOutput> listar(@PathVariable Long grupoId) {
         Grupo grupo = grupoService.buscar(grupoId);
 
-        return permissaoMapper.toOutputDTOList(grupo.getPermissoes());
+        CollectionModel<PermissaoOutput> collectionModel = permissaoMapper.toCollectionModel(grupo.getPermissoes(), grupoId)
+                .add(linkTo(methodOn(GrupoPermissaoController.class).adicionar(grupoId, null))
+                        .withRel("adicionar"));
+
+        collectionModel.getContent().forEach(perm -> {
+            perm.add(linkTo(methodOn(GrupoPermissaoController.class).remover(grupoId, perm.getId())).withRel("remover"));
+        });
+
+        return collectionModel;
     }
 
     @PutMapping("/{permissaoId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void adicionar(@PathVariable Long grupoId, @PathVariable Long permissaoId) {
+    public ResponseEntity<Void> adicionar(@PathVariable Long grupoId, @PathVariable Long permissaoId) {
         grupoService.adicionarPermissao(grupoId, permissaoId);
+
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{permissaoId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void remover(@PathVariable Long grupoId, @PathVariable Long permissaoId) {
+    public ResponseEntity<Void> remover(@PathVariable Long grupoId, @PathVariable Long permissaoId) {
         grupoService.removerPermissao(grupoId, permissaoId);
+
+        return ResponseEntity.noContent().build();
     }
 }
