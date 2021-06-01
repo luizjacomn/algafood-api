@@ -18,7 +18,7 @@ public class UsuarioMapper extends GenericRepresentationModelMapper<Usuario, Usu
 
     @Override
     public UsuarioOutput toModel(Usuario entity) {
-        UsuarioOutput usuarioOutput = toModel(entity);
+        UsuarioOutput usuarioOutput = super.toModel(entity);
 
         usuarioOutput.add(linkTo(UsuarioGrupoController.class, usuarioOutput.getId()).withRel("grupos-usuario"));
 
