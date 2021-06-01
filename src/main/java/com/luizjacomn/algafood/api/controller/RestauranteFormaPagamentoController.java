@@ -29,9 +29,17 @@ public class RestauranteFormaPagamentoController {
     public CollectionModel<FormaPagamentoOutput> listar(@PathVariable Long restauranteId) {
         Restaurante restaurante = restauranteService.buscar(restauranteId);
 
-        return formaPagamentoMapper.toCollectionModel(restaurante.getFormasPagamento())
+        CollectionModel<FormaPagamentoOutput> collectionModel = formaPagamentoMapper
+                .toCollectionModel(restaurante.getFormasPagamento())
                 .removeLinks()
                 .add(linkTo(RestauranteFormaPagamentoController.class, restauranteId).withRel(IanaLinkRelations.COLLECTION));
+
+        collectionModel.getContent().forEach(formaPag -> {
+            formaPag.add(linkTo(RestauranteFormaPagamentoController.class, restauranteId)
+                    .slash(formaPag.getId()).withRel("desassociar"));
+        });
+
+        return collectionModel;
     }
 
     @PutMapping("/{formaPagamentoId}")
