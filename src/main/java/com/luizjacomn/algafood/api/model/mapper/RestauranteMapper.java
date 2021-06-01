@@ -31,6 +31,26 @@ public class RestauranteMapper extends GenericRepresentationModelMapper<Restaura
         restauranteOutput.add(linkTo(RestauranteResponsavelController.class, restauranteOutput.getId())
                 .withRel("responsaveis"));
 
+        if (entity.podeAbrir()) {
+            restauranteOutput.add(linkTo(controllerClass).slash(restauranteOutput.getId()).slash("/abrir")
+                    .withRel("abrir"));
+        }
+
+        if (entity.podeFechar()) {
+            restauranteOutput.add(linkTo(controllerClass).slash(restauranteOutput.getId()).slash("/fechar")
+                    .withRel("fechar"));
+        }
+
+        if (entity.podeAtivar()) {
+            restauranteOutput.add(linkTo(controllerClass).slash(restauranteOutput.getId()).slash("/ativar")
+                    .withRel("ativar"));
+        }
+
+        if (entity.podeDesativar()) {
+            restauranteOutput.add(linkTo(controllerClass).slash(restauranteOutput.getId()).slash("/desativar")
+                    .withRel("desativar"));
+        }
+
         return restauranteOutput;
     }
 
