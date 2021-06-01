@@ -5,10 +5,15 @@ import com.luizjacomn.algafood.api.model.output.FormaPagamentoOutput;
 import com.luizjacomn.algafood.domain.model.Restaurante;
 import com.luizjacomn.algafood.domain.service.RestauranteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @RestController
 @RequestMapping("/restaurantes/{restauranteId}/formas-pagamento")
@@ -21,10 +26,12 @@ public class RestauranteFormaPagamentoController {
     private FormaPagamentoMapper formaPagamentoMapper;
 
     @GetMapping
-    public List<FormaPagamentoOutput> listar(@PathVariable Long restauranteId) {
+    public CollectionModel<FormaPagamentoOutput> listar(@PathVariable Long restauranteId) {
         Restaurante restaurante = restauranteService.buscar(restauranteId);
 
-        return formaPagamentoMapper.toOutputDTOList(restaurante.getFormasPagamento());
+        return formaPagamentoMapper.toCollectionModel(restaurante.getFormasPagamento())
+                .removeLinks()
+                .add(linkTo(RestauranteFormaPagamentoController.class, restauranteId).withRel(IanaLinkRelations.COLLECTION));
     }
 
     @PutMapping("/{formaPagamentoId}")

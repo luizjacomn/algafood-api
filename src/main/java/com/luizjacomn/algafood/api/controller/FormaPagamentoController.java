@@ -7,6 +7,8 @@ import com.luizjacomn.algafood.domain.model.FormaPagamento;
 import com.luizjacomn.algafood.domain.repository.FormaPagamentoRepository;
 import com.luizjacomn.algafood.domain.service.FormaPagamentoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,14 +36,14 @@ public class FormaPagamentoController {
     private FormaPagamentoMapper formaPagamentoMapper;
 
     @GetMapping
-    public ResponseEntity<List<FormaPagamentoOutput>> listar(ServletWebRequest request) {
+    public ResponseEntity<CollectionModel<FormaPagamentoOutput>> listar(ServletWebRequest request) {
         String eTag = geteTag(request);
 
         if (request.checkNotModified(eTag)) {
             return null;
         }
 
-        List<FormaPagamentoOutput> formasPagamento = formaPagamentoMapper.toOutputDTOList(formaPagamentoRepository.findAll());
+        CollectionModel<FormaPagamentoOutput> formasPagamento = formaPagamentoMapper.toCollectionModel(formaPagamentoRepository.findAll());
         return ResponseEntity
                     .ok()
                     .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
@@ -57,7 +59,7 @@ public class FormaPagamentoController {
             return null;
         }
 
-        FormaPagamentoOutput formaPagamento = formaPagamentoMapper.toOutputDTO(formaPagamentoService.buscar(id));
+        FormaPagamentoOutput formaPagamento = formaPagamentoMapper.toModel(formaPagamentoService.buscar(id));
         
         return ResponseEntity
                 .ok()
@@ -71,7 +73,7 @@ public class FormaPagamentoController {
     public FormaPagamentoOutput salvar(@RequestBody @Valid FormaPagamentoInput formaPagamentoInput) {
         FormaPagamento formaPagamento = formaPagamentoMapper.toEntity(formaPagamentoInput);
 
-        return formaPagamentoMapper.toOutputDTO(formaPagamentoService.salvar(formaPagamento));
+        return formaPagamentoMapper.toModel(formaPagamentoService.salvar(formaPagamento));
     }
 
     @PutMapping("/{id}")
@@ -80,7 +82,7 @@ public class FormaPagamentoController {
 
         formaPagamentoMapper.copyToEntity(formaPagamentoInput, formaPagamento);
 
-        return formaPagamentoMapper.toOutputDTO(formaPagamentoService.salvar(formaPagamento));
+        return formaPagamentoMapper.toModel(formaPagamentoService.salvar(formaPagamento));
     }
 
     @DeleteMapping("/{id}")
