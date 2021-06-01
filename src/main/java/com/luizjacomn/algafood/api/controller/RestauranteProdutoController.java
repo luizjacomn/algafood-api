@@ -18,6 +18,7 @@ import com.luizjacomn.algafood.domain.service.RestauranteService;
 import com.luizjacomn.algafood.domain.service.storage.FotoStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -55,8 +56,8 @@ public class RestauranteProdutoController implements FotoProdutoControllerOpenAp
     private FotoProdutoMapper fotoProdutoMapper;
 
     @GetMapping
-    public List<ProdutoOutput> listar(@PathVariable Long restauranteId,
-                                      @RequestParam(value = "incluir-inativos", required = false) boolean incluirInativos) {
+    public CollectionModel<ProdutoOutput> listar(@PathVariable Long restauranteId,
+                                                 @RequestParam(value = "incluir-inativos", required = false) Boolean incluirInativos) {
         Restaurante restaurante = restauranteService.buscar(restauranteId);
 
         List<Produto> produtos;
@@ -66,14 +67,14 @@ public class RestauranteProdutoController implements FotoProdutoControllerOpenAp
             produtos = produtoRepository.findByRestauranteAndAtivoTrue(restaurante);
         }
 
-        return produtoMapper.toOutputDTOList(produtos);
+        return produtoMapper.toCollectionModel(produtos);
     }
 
     @GetMapping("/{produtoId}")
     public ProdutoOutput buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
         Produto produto = produtoService.buscar(produtoId, restauranteId);
 
-        return produtoMapper.toOutputDTO(produto);
+        return produtoMapper.toModel(produto);
     }
 
     @PostMapping
@@ -85,7 +86,7 @@ public class RestauranteProdutoController implements FotoProdutoControllerOpenAp
 
         produto.setRestaurante(restaurante);
 
-        return produtoMapper.toOutputDTO(produtoService.salvar(produto));
+        return produtoMapper.toModel(produtoService.salvar(produto));
     }
 
     @PutMapping("/{produtoId}")
@@ -94,7 +95,7 @@ public class RestauranteProdutoController implements FotoProdutoControllerOpenAp
 
         produtoMapper.copyToEntity(produtoInput, produto);
 
-        return produtoMapper.toOutputDTO(produtoService.salvar(produto));
+        return produtoMapper.toModel(produtoService.salvar(produto));
     }
 
     @DeleteMapping("/{produtoId}")

@@ -17,7 +17,7 @@ public abstract class GenericRepresentationModelMapper<E, I, O extends Represent
         extends GenericMapper<E, I, O>
         implements RepresentationModelAssembler<E, O>, OutputIdentifier<O> {
 
-    private List<TemplateVariable> variables = new ArrayList<>();
+    protected List<TemplateVariable> variables = new ArrayList<>();
 
     protected Class<C> controllerClass;
 
@@ -72,6 +72,10 @@ public abstract class GenericRepresentationModelMapper<E, I, O extends Represent
     public CollectionModel<O> toCollectionModel(Iterable<? extends E> entities) {
         return RepresentationModelAssembler.super.toCollectionModel(entities)
                 .add(linkTo(controllerClass).withRel(IanaLinkRelations.COLLECTION));
+    }
+
+    protected CollectionModel<O> toCollectionModel(Iterable<? extends E> entities, Link linkToCollection) {
+        return RepresentationModelAssembler.super.toCollectionModel(entities).add(linkToCollection);
     }
 
     /**

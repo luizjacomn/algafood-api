@@ -5,11 +5,13 @@ import com.luizjacomn.algafood.api.model.input.RestauranteInput;
 import com.luizjacomn.algafood.api.model.output.RestauranteOutput;
 import com.luizjacomn.algafood.domain.model.Restaurante;
 import org.springframework.hateoas.TemplateVariable;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
 public class RestauranteMapper extends GenericRepresentationModelMapper<Restaurante, RestauranteInput, RestauranteOutput, RestauranteController> {
@@ -25,10 +27,13 @@ public class RestauranteMapper extends GenericRepresentationModelMapper<Restaura
         restauranteOutput.getCozinha().add(linkTo(CozinhaController.class)
                 .slash(restauranteOutput.getCozinha().getId()).withSelfRel());
 
-        if (restauranteOutput.getEndereco() != null) {
+        if (restauranteOutput.getEndereco() != null && restauranteOutput.getEndereco().getCidade() != null) {
             restauranteOutput.getEndereco().getCidade().add(linkTo(CidadeController.class)
                     .slash(restauranteOutput.getEndereco().getCidade().getId()).withSelfRel());
         }
+
+        restauranteOutput.add(linkTo(methodOn(RestauranteProdutoController.class).listar(restauranteOutput.getId(), null))
+                .withRel("produtos"));
 
         restauranteOutput.add(linkTo(RestauranteFormaPagamentoController.class, restauranteOutput.getId())
                 .withRel("formas-pagamento"));
