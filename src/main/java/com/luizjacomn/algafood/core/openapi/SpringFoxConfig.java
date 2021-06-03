@@ -2,16 +2,19 @@ package com.luizjacomn.algafood.core.openapi;
 
 import com.fasterxml.classmate.TypeResolver;
 import com.luizjacomn.algafood.api.exceptionhandler.Problem;
+import com.luizjacomn.algafood.api.model.output.CidadeOutput;
 import com.luizjacomn.algafood.api.model.output.CozinhaOutput;
-import com.luizjacomn.algafood.api.openapi.model.CozinhasModel;
-import com.luizjacomn.algafood.api.openapi.model.PageableModel;
+import com.luizjacomn.algafood.api.model.output.PedidoResumeOutput;
+import com.luizjacomn.algafood.api.openapi.model.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.Links;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,13 +22,16 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
-import springfox.documentation.builders.*;
+import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.RepresentationBuilder;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.builders.ResponseBuilder;
 import springfox.documentation.oas.annotations.EnableOpenApi;
 import springfox.documentation.schema.AlternateTypeRules;
-import springfox.documentation.schema.Example;
-import springfox.documentation.schema.ModelSpecification;
-import springfox.documentation.schema.ScalarType;
-import springfox.documentation.service.*;
+import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.Contact;
+import springfox.documentation.service.Response;
+import springfox.documentation.service.Tag;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
@@ -64,7 +70,10 @@ public class SpringFoxConfig implements WebMvcConfigurer {
                 .additionalModels(typeResolver.resolve(Problem.class))
                 .ignoredParameterTypes(ServletWebRequest.class, InputStream.class, InputStreamResource.class, Sort.class)
                 .directModelSubstitute(Pageable.class, PageableModel.class)
-                .alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(Page.class, CozinhaOutput.class), CozinhasModel.class))
+                .directModelSubstitute(Links.class, LinksModelOpenApi.class)
+                .alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(PagedModel.class, CozinhaOutput.class), CozinhasModel.class))
+                .alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(CollectionModel.class, CidadeOutput.class), CidadesModel.class))
+                .alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(PagedModel.class, PedidoResumeOutput.class), PedidosResumeModel.class))
                 .apiInfo(apiInfo())
                 .tags(
                         new Tag("Cidades", "Gerenciar as cidades"),
