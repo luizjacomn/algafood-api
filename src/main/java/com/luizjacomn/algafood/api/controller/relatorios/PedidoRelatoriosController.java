@@ -5,7 +5,9 @@ import com.luizjacomn.algafood.api.model.dto.VendaDiaria;
 import com.luizjacomn.algafood.api.openapi.controller.PedidoRelatoriosControllerOpenApi;
 import com.luizjacomn.algafood.domain.repository.reports.PedidoRelatoriosRepository;
 import com.luizjacomn.algafood.domain.service.reports.VendaRelatorioService;
+import com.luizjacomn.algafood.util.AlgaLinks;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +28,19 @@ public class PedidoRelatoriosController implements PedidoRelatoriosControllerOpe
     @Autowired
     private VendaRelatorioService vendaRelatorioService;
 
+    @Autowired
+    private AlgaLinks algaLinks;
+
+    @Override
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public RelatoriosModel relatorios() {
+        RelatoriosModel relatoriosModel = new RelatoriosModel();
+
+        relatoriosModel.add(algaLinks.linkForRelatorioVendasDiarias());
+
+        return relatoriosModel;
+    }
+
     @Override
     @GetMapping(path = "/vendas-diarias", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<VendaDiaria> pesquisar(VendaDiariaFilter filter,
@@ -45,5 +60,8 @@ public class PedidoRelatoriosController implements PedidoRelatoriosControllerOpe
                 .contentType(MediaType.APPLICATION_PDF)
                 .headers(httpHeaders)
                 .body(vendaRelatorioService.emitir(filter, timeOffset));
+    }
+
+    public static class RelatoriosModel extends RepresentationModel<RelatoriosModel> {
     }
 }

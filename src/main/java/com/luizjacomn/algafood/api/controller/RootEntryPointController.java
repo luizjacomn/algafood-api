@@ -34,6 +34,8 @@ public class RootEntryPointController {
 
         rootEntryPointModel.add(algaLinks.linkFor(GrupoController.class));
 
+        rootEntryPointModel.add(algaLinks.linkForRelatorioVendasDiarias());
+
         return rootEntryPointModel;
     }
 

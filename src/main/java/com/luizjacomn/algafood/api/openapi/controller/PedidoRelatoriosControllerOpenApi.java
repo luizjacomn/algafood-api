@@ -1,5 +1,6 @@
 package com.luizjacomn.algafood.api.openapi.controller;
 
+import com.luizjacomn.algafood.api.controller.relatorios.PedidoRelatoriosController.RelatoriosModel;
 import com.luizjacomn.algafood.api.filter.VendaDiariaFilter;
 import com.luizjacomn.algafood.api.model.dto.VendaDiaria;
 import io.swagger.annotations.*;
@@ -10,7 +11,10 @@ import java.util.List;
 @Api(tags = "Estatísticas")
 public interface PedidoRelatoriosControllerOpenApi {
 
-    @ApiOperation("Consulta estatísticas de vendas diárias")
+    @ApiOperation(value = "Relatórios", hidden = true)
+    RelatoriosModel relatorios();
+
+    @ApiOperation(value = "Consulta estatísticas de vendas diárias")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "restauranteId", value = "ID do restaurante",
                     example = "1", dataType = "int"),
