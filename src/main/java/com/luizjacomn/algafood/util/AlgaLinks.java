@@ -24,10 +24,9 @@ public class AlgaLinks {
 
         if (matcher.find()) {
             return linkTo(controllerClass).withRel(matcher.group().concat("s").toLowerCase());
-        } else {
-            throw new RuntimeException("Erro ao montar link para: " + simpleName);
         }
 
+        throw new RuntimeException("Erro ao montar link para: " + simpleName);
     }
 
 }
