@@ -1,4 +1,4 @@
-package com.luizjacomn.algafood.api.v1.model.mapper;
+package com.luizjacomn.algafood.api.mapper;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +12,6 @@ import java.util.Collection;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
-
-interface RelationshipAttributes {
-
-    default String[] getRelationshipAttributes() {
-        return new String[0];
-    }
-}
 
 public abstract class GenericMapper<E, I, O> implements RelationshipAttributes {
 

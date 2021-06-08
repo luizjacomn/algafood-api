@@ -2,6 +2,8 @@ package com.luizjacomn.algafood.core.modelmapper;
 
 import com.luizjacomn.algafood.api.v1.model.input.ItemPedidoInput;
 import com.luizjacomn.algafood.api.v1.model.output.EnderecoOutput;
+import com.luizjacomn.algafood.api.v2.model.input.CidadeInputV2;
+import com.luizjacomn.algafood.domain.model.Cidade;
 import com.luizjacomn.algafood.domain.model.Endereco;
 import com.luizjacomn.algafood.domain.model.ItemPedido;
 import lombok.var;
@@ -15,6 +17,8 @@ public class ModelMapperConfig {
     @Bean
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
+
+        modelMapper.createTypeMap(CidadeInputV2.class, Cidade.class).addMappings(item -> item.skip(Cidade::setId));
 
 //		modelMapper.createTypeMap(Restaurante.class, RestauranteModel.class)
 //			.addMapping(Restaurante::getTaxaFrete, RestauranteModel::setPrecoFrete);

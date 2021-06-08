@@ -1,5 +1,6 @@
 package com.luizjacomn.algafood.api.v1.model.mapper;
 
+import com.luizjacomn.algafood.api.mapper.GenericRepresentationModelMapper;
 import com.luizjacomn.algafood.api.v1.controller.FormaPagamentoController;
 import com.luizjacomn.algafood.api.v1.model.input.FormaPagamentoInput;
 import com.luizjacomn.algafood.api.v1.model.output.FormaPagamentoOutput;

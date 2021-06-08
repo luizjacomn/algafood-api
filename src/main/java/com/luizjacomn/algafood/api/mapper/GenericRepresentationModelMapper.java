@@ -1,4 +1,4 @@
-package com.luizjacomn.algafood.api.v1.model.mapper;
+package com.luizjacomn.algafood.api.mapper;
 
 import com.luizjacomn.algafood.api.v1.model.output.OutputIdentifier;
 import org.springframework.data.domain.Page;

@@ -1,5 +1,6 @@
 package com.luizjacomn.algafood.api.v1.model.mapper;
 
+import com.luizjacomn.algafood.api.mapper.GenericRepresentationModelMapper;
 import com.luizjacomn.algafood.api.v1.controller.RestauranteProdutoController;
 import com.luizjacomn.algafood.api.v1.model.input.ProdutoInput;
 import com.luizjacomn.algafood.api.v1.model.output.ProdutoOutput;
