@@ -1,7 +1,7 @@
 package com.luizjacomn.algafood.infra.service.reports;
 
-import com.luizjacomn.algafood.api.filter.VendaDiariaFilter;
-import com.luizjacomn.algafood.api.model.dto.VendaDiaria;
+import com.luizjacomn.algafood.api.v1.filter.VendaDiariaFilter;
+import com.luizjacomn.algafood.api.v1.model.dto.VendaDiaria;
 import com.luizjacomn.algafood.domain.repository.reports.PedidoRelatoriosRepository;
 import com.luizjacomn.algafood.domain.service.reports.VendaRelatorioService;
 import com.luizjacomn.algafood.infra.exception.ReportException;

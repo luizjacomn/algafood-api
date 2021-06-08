@@ -1,7 +1,7 @@
 package com.luizjacomn.algafood.core.modelmapper;
 
-import com.luizjacomn.algafood.api.model.input.ItemPedidoInput;
-import com.luizjacomn.algafood.api.model.output.EnderecoOutput;
+import com.luizjacomn.algafood.api.v1.model.input.ItemPedidoInput;
+import com.luizjacomn.algafood.api.v1.model.output.EnderecoOutput;
 import com.luizjacomn.algafood.domain.model.Endereco;
 import com.luizjacomn.algafood.domain.model.ItemPedido;
 import lombok.var;

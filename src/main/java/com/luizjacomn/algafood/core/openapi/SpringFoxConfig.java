@@ -2,10 +2,10 @@ package com.luizjacomn.algafood.core.openapi;
 
 import com.fasterxml.classmate.TypeResolver;
 import com.luizjacomn.algafood.api.exceptionhandler.Problem;
-import com.luizjacomn.algafood.api.model.output.CidadeOutput;
-import com.luizjacomn.algafood.api.model.output.CozinhaOutput;
-import com.luizjacomn.algafood.api.model.output.PedidoResumeOutput;
-import com.luizjacomn.algafood.api.openapi.model.*;
+import com.luizjacomn.algafood.api.v1.model.output.CidadeOutput;
+import com.luizjacomn.algafood.api.v1.model.output.CozinhaOutput;
+import com.luizjacomn.algafood.api.v1.model.output.PedidoResumeOutput;
+import com.luizjacomn.algafood.api.v1.openapi.model.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;

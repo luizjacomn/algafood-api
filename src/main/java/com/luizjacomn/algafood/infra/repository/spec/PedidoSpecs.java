@@ -1,6 +1,6 @@
 package com.luizjacomn.algafood.infra.repository.spec;
 
-import com.luizjacomn.algafood.api.filter.PedidoFilter;
+import com.luizjacomn.algafood.api.v1.filter.PedidoFilter;
 import com.luizjacomn.algafood.domain.model.Pedido;
 import org.springframework.data.jpa.domain.Specification;
 

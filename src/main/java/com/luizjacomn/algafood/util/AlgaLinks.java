@@ -1,6 +1,6 @@
 package com.luizjacomn.algafood.util;
 
-import com.luizjacomn.algafood.api.controller.relatorios.PedidoRelatoriosController;
+import com.luizjacomn.algafood.api.v1.controller.relatorios.PedidoRelatoriosController;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.TemplateVariable;
 import org.springframework.hateoas.TemplateVariables;

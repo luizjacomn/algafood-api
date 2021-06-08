@@ -1,7 +1,7 @@
 package com.luizjacomn.algafood.infra.repository;
 
-import com.luizjacomn.algafood.api.filter.VendaDiariaFilter;
-import com.luizjacomn.algafood.api.model.dto.VendaDiaria;
+import com.luizjacomn.algafood.api.v1.filter.VendaDiariaFilter;
+import com.luizjacomn.algafood.api.v1.model.dto.VendaDiaria;
 import com.luizjacomn.algafood.domain.model.Pedido;
 import com.luizjacomn.algafood.domain.model.StatusPedido;
 import com.luizjacomn.algafood.domain.repository.reports.PedidoRelatoriosRepository;
