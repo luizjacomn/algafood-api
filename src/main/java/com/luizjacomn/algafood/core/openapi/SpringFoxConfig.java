@@ -61,7 +61,7 @@ public class SpringFoxConfig implements WebMvcConfigurer {
                 .build();
     }
 
-    @Bean
+//    @Bean
     public Docket apiDocketV1() {
         TypeResolver typeResolver = new TypeResolver();
 

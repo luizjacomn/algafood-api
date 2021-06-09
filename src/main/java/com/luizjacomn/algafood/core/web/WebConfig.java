@@ -13,8 +13,11 @@ import javax.servlet.Filter;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
+//    @Autowired
+//    private ApiDeprecationHandler apiDeprecationHandler;
+
     @Autowired
-    private ApiDeprecationHandler apiDeprecationHandler;
+    private ApiOffHandler apiOffHandler;
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
@@ -24,7 +27,8 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(apiDeprecationHandler);
+//        registry.addInterceptor(apiDeprecationHandler);
+        registry.addInterceptor(apiOffHandler);
     }
 
     @Bean
