@@ -1,7 +1,7 @@
 package com.luizjacomn.algafood.api.v1.controller;
 
-import com.luizjacomn.algafood.api.v1.model.mapper.CozinhaMapper;
 import com.luizjacomn.algafood.api.v1.model.input.CozinhaInput;
+import com.luizjacomn.algafood.api.v1.model.mapper.CozinhaMapper;
 import com.luizjacomn.algafood.api.v1.model.output.CozinhaOutput;
 import com.luizjacomn.algafood.domain.model.Cozinha;
 import com.luizjacomn.algafood.domain.repository.CozinhaRepository;
@@ -21,7 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Map;
 
-@Deprecated
 @RestController
 @RequestMapping("/v1/cozinhas")
 public class CozinhaController {

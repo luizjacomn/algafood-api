@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-@Deprecated
 @RestController
 @RequestMapping("/v1/cidades")
 public class CidadeController implements CidadeControllerOpenApi {
