@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Map;
 
+@Deprecated
 @RestController
 @RequestMapping("/v1/cozinhas")
 public class CozinhaController {
