@@ -20,6 +20,8 @@ public class RootEntryPointControllerV2 {
 
         rootEntryPointModel.add(algaLinksV2.linkFor(CidadeControllerV2.class));
 
+        rootEntryPointModel.add(algaLinksV2.linkFor(CozinhaControllerV2.class));
+
         return rootEntryPointModel;
     }
 
