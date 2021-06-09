@@ -4,7 +4,6 @@ import com.luizjacomn.algafood.api.v1.model.input.CidadeInput;
 import com.luizjacomn.algafood.api.v1.model.mapper.CidadeMapper;
 import com.luizjacomn.algafood.api.v1.model.output.CidadeOutput;
 import com.luizjacomn.algafood.api.v1.openapi.controller.CidadeControllerOpenApi;
-import com.luizjacomn.algafood.core.web.AlgaMediaTypes;
 import com.luizjacomn.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.luizjacomn.algafood.domain.exception.generics.NegocioException;
 import com.luizjacomn.algafood.domain.model.Cidade;
@@ -19,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping(path = "/cidades", produces = AlgaMediaTypes.V1_APPLICATION_JSON_VALUE)
+@RequestMapping("/v1/cidades")
 public class CidadeController implements CidadeControllerOpenApi {
 
     @Autowired

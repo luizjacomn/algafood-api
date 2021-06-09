@@ -5,7 +5,7 @@ import com.luizjacomn.algafood.api.v1.model.dto.VendaDiaria;
 import com.luizjacomn.algafood.api.v1.openapi.controller.PedidoRelatoriosControllerOpenApi;
 import com.luizjacomn.algafood.domain.repository.reports.PedidoRelatoriosRepository;
 import com.luizjacomn.algafood.domain.service.reports.VendaRelatorioService;
-import com.luizjacomn.algafood.util.AlgaLinks;
+import com.luizjacomn.algafood.api.v1.util.AlgaLinks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.HttpHeaders;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/relatorios")
+@RequestMapping("/v1/relatorios")
 public class PedidoRelatoriosController implements PedidoRelatoriosControllerOpenApi {
 
     @Autowired

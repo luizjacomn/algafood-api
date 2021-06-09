@@ -1,14 +1,14 @@
 package com.luizjacomn.algafood.api.v1.controller;
 
-import com.luizjacomn.algafood.util.AlgaLinks;
+import com.luizjacomn.algafood.api.v1.util.AlgaLinks;
+import com.luizjacomn.algafood.core.web.RootEntryPointModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.RepresentationModel;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/v1")
 public class RootEntryPointController {
 
     @Autowired
@@ -39,5 +39,4 @@ public class RootEntryPointController {
         return rootEntryPointModel;
     }
 
-    private static class RootEntryPointModel extends RepresentationModel<RootEntryPointModel> { }
 }

@@ -3,7 +3,6 @@ package com.luizjacomn.algafood.api.v2.controller;
 import com.luizjacomn.algafood.api.v2.model.input.CidadeInputV2;
 import com.luizjacomn.algafood.api.v2.model.mapper.CidadeMapperV2;
 import com.luizjacomn.algafood.api.v2.model.output.CidadeOutputV2;
-import com.luizjacomn.algafood.core.web.AlgaMediaTypes;
 import com.luizjacomn.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.luizjacomn.algafood.domain.exception.generics.NegocioException;
 import com.luizjacomn.algafood.domain.model.Cidade;
@@ -18,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping(path = "/cidades", produces = AlgaMediaTypes.V2_APPLICATION_JSON_VALUE)
+@RequestMapping("/v2/cidades")
 public class CidadeControllerV2 {
 
     @Autowired
