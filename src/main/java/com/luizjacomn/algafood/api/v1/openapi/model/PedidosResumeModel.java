@@ -1,5 +1,6 @@
 package com.luizjacomn.algafood.api.v1.openapi.model;
 
+import com.luizjacomn.algafood.api.openapi.model.PageModel;
 import com.luizjacomn.algafood.api.v1.model.output.PedidoResumeOutput;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;

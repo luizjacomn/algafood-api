@@ -1,11 +1,9 @@
-package com.luizjacomn.algafood.api.v1.openapi.model;
+package com.luizjacomn.algafood.api.openapi.model;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
 
 @ApiModel("PageModel")
 @Getter

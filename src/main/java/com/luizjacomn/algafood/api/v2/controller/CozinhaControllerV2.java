@@ -3,6 +3,7 @@ package com.luizjacomn.algafood.api.v2.controller;
 import com.luizjacomn.algafood.api.v2.model.input.CozinhaInputV2;
 import com.luizjacomn.algafood.api.v2.model.mapper.CozinhaMapperV2;
 import com.luizjacomn.algafood.api.v2.model.output.CozinhaOutputV2;
+import com.luizjacomn.algafood.api.v2.openapi.controller.CozinhaControllerOpenApiV2;
 import com.luizjacomn.algafood.domain.model.Cozinha;
 import com.luizjacomn.algafood.domain.repository.CozinhaRepository;
 import com.luizjacomn.algafood.domain.service.CozinhaService;
@@ -23,7 +24,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/v2/cozinhas")
-public class CozinhaControllerV2 {
+public class CozinhaControllerV2 implements CozinhaControllerOpenApiV2 {
 
     @Autowired
     private CozinhaRepository cozinhaRepository;
@@ -40,16 +41,19 @@ public class CozinhaControllerV2 {
     @Autowired
     private MergeUtil mergeUtil;
 
+    @Override
     @GetMapping
     public PagedModel<CozinhaOutputV2> listar(Pageable pageable) {
         return pagedResourcesAssembler.toModel(cozinhaRepository.findAll(pageable), cozinhaMapperV2);
     }
 
+    @Override
     @GetMapping("/{id}")
     public CozinhaOutputV2 buscar(@PathVariable Long id) {
         return cozinhaMapperV2.toModel(cozinhaService.buscar(id));
     }
 
+    @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CozinhaOutputV2 salvar(@RequestBody @Valid CozinhaInputV2 cozinhaInputV2) {
@@ -58,6 +62,7 @@ public class CozinhaControllerV2 {
         return cozinhaMapperV2.toModel(cozinhaService.salvar(cozinha));
     }
 
+    @Override
     @PutMapping("/{id}")
     public CozinhaOutputV2 atualizar(@PathVariable Long id, @RequestBody @Valid CozinhaInputV2 cozinhaInputV2) throws Exception {
         Cozinha cozinha = cozinhaService.buscar(id);
@@ -67,6 +72,7 @@ public class CozinhaControllerV2 {
         return cozinhaMapperV2.toModel(cozinhaService.salvar(cozinha));
     }
 
+    @Override
     @PatchMapping("/{id}")
     public CozinhaOutputV2 mesclar(@PathVariable Long id, @RequestBody Map<String, Object> dados, HttpServletRequest request) throws Exception {
         try {
@@ -83,6 +89,7 @@ public class CozinhaControllerV2 {
         }
     }
 
+    @Override
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void excluir(@PathVariable Long id) {

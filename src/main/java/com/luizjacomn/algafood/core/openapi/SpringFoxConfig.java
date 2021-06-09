@@ -2,10 +2,18 @@ package com.luizjacomn.algafood.core.openapi;
 
 import com.fasterxml.classmate.TypeResolver;
 import com.luizjacomn.algafood.api.exceptionhandler.Problem;
+import com.luizjacomn.algafood.api.openapi.model.LinksModelOpenApi;
+import com.luizjacomn.algafood.api.openapi.model.PageableModel;
 import com.luizjacomn.algafood.api.v1.model.output.CidadeOutput;
 import com.luizjacomn.algafood.api.v1.model.output.CozinhaOutput;
 import com.luizjacomn.algafood.api.v1.model.output.PedidoResumeOutput;
-import com.luizjacomn.algafood.api.v1.openapi.model.*;
+import com.luizjacomn.algafood.api.v1.openapi.model.CidadesModel;
+import com.luizjacomn.algafood.api.v1.openapi.model.CozinhasModel;
+import com.luizjacomn.algafood.api.v1.openapi.model.PedidosResumeModel;
+import com.luizjacomn.algafood.api.v2.model.output.CidadeOutputV2;
+import com.luizjacomn.algafood.api.v2.model.output.CozinhaOutputV2;
+import com.luizjacomn.algafood.api.v2.openapi.model.CidadesModelV2;
+import com.luizjacomn.algafood.api.v2.openapi.model.CozinhasModelV2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -22,10 +30,7 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
-import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.RepresentationBuilder;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.builders.ResponseBuilder;
+import springfox.documentation.builders.*;
 import springfox.documentation.oas.annotations.EnableOpenApi;
 import springfox.documentation.schema.AlternateTypeRules;
 import springfox.documentation.service.ApiInfo;
@@ -45,13 +50,24 @@ import java.util.function.Consumer;
 @Import(BeanValidatorPluginsConfiguration.class)
 public class SpringFoxConfig implements WebMvcConfigurer {
 
+    public ApiInfo apiInfoV1() {
+        return new ApiInfoBuilder()
+                .title("AlgaFood API")
+                .description("API para restaurantes e clientes")
+                .version("V1")
+                .contact(new Contact("Luiz Jacó", "https://github.com/luizjacomn", "luizjacomn@gmail.com"))
+                .build();
+    }
+
     @Bean
-    public Docket apiDocket() {
+    public Docket apiDocketV1() {
         TypeResolver typeResolver = new TypeResolver();
 
         return new Docket(DocumentationType.OAS_30)
+                .groupName("V1")
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.luizjacomn.algafood.api"))
+                .paths(PathSelectors.ant("/v1/**"))
                 .build()
                 .useDefaultResponseMessages(false)
                 .globalResponses(HttpMethod.GET, globalGetResponseMessages())
@@ -74,7 +90,7 @@ public class SpringFoxConfig implements WebMvcConfigurer {
                 .alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(PagedModel.class, CozinhaOutput.class), CozinhasModel.class))
                 .alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(CollectionModel.class, CidadeOutput.class), CidadesModel.class))
                 .alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(PagedModel.class, PedidoResumeOutput.class), PedidosResumeModel.class))
-                .apiInfo(apiInfo())
+                .apiInfo(apiInfoV1())
                 .tags(
                         new Tag("Cidades", "Gerenciar as cidades"),
                         new Tag("Pedidos", "Gerenciar os pedidos"),
@@ -82,13 +98,41 @@ public class SpringFoxConfig implements WebMvcConfigurer {
                 );
     }
 
-    public ApiInfo apiInfo() {
+    public ApiInfo apiInfoV2() {
         return new ApiInfoBuilder()
                 .title("AlgaFood API")
                 .description("API para restaurantes e clientes")
-                .version("1.0")
+                .version("V2")
                 .contact(new Contact("Luiz Jacó", "https://github.com/luizjacomn", "luizjacomn@gmail.com"))
                 .build();
+    }
+
+    @Bean
+    public Docket apiDocketV2() {
+        TypeResolver typeResolver = new TypeResolver();
+
+        return new Docket(DocumentationType.OAS_30)
+                .groupName("V2")
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("com.luizjacomn.algafood.api"))
+                .paths(PathSelectors.ant("/v2/**"))
+                .build()
+                .useDefaultResponseMessages(false)
+                .globalResponses(HttpMethod.GET, globalGetResponseMessages())
+                .globalResponses(HttpMethod.POST, globalPostPutResponseMessages())
+                .globalResponses(HttpMethod.PUT, globalPostPutResponseMessages())
+                .globalResponses(HttpMethod.DELETE, globalDeleteResponseMessages())
+                .additionalModels(typeResolver.resolve(Problem.class))
+                .ignoredParameterTypes(ServletWebRequest.class, InputStream.class, InputStreamResource.class, Sort.class)
+                .directModelSubstitute(Pageable.class, PageableModel.class)
+                .directModelSubstitute(Links.class, LinksModelOpenApi.class)
+                .alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(PagedModel.class, CozinhaOutputV2.class), CozinhasModelV2.class))
+                .alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(CollectionModel.class, CidadeOutputV2.class), CidadesModelV2.class))
+                .apiInfo(apiInfoV2())
+                .tags(
+                        new Tag("Cidades", "Gerenciar as cidades"),
+                        new Tag("Cozinhas", "Gerenciar as cozinhas")
+                );
     }
 
     @Override

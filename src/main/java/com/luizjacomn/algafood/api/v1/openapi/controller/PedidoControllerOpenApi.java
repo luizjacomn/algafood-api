@@ -23,5 +23,5 @@ public interface PedidoControllerOpenApi {
             @ApiImplicitParam(name = "campos", paramType = "query", type = "string", example = "codigo,status",
                     value = "Nomes das propriedades para retornar na resposta, separados por vírgula")
     })
-    PedidoOutput buscar(@PathVariable String codigoPedido);
+    PedidoOutput buscar(String codigoPedido);
 }

@@ -1,7 +1,8 @@
-package com.luizjacomn.algafood.api.v1.openapi.model;
+package com.luizjacomn.algafood.api.v2.openapi.model;
 
 import com.luizjacomn.algafood.api.openapi.model.PageModel;
 import com.luizjacomn.algafood.api.v1.model.output.CozinhaOutput;
+import com.luizjacomn.algafood.api.v2.model.output.CozinhaOutputV2;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.Getter;
@@ -13,7 +14,7 @@ import java.util.List;
 @ApiModel("CozinhasOutput")
 @Getter
 @Setter
-public class CozinhasModel {
+public class CozinhasModelV2 {
 
     private CozinhaEmbedded _embedded;
 
@@ -25,7 +26,7 @@ public class CozinhasModel {
     @Data
     public class CozinhaEmbedded {
 
-        private List<CozinhaOutput> cozinhas;
+        private List<CozinhaOutputV2> cozinhas;
 
     }
 }
