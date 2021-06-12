@@ -12,10 +12,12 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests()
-                .anyRequest().authenticated()
-                .and()
-                .oauth2ResourceServer().opaqueToken();
+            .authorizeRequests()
+            .anyRequest().authenticated()
+        .and()
+            .cors()
+        .and()
+            .oauth2ResourceServer().opaqueToken();
     }
 
 }
