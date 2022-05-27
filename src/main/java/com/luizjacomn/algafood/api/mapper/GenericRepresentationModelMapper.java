@@ -21,7 +21,8 @@ public abstract class GenericRepresentationModelMapper<E, I, O extends Represent
 
     protected Class<C> controllerClass;
 
-    public GenericRepresentationModelMapper() {
+    @SuppressWarnings("unchecked")
+	public GenericRepresentationModelMapper() {
         super();
         this.controllerClass = (Class<C>) ((ParameterizedType) getClass()
                 .getGenericSuperclass()).getActualTypeArguments()[3];

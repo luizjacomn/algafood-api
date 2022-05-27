@@ -24,7 +24,8 @@ public abstract class GenericMapper<E, I, O> implements RelationshipAttributes {
 
     protected Class<O> outputClass;
 
-    public GenericMapper() {
+    @SuppressWarnings("unchecked")
+	public GenericMapper() {
         this.entityClass = (Class<E>) ((ParameterizedType) getClass()
                 .getGenericSuperclass()).getActualTypeArguments()[0];
         this.inputClass = (Class<I>) ((ParameterizedType) getClass()

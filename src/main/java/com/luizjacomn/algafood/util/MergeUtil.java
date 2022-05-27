@@ -18,7 +18,8 @@ public class MergeUtil {
     @Autowired
     private SmartValidator validator;
 
-    public <T> void mergeMapIntoObject(Map<String, Object> values, T object, String objectName) {
+    @SuppressWarnings("unchecked")
+	public <T> void mergeMapIntoObject(Map<String, Object> values, T object, String objectName) {
         Class<T> clazz = (Class<T>) object.getClass();
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, true);
